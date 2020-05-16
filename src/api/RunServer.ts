@@ -1,0 +1,13 @@
+import express from 'express';
+import bodyParser from "body-parser"
+import compression from "compression"
+import router from './routerApi';
+export default () => {
+    const app = express();
+    app.use(bodyParser.urlencoded({ extended: true }))
+    app.use(bodyParser.json())
+    app.use("/api", compression())
+    app.use("/api", router)
+    console.log("Mtatitra is ONLINE")
+    return app.listen(process.env.PORT || 3000)
+}
