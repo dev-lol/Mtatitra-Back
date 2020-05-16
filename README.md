@@ -1,14 +1,4 @@
-# Berisheba API
-
-## Docs
-### Controllers : 
-
-Keyword: 
-
-1. remove (to remove data in the database) / delete (restful keyword)
-2. fetch (to fetch data from database) / get (restful keyword)
-3. save (to save data in the database) / post (restful keyword)
-
+# Mtatitra API
 ## Steps to run this project:
 
 1. Run `npm i` command
