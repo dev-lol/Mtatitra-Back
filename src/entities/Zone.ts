@@ -18,4 +18,5 @@ export class Zone {
 
     @OneToMany(() => Livraison, (livraison) => livraison.idZonArrivee)
     livraisons2: Livraison[];
+    
 }
