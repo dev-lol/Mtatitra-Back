@@ -37,7 +37,8 @@ export default class ClientController extends Controller{
             })
             if(liv !==undefined) {
                 this.sendResponse(res,200,{
-                    message : "success"
+                    message : "success",
+                    data : liv
                 })
             }
         })
