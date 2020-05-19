@@ -6,6 +6,7 @@ import { createConnection } from 'typeorm';
 import { ormconfig } from '../config';
 export default () => {
     const app = express();
+   
     app.use(bodyParser.urlencoded({ extended: true }))
     app.use(bodyParser.json())
     app.use("/api", compression())

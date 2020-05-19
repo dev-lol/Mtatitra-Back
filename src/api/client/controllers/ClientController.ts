@@ -10,6 +10,7 @@ import { ormconfig } from "../../../config";
 export default class ClientController extends Controller{
     clientRepository : Repository<Client>
     livraisonRepository : Repository<Livraison>
+    produitRepository : Repository<Produit>
     constructor(){
         super()
         this.createConnectionAndAssignRepository()
@@ -21,29 +22,64 @@ export default class ClientController extends Controller{
         let connection : Connection = await createConnection(ormconfig)
          this.clientRepository =  connection.getRepository(Client)
         this.livraisonRepository = connection.getRepository(Livraison) 
-
+        this.produitRepository = connection.getRepository(Produit)
     }
-    async addGet(router : Router){}
-    async addPost(router : Router){
-
+    async addGet(router : Router){
+        await this.allLivraison(router)
     }
-    async setLivraison(router: Router) : Promise<void>{
-        router.post("/:idClient/livraison",async(req:Request,res:Response,next : NextFunction)=>{
-            try{
-                let livraisonInfoToSave : Livraison = await this.createLivraisonFromRequest(req)
 
-                let livraisonInfoSaved : Livraison = await this.saveLivraisonInfoToDatabase(livraisonInfoToSave)
-                let produitDuLivraison : Produit[] =await this.createProduitsFromRequest(req)
-
-                if(await(this.isLivraisionInfoSet(livraisonInfoSaved))){
-
-                }
-
-            }catch(err){
-                this.passErrorToExpress(err,next)
+    async allLivraison(router : Router) : Promise<void>{
+        router.get("/:idClient/livraison",async (req:Request,res:Response,next : NextFunction)=>{
+           
+            let liv =await this.livraisonRepository.find({
+               relations : ["produits","idCliClient"],
+                where : {idCliClient : await this.clientRepository.findOne(req.params.idClient)}
+            })
+            if(liv !==undefined) {
+                this.sendResponse(res,200,{
+                    message : "success"
+                })
             }
         })
     }
+    async addPost(router : Router){
+        await this.setLivraison(router)
+   
+    }   /**
+     *
+     *
+     * @param {Router} router
+     * @returns {Promise<void>}
+     * @memberof ClientController
+     */
+    async setLivraison(router: Router) : Promise<void>{
+        router.post("/:idClient/livraison",async(req:Request,res:Response,next : NextFunction)=>{
+
+            try{
+                let livraisonInfo : Livraison = await this.createLivraisonFromRequest(req)
+                    
+                let livraisonInfoSaved : Livraison = await this.saveLivraisonInfoToDatabase(livraisonInfo)
+
+                let produitLivraison : Produit[] = await this.createProduitsFromRequest(req)
+
+                
+                await this.saveLivraisonProduitToDb(produitLivraison,livraisonInfoSaved)
+                    .then(()=>{
+                        this.sendResponse(res,200,{
+                            message : "livraison set "
+                        })
+                    }).catch(err=>{
+                        this.passErrorToExpress(err, next)
+                    })
+
+               
+            }catch(err) {
+                this.passErrorToExpress(err, next)
+            }
+                       
+        })
+    }
+   
 
     private async isLivraisionInfoSet(liv : Livraison) : Promise<boolean> {
         return liv !== undefined
@@ -52,27 +88,25 @@ export default class ClientController extends Controller{
         return await this.livraisonRepository.save(liv)
     }
     private async createLivraisonFromRequest(req:Request) : Promise<Livraison>{
-        return await this.livraisonRepository.create(req.body as Object)
+        let client : Client = await this.clientRepository.findOne(req.params.idClient)
+        let livraison = await  this.livraisonRepository.create(req.body as Object)
+        livraison.idCliClient = client
+
+        return livraison
     }
+    
     private async createProduitsFromRequest(req:Request) : Promise<Produit[]>{
-        let {idPro,fragilePro,longueurPro,largueurPro,hauteurPro,poidsPro,consignePro,prixPro,idTypeProTypeProduit} = req.body
-       let pr:Produit[] = []
-       for(var i:number = 0; i<idPro.length;i++){
-           let p: Produit = new Produit()
-           p.idPro = idPro[i]
-           p.fragilePro = fragilePro[i]
-           p.longueurPro = longueurPro[i]
-           p.largueurPro = largueurPro[i]
-           p.hauteurPro = hauteurPro[i]
-           p.consignePro = consignePro[i]
-           p.poidsPro = poidsPro[i]
-           p.idTypeProTypeProduit = idTypeProTypeProduit[i]
-
-           pr.push(p)
-
-       }   
-
-        return pr
+        
+       return req.body.produit
+   }
+   private  async saveLivraisonProduitToDb(pr : Produit[],liv : Livraison) : Promise<void>{
+        
+        return await pr.forEach(prod =>{
+            prod.idLivLivraison = liv
+             this.produitRepository.save(prod)
+            
+       })   
+       
    }
     async addDelete(router : Router){}
     async addPut(router : Router){}

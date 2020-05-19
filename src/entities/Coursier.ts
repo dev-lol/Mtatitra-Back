@@ -5,6 +5,7 @@ import {
   JoinColumn,
   ManyToOne,
   OneToMany,
+  PrimaryGeneratedColumn,
 } from "typeorm";
 import { Admin } from "./Admin";
 import { TypeCoursier } from "./TypeCoursier";
@@ -13,7 +14,7 @@ import { Livraison } from "./Livraison";
 @Index("Coursier_pk", ["idCou"], { unique: true })
 @Entity("Coursier", { schema: "public" })
 export class Coursier {
-  @Column("integer", { primary: true, name: "id_cou" })
+    @PrimaryGeneratedColumn({ type: "integer", name: "id_cou" })
   idCou: number;
 
   @Column("character varying", { name: "nom_cou", length: 50 })
