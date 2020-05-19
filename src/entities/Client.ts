@@ -19,8 +19,11 @@ export class Client {
   @Column("character varying", { name: "email_cli",nullable:false, length: 30 })
   emailCli: string;
 
-  @Column("character varying", { name: "pass_cli", length: 50 })
+  @Column("character varying", { name: "pass_cli", nullable:false, length: 50 })
   passCli: string;
+
+  @Column("character varying", { name: "confirmation_cli", nullable: true, length: 6 })
+  confirmationCli: string;
 
   @OneToMany(() => Livraison, (livraison) => livraison.idCliClient)
   livraisons: Livraison[];
