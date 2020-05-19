@@ -37,8 +37,8 @@ export class Livraison {
   })
   sommeRecepLiv: number;
 
-  @Column("smallint", { name: "description_liv", nullable: true })
-  descriptionLiv: number | null;
+  @Column("varchar", { name: "description_liv", nullable: true })
+  descriptionLiv: string;
 
   @ManyToOne(() => Client, (client) => client.livraisons, {
     onDelete: "SET NULL",

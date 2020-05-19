@@ -11,6 +11,6 @@ export default () => {
     app.use("/api", compression())
     app.use("/api", router)
     createConnection(ormconfig).catch(err => console.log(err))
-    console.log("Mtatitra is ONLINE")
+    console.log("Mtatitra is ONLINE ")
     return app.listen(process.env.PORT || 3000)
 }

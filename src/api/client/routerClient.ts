@@ -1,6 +1,6 @@
 import express, { Request, Response, NextFunction } from "express"
+import ClientController from "./controller/ClientController";
 var routerClient = express.Router()
-routerClient.get("/",(req:Request, res: Response,next:NextFunction) => {
-    res.json({message: "client test"})
-})
+routerClient.use("/",new ClientController().mainRouter)
+
 export default routerClient;
