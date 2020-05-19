@@ -1,11 +1,12 @@
 import { Controller } from "../../Controller";
-import { Connection, Repository } from "typeorm";
-import { createConnection } from "net";
-import { ormconfig } from "../../../config";
+import { Connection, Repository,createConnection } from "typeorm";
+
+
 import { Client } from "../../../entities/Client";
 import { Router,Response,Request, NextFunction } from "express";
 import { Livraison } from "../../../entities/Livraison";
 import { Produit } from "../../../entities/Produit";
+import { ormconfig } from "../../../config";
 export default class ClientController extends Controller{
     clientRepository : Repository<Client>
     livraisonRepository : Repository<Livraison>
@@ -18,8 +19,8 @@ export default class ClientController extends Controller{
     }
     async createConnectionAndAssignRepository() : Promise<void>{
         let connection : Connection = await createConnection(ormconfig)
-        this.clientRepository =  connection.getRepository(Client)
-        this.livraisonRepository = connection.getRepository(Livraison)
+         this.clientRepository =  connection.getRepository(Client)
+        this.livraisonRepository = connection.getRepository(Livraison) 
 
     }
     async addGet(router : Router){}
