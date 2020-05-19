@@ -7,16 +7,16 @@ export class Client {
   @Column("integer", { primary: true, name: "id_cli" })
   idCli: number;
 
-  @Column("character varying", { name: "nom_cli", length: 50 })
+  @Column("character varying", { name: "nom_cli", nullable:false, length: 50 })
   nomCli: string;
 
-  @Column("character varying", { name: "prenom_cli", length: 30 })
+  @Column("character varying", { name: "prenom_cli",nullable:false, length: 30 })
   prenomCli: string;
 
-  @Column("character varying", { name: "num_tel_cli", length: 10 })
+  @Column("character varying", { name: "num_tel_cli", nullable:false, length: 10 })
   numTelCli: string;
 
-  @Column("character varying", { name: "email_cli", length: 30 })
+  @Column("character varying", { name: "email_cli",nullable:false, length: 30 })
   emailCli: string;
 
   @Column("character varying", { name: "pass_cli", length: 50 })
