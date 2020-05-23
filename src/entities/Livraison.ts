@@ -75,14 +75,14 @@ export class Livraison {
         onDelete: "SET NULL",
         onUpdate: "CASCADE",
     })
-    @JoinColumn([{ name: "id_zon_depart", referencedColumnName: "idZone" }])
+    @JoinColumn([{ name: "id_zon_depart", referencedColumnName: "idZon" }])
     idZonDepart: Zone;
 
     @ManyToOne(() => Zone, (zone) => zone.livraisons2, {
         onDelete: "SET NULL",
         onUpdate: "CASCADE",
     })
-    @JoinColumn([{ name: "id_zon_arrivee", referencedColumnName: "idZone" }])
+    @JoinColumn([{ name: "id_zon_arrivee", referencedColumnName: "idZon" }])
     idZonArrivee: Zone;
 
     @OneToMany(() => Produit, (produit) => produit.idLivLivraison)

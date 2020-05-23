@@ -1,7 +1,7 @@
 import { Column, Entity, Index, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Livraison } from "./Livraison";
 
-@Index("Zone_pk", ["idZone"], { unique: true })
+@Index("Zone_pk", ["idZon"], { unique: true })
 @Entity("Zone", { schema: "public" })
 export class Zone {
     @PrimaryGeneratedColumn({ type: "integer", name: "id_zon" })
