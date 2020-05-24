@@ -13,6 +13,7 @@ import { Etats } from "./Etats";
 import { TypeLivraison } from "./TypeLivraison";
 import { Zone } from "./Zone";
 import { Produit } from "./Produit";
+import { DateLimite } from './DateLimite';
 
 @Index("Livraison_pk", ["idLiv"], { unique: true })
 @Entity("Livraison", { schema: "public" })
@@ -54,6 +55,13 @@ export class Livraison {
     })
     @JoinColumn([{ name: "id_cou_Coursier", referencedColumnName: "idCou" }])
     idCouCoursier: Coursier;
+
+    @ManyToOne(() => DateLimite, (coursier) => coursier.livraisons, {
+        onDelete: "SET NULL",
+        onUpdate: "CASCADE",
+    })
+    @JoinColumn([{ name: "id_limite_dat", referencedColumnName: "idLimiteDat" }])
+    idLimiteDat: DateLimite;
 
     @ManyToOne(() => Etats, (etats) => etats.livraisons, {
         onDelete: "SET NULL",
