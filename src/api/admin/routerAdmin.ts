@@ -1,8 +1,7 @@
 import express, { Request, Response, NextFunction } from "express"
-import TestController from './controllers/TestController';
+import AdminController from './controllers/AdminController';
+
 var routerAdmin = express.Router()
-routerAdmin.get("/",(req:Request, res: Response,next:NextFunction) => {
-    res.json({message: "admin test"})
-})
-routerAdmin.use("/test", new TestController().mainRouter)
+ routerAdmin.use("/",new AdminController().mainRouter)
+
 export default routerAdmin;
