@@ -32,6 +32,9 @@ export class Livraison {
 
     @Column("timestamp without time zone", { name: "date_liv" })
     dateLiv: Date;
+    
+    @Column("boolean", { name: "express_liv" })
+    expressLiv: Boolean;
 
     @Column("double precision", {
         name: "somme_recep_liv",
