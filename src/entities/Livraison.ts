@@ -6,6 +6,7 @@ import {
     ManyToOne,
     OneToMany,
     PrimaryGeneratedColumn,
+    CreateDateColumn,
 } from "typeorm";
 import { Client } from "./Client";
 import { Coursier } from "./Coursier";
@@ -32,7 +33,10 @@ export class Livraison {
 
     @Column("timestamp without time zone", { name: "date_liv" })
     dateLiv: Date;
-    
+
+    @CreateDateColumn({name : "date_ajout_liv"})
+    dateAjoutLiv : Date
+
     @Column("boolean", { name: "express_liv" })
     expressLiv: Boolean;
 
