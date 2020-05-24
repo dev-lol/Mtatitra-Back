@@ -16,6 +16,15 @@ export default class Utils {
                 rejectUnauthorized: false
             }
         });
+
+        if(process.env.ENV == "dev"){
+            transporter = nodeMailer.createTransport("SMTP", {
+                port: 1025,
+                // other settings...
+            });
+        }
+        
+
         let nomDomaine = process.env.URL
         let mailOptions = {
             to: email,
