@@ -28,6 +28,7 @@ export default class SignupController extends Controller {
     }
 
     async addGet(router: Router): Promise<void> {
+        this.getConfirmation(router)
     }
 
 
@@ -58,6 +59,27 @@ export default class SignupController extends Controller {
                     Utils.sendEmail(client.emailCli, client.confirmationCli)
                 })
                 this.sendResponse(res, 200, { message: "Veuillez confirmer votre compte via email" })
+            } catch (error) {
+                this.sendResponse(res, 400, { message: error })
+            }
+        })
+    }
+
+    /**
+     *
+     *
+     * @param {Router} router
+     * @memberof SignupController
+     */
+    async getConfirmation(router: Router) {
+        router.get("/confirmations/:emailCli/:code", async (req: Request, res: Response, next: NextFunction) => {
+            try {
+                var client: Client = await this.clientRepository.findOneOrFail({ where: { emailCli: req.params.emailCli } })
+                if (client.confirmationCli == req.params.code){
+                    client.confirmationCli = ""
+                }
+                await this.clientRepository.save(client)
+                this.sendResponse(res, 200, { message: "Confirmation succes" })
             } catch (error) {
                 this.sendResponse(res, 400, { message: error })
             }
