@@ -16,6 +16,9 @@ export class Client {
     @Column("character varying", { name: "num_tel_cli", nullable: false, length: 10 })
     numTelCli: string;
 
+    @Column("character varying", { name: "adresse_cli", nullable: false, length: 50 })
+    adresseCli: string;
+
     @Column("character varying", { name: "email_cli", nullable: false, length: 30 })
     emailCli: string;
 
