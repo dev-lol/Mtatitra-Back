@@ -41,13 +41,17 @@ export default class LoginController extends Controller {
      * 
      * form data = [emailCli, passCli]
      * 
+     * 203 quand le client n'a pas encore confirmer son compte
+     * 
      */
     async postLogin(router: Router) {
         router.post("/login", async (req: Request, res: Response, next: NextFunction) => {
             try {
                 var client: Client = await this.clientRepository.findOneOrFail({ where: { emailCli: req.body.emailCli } })
                 //TODO: USE JWT 
-                if(client.passCli != req.body.passCli)
+                if(client.confirmationCli != ""){
+                    this.sendResponse(res,203, {message: "Veuillez confirmer votre compte"})
+                }else if(client.passCli != req.body.passCli)
                     throw new Error("ERREUR")
                 else
                     this.sendResponse(res,200,{message: "Authentification avec success"})

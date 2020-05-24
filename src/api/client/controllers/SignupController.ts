@@ -34,6 +34,7 @@ export default class SignupController extends Controller {
 
     async addPost(router: Router): Promise<void> {
         await this.postSignup(router)
+        await this.postResend(router)
     }
     /**
      *
@@ -60,7 +61,22 @@ export default class SignupController extends Controller {
                 })
                 this.sendResponse(res, 200, { message: "Veuillez confirmer votre compte via email" })
             } catch (error) {
-                this.sendResponse(res, 400, { message: error })
+                this.sendResponse(res, 400, { message: error.toString() })
+            }
+        })
+    }
+
+    async postResend(router: Router) {
+        router.post("/resend/:email", async (req: Request, res: Response, next: NextFunction) => {
+            try {
+                var client: Client = await this.clientRepository.findOneOrFail({ where: { emailCli: req.body.emailCli } })
+                if(client.confirmationCli == ""){
+                    throw new Error("Compte deja confirmé")
+                }
+                Utils.sendEmail(client.emailCli, client.confirmationCli)
+                this.sendResponse(res, 200, { message: "Veuillez confirmer votre compte via email" })
+            } catch (error) {
+                this.sendResponse(res, 400, { message: error.toString() })
             }
         })
     }
@@ -75,13 +91,13 @@ export default class SignupController extends Controller {
         router.get("/confirmations/:emailCli/:code", async (req: Request, res: Response, next: NextFunction) => {
             try {
                 var client: Client = await this.clientRepository.findOneOrFail({ where: { emailCli: req.params.emailCli } })
-                if (client.confirmationCli == req.params.code){
+                if (client.confirmationCli == req.params.code) {
                     client.confirmationCli = ""
                 }
                 await this.clientRepository.save(client)
                 this.sendResponse(res, 200, { message: "Confirmation succes" })
             } catch (error) {
-                this.sendResponse(res, 400, { message: error })
+                this.sendResponse(res, 400, { message: error.toString() })
             }
         })
     }

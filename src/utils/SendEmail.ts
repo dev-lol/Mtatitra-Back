@@ -18,9 +18,11 @@ export default class Utils {
         });
 
         if(process.env.ENV == "dev"){
-            transporter = nodeMailer.createTransport("SMTP", {
+            console.log("HERE")
+            transporter = nodeMailer.createTransport({
                 port: 1025,
-                // other settings...
+                ignoreTLS: true,
+                // USE maildev for test xD 
             });
         }
         
@@ -43,8 +45,6 @@ export default class Utils {
                     Confirmer
                 </button>
             </a>
-            <p style="font-size: small; margin-top: 35px;">If the button don't work enter this code : <b
-                style="font-size: medium;">${code}</b></p>
         </div>
     </div>
             `
