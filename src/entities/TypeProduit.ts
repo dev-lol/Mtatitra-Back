@@ -7,8 +7,11 @@ export class TypeProduit {
     @PrimaryGeneratedColumn({ type: "integer", name: "id_type_pro" })
     idTypePro: number;
 
-    @Column("character varying", { name: "type_pro", nullable: true, length: 30 })
-    typePro: string | null;
+    @Column("character varying", { name: "type_pro", nullable: false, length: 30 })
+    typePro: string;
+
+    @Column("boolean", {name: "est_suprime"})
+    estSupprime: boolean
 
     @OneToMany(() => Produit, (produit) => produit.idTypeProTypeProduit)
     produits: Produit[];

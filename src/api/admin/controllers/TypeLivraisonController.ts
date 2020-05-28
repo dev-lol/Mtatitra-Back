@@ -49,7 +49,7 @@ export default class TypeLivraisonController extends Controller {
         router.post("/", async (req: Request, res: Response, next: NextFunction) => {
             let typeLivraisonToSave: TypeLivraison = await this.createTypeLivraisonFromRequest(req)
 
-
+            typeLivraisonToSave.estSupprime = false
             let typeLivraisonSaved: TypeLivraison = await this.saveTypeLivraisonToDatabase(typeLivraisonToSave)
 
             if (await this.isTypeLivraisonSaved(typeLivraisonSaved)) {
@@ -67,6 +67,7 @@ export default class TypeLivraisonController extends Controller {
 
     private async createTypeLivraisonFromRequest(req: Request): Promise<TypeLivraison> {
         let type = this.typeLivraisonRepository.create(req.body as Object)
+        type.estSupprime = false
         return type
     }
 
@@ -83,6 +84,7 @@ export default class TypeLivraisonController extends Controller {
             try {
                 let type: TypeLivraison = await this.typeLivraisonRepository.findOneOrFail(Number(req.params.idType))
                 type = this.typeLivraisonRepository.merge(type, req.body as Object)
+                type.estSupprime = false
                 await this.typeLivraisonRepository.save(type)
                 this.sendResponse(res,200, {message: "Type changed"})
             } catch (error) {
@@ -97,7 +99,8 @@ export default class TypeLivraisonController extends Controller {
         router.delete("/:idType", async (req: Request, res: Response, next: NextFunction) => {
             try {
                 let type: TypeLivraison = await this.typeLivraisonRepository.findOneOrFail(Number(req.params.idType))
-                await this.typeLivraisonRepository.remove(type)
+                type.estSupprime = false
+                await this.typeLivraisonRepository.save(type)
                 this.sendResponse(res,203, {message: "Type deleted"})
             } catch (error) {
                 this.sendResponse(res,404, {message: "Type not found"})   

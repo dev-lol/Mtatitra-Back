@@ -12,6 +12,9 @@ export class Zone {
 
     @Column("double precision", { name: "tarif_zon" })
     tarifZon: number;
+    
+    @Column("boolean", {name: "est_suprime"})
+    estSupprime: boolean
 
     @OneToMany(() => Livraison, (livraison) => livraison.idZonDepart)
     livraisons: Livraison[];

@@ -49,7 +49,7 @@ export default class TypeCoursierController extends Controller {
         router.post("/", async (req: Request, res: Response, next: NextFunction) => {
             let typeCoursierToSave: TypeCoursier = await this.createTypeCoursierFromRequest(req)
 
-
+            typeCoursierToSave.estSupprime = false
             let typeCoursierSaved: TypeCoursier = await this.saveTypeCoursierToDatabase(typeCoursierToSave)
 
             if (await this.isTypeCoursierSaved(typeCoursierSaved)) {
@@ -83,6 +83,7 @@ export default class TypeCoursierController extends Controller {
             try {
                 let type: TypeCoursier = await this.typeCoursierRepository.findOneOrFail(Number(req.params.idType))
                 type = this.typeCoursierRepository.merge(type, req.body as Object)
+                type.estSupprime = false
                 await this.typeCoursierRepository.save(type)
                 this.sendResponse(res,200, {message: "Type changed"})
             } catch (error) {
@@ -97,7 +98,8 @@ export default class TypeCoursierController extends Controller {
         router.delete("/:idType", async (req: Request, res: Response, next: NextFunction) => {
             try {
                 let type: TypeCoursier = await this.typeCoursierRepository.findOneOrFail(Number(req.params.idType))
-                await this.typeCoursierRepository.remove(type)
+                type.estSupprime = true
+                await this.typeCoursierRepository.save(type)
                 this.sendResponse(res,203, {message: "Type deleted"})
             } catch (error) {
                 this.sendResponse(res,404, {message: "Type not found"})   

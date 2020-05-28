@@ -49,7 +49,7 @@ export default class TypeProduitController extends Controller {
         router.post("/", async (req: Request, res: Response, next: NextFunction) => {
             let typeProduitToSave: TypeProduit = await this.createTypeProduitFromRequest(req)
 
-
+            typeProduitToSave.estSupprime = false
             let typeProduitSaved: TypeProduit = await this.saveTypeProduitToDatabase(typeProduitToSave)
 
             if (await this.isTypeProduitSaved(typeProduitSaved)) {
@@ -83,6 +83,7 @@ export default class TypeProduitController extends Controller {
             try {
                 let type: TypeProduit = await this.typeProduitRepository.findOneOrFail(Number(req.params.idType))
                 type = this.typeProduitRepository.merge(type, req.body as Object)
+                type.estSupprime = false
                 await this.typeProduitRepository.save(type)
                 this.sendResponse(res,200, {message: "Type changed"})
             } catch (error) {
@@ -97,7 +98,8 @@ export default class TypeProduitController extends Controller {
         router.delete("/:idType", async (req: Request, res: Response, next: NextFunction) => {
             try {
                 let type: TypeProduit = await this.typeProduitRepository.findOneOrFail(Number(req.params.idType))
-                await this.typeProduitRepository.remove(type)
+                type.estSupprime = true
+                await this.typeProduitRepository.save(type)
                 this.sendResponse(res,203, {message: "Type deleted"})
             } catch (error) {
                 this.sendResponse(res,404, {message: "Type not found"})   

@@ -9,6 +9,9 @@ export class TypeLivraison {
 
     @Column("character varying", { name: "type_liv", length: 30 })
     typeLiv: string;
+    
+    @Column("boolean", {name: "est_suprime"})
+    estSupprime: boolean
 
     @OneToMany(() => Livraison, (livraison) => livraison.idTypeLivTypeLivraison)
     livraisons: Livraison[];
