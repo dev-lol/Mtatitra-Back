@@ -19,6 +19,7 @@ export default function securityAdmin(req: Request, res: Response, next: NextFun
                 res.status(401).send({
                     message: error.message
                 })
+                return
             }
         })
     } catch (error) {
@@ -27,4 +28,5 @@ export default function securityAdmin(req: Request, res: Response, next: NextFun
         })
         return;
     }
+    next()
 }
