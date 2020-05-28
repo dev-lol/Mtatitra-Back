@@ -37,7 +37,7 @@ export default class AdminController extends Controller {
             bcrypt.compare(req.body.password, admin.passAdm, (err, isSame) => {
                 if (!err && isSame) {
                     this.sendResponse(res, 200, {
-                        token: jwt.sign({ admin: admin.emailAdm }, process.env.ADMIN_PASS_PHRASE, { expiresIn: "30j" })
+                        token: jwt.sign({ admin: admin.emailAdm }, process.env.ADMIN_PASS_PHRASE, { expiresIn: "30d" })
                     })
                 } else {
                     this.sendResponse(res, 401, {
