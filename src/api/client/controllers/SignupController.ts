@@ -53,8 +53,11 @@ export default class SignupController extends Controller {
                     throw new Error("Email deja utilisé")
                 }
                 var client: Client = this.clientRepository.create(req.body as Object)
-                //TODO: use JWT
-                client.passCli = client.passCli
+
+                let bcrypt = require("bcrypt")
+                await bcrypt.hash(client.passCli, process.env.SALT, function (err, hash) {
+                    client.passCli = hash
+                });
                 client.confirmationCli = Math.floor((Math.random() * (999999 - 100000)) + 100000).toString()
                 await this.clientRepository.save(client).then(_ => {
                     Utils.sendEmail(client.emailCli, client.confirmationCli)
@@ -70,7 +73,7 @@ export default class SignupController extends Controller {
         router.post("/resend/:email", async (req: Request, res: Response, next: NextFunction) => {
             try {
                 var client: Client = await this.clientRepository.findOneOrFail({ where: { emailCli: req.body.emailCli } })
-                if(client.confirmationCli == ""){
+                if (client.confirmationCli == "") {
                     throw new Error("Compte deja confirmé")
                 }
                 Utils.sendEmail(client.emailCli, client.confirmationCli)
