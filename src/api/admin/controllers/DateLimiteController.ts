@@ -86,8 +86,9 @@ export default class DateLimiteController extends Controller {
                 date = this.dateLimiteRepository.merge(date, req.body as Object)
                 date.estSupprime = false
                 await this.dateLimiteRepository.save(date)
-                this.sendResponse(res,404, {message: "Date not found"})
+                this.sendResponse(res,404, {message: "Date changed"})
             } catch (error) {
+                console.log(error)
                 this.sendResponse(res,404, {message: "Date not found"})   
             }
                 
@@ -100,7 +101,7 @@ export default class DateLimiteController extends Controller {
                 let date: DateLimite = await this.dateLimiteRepository.findOneOrFail(Number(req.params.idDate))
                 date.estSupprime = true
                 await this.dateLimiteRepository.save(date)
-                this.sendResponse(res,404, {message: "Date not found"})
+                this.sendResponse(res,404, {message: "Date deleted"})
             } catch (error) {
                 this.sendResponse(res,404, {message: "Date not found"})   
             }
