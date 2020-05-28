@@ -2,6 +2,7 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 export default function securityClient(req: Request, res: Response, next: NextFunction) {
+    if(req.path == "/login") return next()
     var jwtToken: string = req.headers["authorization"]
     console.log(jwtToken)
     if (jwtToken == undefined) {
