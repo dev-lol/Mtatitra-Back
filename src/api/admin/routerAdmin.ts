@@ -5,6 +5,7 @@ import TypeLivraisonController from './controllers/TypeLivraisonController';
 import TypeProduitController from './controllers/TypeProduitController';
 import TypeCoursierController from './controllers/TypeCoursierController';
 import ZoneController from './controllers/ZoneController';
+import CoursierController from '../coursier/controllers/CoursierController';
 
 var routerAdmin = express.Router()
  routerAdmin.use("/",new AdminController().mainRouter)
@@ -13,5 +14,6 @@ var routerAdmin = express.Router()
  routerAdmin.use("/typecoursier", new TypeCoursierController().mainRouter)
  routerAdmin.use("/typeproduit", new TypeProduitController().mainRouter)
  routerAdmin.use("/zone", new ZoneController().mainRouter)
+ routerAdmin.use("/coursier", new CoursierController().mainRouter)
 
 export default routerAdmin;
