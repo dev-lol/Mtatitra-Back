@@ -17,6 +17,9 @@ import {
   
     @Column("character varying", { name: "limite_dat", length: 50 })
     limiteDat: string;
+
+    @Column("boolean", {name: "est_supprime"})
+    estSupprime: boolean;
   
   
     @OneToMany(() => Livraison, (livraison) => livraison.idLimiteDat)

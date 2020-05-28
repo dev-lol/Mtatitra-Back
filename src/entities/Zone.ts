@@ -7,7 +7,7 @@ export class Zone {
     @PrimaryGeneratedColumn({ type: "integer", name: "id_zon" })
     idZon: number;
 
-    @Column("character varying", { name: "nom_zon", length: 50 })
+    @Column("character varying", { name: "nom_zon", length: 100 })
     nomZon: string;
 
     @Column("double precision", { name: "tarif_zon" })

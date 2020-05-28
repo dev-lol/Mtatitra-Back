@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import RunServer from './api/RunServer';
+import {CustomServer} from './api/Server';
 import dotenv from 'dotenv'
 dotenv.config()
-const server = RunServer();
+new CustomServer();
