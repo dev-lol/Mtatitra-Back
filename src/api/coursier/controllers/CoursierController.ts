@@ -3,7 +3,7 @@ import { Controller } from "../../Controller"
 import { Coursier } from "../../../entities/Coursier"
 import { Repository, Connection, createConnection } from "typeorm";
 import { ormconfig } from "../../../config";
-import { jwt } from 'jsonwebtoken';
+import jwt from 'jsonwebtoken';
 export default class CoursierController extends Controller {
     coursierRepository: Repository<Coursier>
     constructor() {

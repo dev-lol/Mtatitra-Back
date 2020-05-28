@@ -3,7 +3,7 @@ import { Controller } from "../../Controller"
 import { Client } from "../../../entities/Client"
 import { Repository, Connection, createConnection } from "typeorm";
 import { ormconfig } from "../../../config";
-import { jwt } from 'jsonwebtoken';
+import jwt from 'jsonwebtoken';
 export default class ClientController extends Controller {
     clientRepository: Repository<Client>
     constructor() {

@@ -3,7 +3,7 @@ import { Controller } from "../../Controller"
 import { Admin } from "../../../entities/Admin"
 import { Repository, Connection, createConnection } from "typeorm";
 import { ormconfig } from "../../../config";
-import { jwt } from 'jsonwebtoken';
+import jwt from 'jsonwebtoken';
 export default class AdminController extends Controller {
     adminRepository: Repository<Admin>
     constructor() {
