@@ -1,87 +1,58 @@
 import { Router, Response, Request, NextFunction, ErrorRequestHandler } from "express";
-import {Controller} from "../../Controller"
-import {Admin} from "../../../entities/Admin"
-import { Repository,Connection,createConnection } from "typeorm";
+import { Controller } from "../../Controller"
+import { Admin } from "../../../entities/Admin"
+import { Repository, Connection, createConnection } from "typeorm";
 import { ormconfig } from "../../../config";
-import { runInThisContext } from "vm";
-export default class AdminController extends Controller{
-   adminRepository : Repository<Admin>
-    constructor(){
+import { jwt } from 'jsonwebtoken';
+export default class AdminController extends Controller {
+    adminRepository: Repository<Admin>
+    constructor() {
         super()
         this.createConnectionAndAssignRepository()
-            .then(async(_) =>{
+            .then(async (_) => {
                 await this.addAllRoutes(this.mainRouter)
             })
     }
 
 
-    async createConnectionAndAssignRepository() :Promise<any>{
-        let connection : Connection = await createConnection(ormconfig)
+    async createConnectionAndAssignRepository(): Promise<any> {
+        let connection: Connection = await createConnection(ormconfig)
         this.adminRepository = connection.getRepository(Admin)
     }
-    async addGet(router: Router) : Promise<void>{
-        await this.getAllAdmin(router)
+    async addGet(router: Router): Promise<void> {
+
     }
 
-
-    private async getAllAdmin(router : Router) : Promise<void> {
-        router.get("/",async(req: Request,res: Response, next : NextFunction) =>{
-            try {
-
-                let admins : Admin[] = await this.fetchAdminsFromDatabase()
-
-                res.json(admins)
-            }catch(err ){
-
-            }
-        })
-           
-    }
-
-    private async fetchAdminsFromDatabase() : Promise<Admin[]> {
+    private async fetchAdminsFromDatabase(): Promise<Admin[]> {
         return await this.adminRepository.find()
     }
-    async addPost(router : Router) : Promise<void> {
+    async addPost(router: Router): Promise<void> {
         await this.postAdmin(router)
     }
 
-    async postAdmin(router : Router) {
-        router.post("/", async  (req : Request,res : Response,next :NextFunction) =>{
-            let adminToSave : Admin = await this.createAdminFromRequest(req)
+    async postAdmin(router: Router) {
+        router.post("/login", async (req: Request, res: Response, next: NextFunction) => {
+            let admin = await this.adminRepository.findOneOrFail({where: {emailAdm: req.body.username}})
+            var bcrypt = require("bcrypt")
+            bcrypt.compare(req.body.password, admin.passAdm, (err, isSame) => {
+                if (!err && isSame) {
+                    this.sendResponse(res, 200, {
+                        token: jwt.sign({ admin: admin.emailAdm }, process.env.ADMIN_PASS_PHRASE, { expiresIn: "30j" })
+                    })
+                } else {
+                    this.sendResponse(res, 401, {
+                        message: "Invalid credentials"
+                    })
+                }
+            })
 
-          
-            let adminSaved : Admin = await this.saveAdminToDatabase(adminToSave)
-
-            if(await this.isAdminSaved(adminSaved)) {
-                res.json("ao tsara")
-            }else{
-                res.json("tsy ao e")
-            }
-               
         })
     }
-
-    private async isAdminSaved(admin : Admin) : Promise<boolean> {
-        return admin !== undefined
-    }
- 
-    private async createAdminFromRequest(req:Request) : Promise<Admin>  {
-        return this.adminRepository.create(req.body as Object)
-    }
-
-    private async saveAdminToDatabase(admin : Admin) : Promise<Admin> {
-        return await this.adminRepository.save(admin)
-    }
-
-
-
-
-
-    async addPut(router : Router) : Promise<void> {
+    async addPut(router: Router): Promise<void> {
 
     }
 
-    async addDelete(router : Router) : Promise<void> {
+    async addDelete(router: Router): Promise<void> {
 
     }
 }
