@@ -25,6 +25,7 @@ import { Coursier } from './entities/Coursier';
             passCli: "$2b$12$NkZMgOfQDiTueABJ8.BCrujsjNlbEDZ2WL8ns1PTtWMX49l3u802G",
             numTelCli: "0344822017"
         })
+        await clientRepository.save(client)
     }
 })()
 

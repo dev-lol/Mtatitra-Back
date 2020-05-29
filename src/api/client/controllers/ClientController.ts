@@ -28,20 +28,30 @@ export default class ClientController extends Controller {
 
     async postClient(router: Router) {
         router.post("/login", async (req: Request, res: Response, next: NextFunction) => {
-            let client = await this.clientRepository.findOneOrFail({where: {emailCli: req.body.username}})
-            var bcrypt = require("bcrypt")
-            bcrypt.compare(req.body.password, client.passCli, (err, isSame) => {
-                if (!err && isSame) {
-                    this.sendResponse(res, 200, {
-                        token: jwt.sign({ client: client.emailCli }, process.env.CLIENT_PASS_PHRASE, { expiresIn: "30d" })
-                    })
-                } else {
-                    this.sendResponse(res, 401, {
-                        message: "Invalid credentials"
-                    })
-                }
-            })
+            try{
 
+                let client = await this.clientRepository.findOneOrFail({where: {emailCli: req.body.username}})
+                if(client.confirmationCli){
+                    return this.sendResponse(res,401,{message: "Compte non confirmee"})
+                }
+                var bcrypt = require("bcrypt")
+                bcrypt.compare(req.body.password, client.passCli, (err, isSame) => {
+                    if (!err && isSame) {
+                        this.sendResponse(res, 200, {
+                            token: jwt.sign({ client: client.emailCli }, process.env.CLIENT_PASS_PHRASE, { expiresIn: "30d" })
+                        })
+                    } else {
+                        this.sendResponse(res, 401, {
+                            message: "Invalid credentials"
+                        })
+                    }
+                })
+                
+            }catch(error){
+                this.sendResponse(res, 401, {
+                    message: "Invalid credentials"
+                })
+            }
         })
     }
     async addPut(router: Router): Promise<void> {

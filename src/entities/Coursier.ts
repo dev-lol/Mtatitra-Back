@@ -29,7 +29,7 @@ export class Coursier {
   @Column("character varying", { name: "username_cou", length: 30 })
   usernameCou: string;
 
-  @Column("character varying", { name: "pass_cou", length: 50 })
+  @Column("character varying", { name: "pass_cou", length: 100 })
   passCou: string;
 
   @ManyToOne(() => Admin, (admin) => admin.coursiers, {

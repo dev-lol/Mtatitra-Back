@@ -7,7 +7,7 @@ import { Router,Response,Request, NextFunction } from "express";
 import { Livraison } from "../../../entities/Livraison";
 import { Produit } from "../../../entities/Produit";
 import { ormconfig } from "../../../config";
-export default class ClientController extends Controller{
+export default class LivraisonController extends Controller{
     clientRepository : Repository<Client>
     livraisonRepository : Repository<Livraison>
     produitRepository : Repository<Produit>

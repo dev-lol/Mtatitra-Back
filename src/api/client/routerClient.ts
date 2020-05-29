@@ -1,6 +1,6 @@
 import express, { Request, Response, NextFunction } from "express"
 import SignupController from './controllers/SignupController';
-import ClientController from "./controllers/LivraisonController";
+import ClientController from "./controllers/ClientController";
 var routerClient = express.Router()
 routerClient.use("/", new ClientController().mainRouter)
 routerClient.use("/", new SignupController().mainRouter)
