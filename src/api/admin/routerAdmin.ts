@@ -10,6 +10,7 @@ import EtatsController from './controllers/EtatController';
 
 var routerAdmin = express.Router()
  routerAdmin.use("/",new AdminController().mainRouter)
+
  routerAdmin.use("/datelimite", new DateLimiteController().mainRouter)
  routerAdmin.use("/typelivraison", new TypeLivraisonController().mainRouter)
  routerAdmin.use("/typecoursier", new TypeCoursierController().mainRouter)
