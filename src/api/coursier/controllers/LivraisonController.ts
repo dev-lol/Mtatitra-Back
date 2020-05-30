@@ -7,7 +7,7 @@ import jwt from 'jsonwebtoken';
 import { sqlDateFormat } from "../../../utils/DateSqlFormat";
 import { Livraison } from "../../../entities/Livraison";
 import { Etats } from "../../../entities/Etats";
-export default class CoursierController extends Controller {
+export default class LivraisonController extends Controller {
     coursierRepository: Repository<Coursier>
     livraisonRepository : Repository<Livraison>
     etatRepository : Repository<Etats>
@@ -51,30 +51,8 @@ export default class CoursierController extends Controller {
         })
     }
     async addPost(router: Router): Promise<void> {
-        await this.postCoursier(router)
+       
         
-    }
-
-    
-    
-
-    async postCoursier(router: Router) {
-        router.post("/login", async (req: Request, res: Response, next: NextFunction) => {
-            let coursier = await this.coursierRepository.findOneOrFail({where: {usernameCou: req.body.username}})
-            var bcrypt = require("bcrypt")
-            bcrypt.compare(req.body.password, coursier.passCou, (err, isSame) => {
-                if (!err && isSame) {
-                    this.sendResponse(res, 200, {
-                        token: jwt.sign({ coursier: coursier.usernameCou}, process.env.COURSIER_PASS_PHRASE, { expiresIn: "30d" })
-                    })
-                } else {
-                    this.sendResponse(res, 401, {
-                        message: "Invalid credentials"
-                    })
-                }
-            })
-
-        })
     }
 
   
