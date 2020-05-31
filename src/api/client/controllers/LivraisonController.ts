@@ -7,10 +7,13 @@ import { Router,Response,Request, NextFunction } from "express";
 import { Livraison } from "../../../entities/Livraison";
 import { Produit } from "../../../entities/Produit";
 import { ormconfig } from "../../../config";
+import { TypeProduit } from "../../../entities/TypeProduit";
+import { Coursier } from "../../../entities/Coursier";
 export default class LivraisonController extends Controller{
     clientRepository : Repository<Client>
     livraisonRepository : Repository<Livraison>
     produitRepository : Repository<Produit>
+    coursierRepository : Repository<Coursier>
     constructor(){
         super()
         this.createConnectionAndAssignRepository()
@@ -23,9 +26,11 @@ export default class LivraisonController extends Controller{
          this.clientRepository =  connection.getRepository(Client)
         this.livraisonRepository = connection.getRepository(Livraison) 
         this.produitRepository = connection.getRepository(Produit)
+        this.coursierRepository = connection.getRepository(Coursier)
     }
     async addGet(router : Router){
         await this.allLivraison(router)
+       
     }
 
     async allLivraison(router : Router) : Promise<void>{
@@ -43,6 +48,8 @@ export default class LivraisonController extends Controller{
             }
         })
     }
+
+   
     async addPost(router : Router){
         await this.setLivraison(router)
    
@@ -64,14 +71,14 @@ export default class LivraisonController extends Controller{
                 let produitLivraison : Produit[] = await this.createProduitsFromRequest(req)
 
                 
-                await this.saveLivraisonProduitToDb(produitLivraison,livraisonInfoSaved)
+                 await this.saveLivraisonProduitToDb(produitLivraison,livraisonInfoSaved)
                     .then(()=>{
                         this.sendResponse(res,200,{
                             message : "livraison set "
                         })
                     }).catch(err=>{
                         this.passErrorToExpress(err, next)
-                    })
+                    }) 
 
                
             }catch(err) {
@@ -105,7 +112,6 @@ export default class LivraisonController extends Controller{
         return await pr.forEach(prod =>{
             prod.idLivLivraison = liv
              this.produitRepository.save(prod)
-            
        })   
        
    }
