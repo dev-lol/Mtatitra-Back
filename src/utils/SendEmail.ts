@@ -17,7 +17,7 @@ export default class Utils {
             }
         });
 
-        if(process.env.ENV == "dev"){
+        if (process.env.ENV == "dev") {
             console.log("HERE")
             transporter = nodeMailer.createTransport({
                 port: 1025,
@@ -25,7 +25,7 @@ export default class Utils {
                 // USE maildev for test xD 
             });
         }
-        
+
 
         let nomDomaine = process.env.URL
         let mailOptions = {
@@ -41,7 +41,7 @@ export default class Utils {
                 <p style="font-size: medium;margin-top: 55px;">Veuillez cliquer sur ce bouton pour confirmer votre compte</p>
                 <a style="text-decoration: none !important;" href="http://${nomDomaine}/api/client/confirmations/${email}/${code}">
                     <button
-                    style="background-color: #0AB099;font-size: 15px;border: none;border-radius: 0%; color: white; font-weight: 700; padding: 7px; display: inline-block; margin-top: 10px; border-radius: 1px;margin-top: px;">
+                    style="background-color: #EF1233;font-size: 15px;border: none;border-radius: 0%; color: white; font-weight: 700; padding: 7px; display: inline-block; margin-top: 10px; border-radius: 1px;margin-top: px;">
                     Confirmer
                 </button>
             </a>
