@@ -4,5 +4,5 @@ import LivraisonController from "./controllers/LivraisonController"
 
 var routerCoursier = express.Router()
 routerCoursier.use("/",new CoursierController().mainRouter)
-routerCoursier.use("/",new LivraisonController().mainRouter)
+routerCoursier.use("/livraison",new LivraisonController().mainRouter)
 export default routerCoursier;
