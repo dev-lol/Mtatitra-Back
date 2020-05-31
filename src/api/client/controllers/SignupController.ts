@@ -98,9 +98,10 @@ export default class SignupController extends Controller {
                     client.confirmationCli = ""
                 }
                 await this.clientRepository.save(client)
-                this.sendResponse(res, 200, { message: "Confirmation succes" })
+                res.status(200).sendFile(__dirname.substring(0,__dirname.indexOf("/api")) + "/views/confirmation.html")
             } catch (error) {
-                this.sendResponse(res, 400, { message: error.toString() })
+                res.status(200).sendFile(__dirname.substring(0,__dirname.indexOf("/api")) + "/views/404-notfound.html")
+                
             }
         })
     }
