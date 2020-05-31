@@ -5,7 +5,7 @@
    "main": "build/index.js",
    "scripts": {
       "start": "npx ts-node ./src/index.ts",
-      "heroku-postbuild": "npx ts-node ./src/postbuild.ts", 
+      "heroku-postbuild": "npx ts-node ./src/postbuild.ts",
       "dev": "npx ts-node-dev --inspect=4321 --poll --clear ./src/index.ts"
    },
    "author": "",
@@ -31,5 +31,7 @@
       "typeorm": "0.2.21",
       "typescript": "3.7.2"
    },
-   "devDependencies": {}
+   "devDependencies": {
+      "typeorm-fixtures-cli": "^1.6.0"
+   }
 }
