@@ -7,9 +7,11 @@ import TypeCoursierController from './controllers/TypeCoursierController';
 import ZoneController from './controllers/ZoneController';
 import CoursierController from '../coursier/controllers/CoursierController';
 import EtatsController from './controllers/EtatController';
+import LivraisonController from "./controllers/LivraisonController";
 
 var routerAdmin = express.Router()
  routerAdmin.use("/",new AdminController().mainRouter)
+routerAdmin.use("/",new LivraisonController().mainRouter)
  routerAdmin.use("/datelimite", new DateLimiteController().mainRouter)
  routerAdmin.use("/typelivraison", new TypeLivraisonController().mainRouter)
  routerAdmin.use("/typecoursier", new TypeCoursierController().mainRouter)

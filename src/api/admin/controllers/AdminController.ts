@@ -4,8 +4,13 @@ import { Admin } from "../../../entities/Admin"
 import { Repository, Connection, createConnection } from "typeorm";
 import { ormconfig } from "../../../config";
 import jwt from 'jsonwebtoken';
+import { Livraison } from "../../../entities/Livraison";
+import { isNull } from "util";
+import { Coursier } from "../../../entities/Coursier";
 export default class AdminController extends Controller {
     adminRepository: Repository<Admin>
+    livraisonRepository : Repository<Livraison>
+    coursierRepository : Repository<Coursier>
     constructor() {
         super()
         this.createConnectionAndAssignRepository()
@@ -18,17 +23,23 @@ export default class AdminController extends Controller {
     async createConnectionAndAssignRepository(): Promise<any> {
         let connection: Connection = await createConnection(ormconfig)
         this.adminRepository = connection.getRepository(Admin)
+        this.livraisonRepository = connection.getRepository(Livraison)
+        this.coursierRepository = connection.getRepository(Coursier)
     }
     async addGet(router: Router): Promise<void> {
-
+      
     }
 
+    
     private async fetchAdminsFromDatabase(): Promise<Admin[]> {
         return await this.adminRepository.find()
     }
     async addPost(router: Router): Promise<void> {
         await this.postAdmin(router)
+        
     }
+
+      
 
     async postAdmin(router: Router) {
         router.post("/login", async (req: Request, res: Response, next: NextFunction) => {
@@ -49,8 +60,10 @@ export default class AdminController extends Controller {
         })
     }
     async addPut(router: Router): Promise<void> {
-
+       
     }
+
+    
 
     async addDelete(router: Router): Promise<void> {
 
