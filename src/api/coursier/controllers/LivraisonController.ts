@@ -28,6 +28,7 @@ export default class LivraisonController extends Controller {
     }
     async addGet(router: Router): Promise<void> {
         await this.recentLivraison(router)
+       
     }
 
     async recentLivraison(router : Router) : Promise<void>{
@@ -62,21 +63,27 @@ export default class LivraisonController extends Controller {
     }
 
     async updateLivraison(router) : Promise<void>{
-        router.put("/livraison/:idLivraison",async(req:Request,res:Response,next :NextFunction) =>{
-            let livraisonToUpdate : Livraison = await this.fetchLivraisonToUpdateFromDb(req)
-            let nouveauEtat : Etats = await this.createEtatFromRequest(req)
-            let livraisonUpdated : Livraison= await this.updateEtatLivraison(livraisonToUpdate,nouveauEtat)
+        try{
+            router.put("/livraison/:idLivraison",async(req:Request,res:Response,next :NextFunction) =>{
+                 let livraisonToUpdate : Livraison = await this.fetchLivraisonToUpdateFromDb(req)
+               let nouveauEtat : Etats = await this.createEtatFromRequest(req)
+               let livraisonUpdated : Livraison= await this.updateEtatLivraison(livraisonToUpdate,nouveauEtat)  
 
-            this.sendResponse(res, 200 , {
-                message : "success",
-                data : livraisonUpdated
-            })
-        })
+               this.sendResponse(res, 200 , {
+                   message : "success",
+                   data : nouveauEtat
+               })
+           })
+        }catch(err) {
+            console.log(err)
+            //this.passErrorToExpress(next ,err)
+        }
+        
     }
 
     private async updateEtatLivraison( liv : Livraison,etat : Etats) : Promise<Livraison>{
         liv.idEtaEtats = etat
-        return this.livraisonRepository.save(liv)
+        return await this.livraisonRepository.save(liv)
     }
 
     private async createEtatFromRequest(req : Request) : Promise<Etats>{
