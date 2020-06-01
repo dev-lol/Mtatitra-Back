@@ -57,6 +57,7 @@ export default class SignupController extends Controller {
                 let bcrypt = require("bcrypt")
                 await bcrypt.hash(client.passCli, process.env.SALT, function (err, hash) {
                     client.passCli = hash
+                    console.log(err)
                 });
                 client.confirmationCli = Math.floor((Math.random() * (999999 - 100000)) + 100000).toString()
                 await this.clientRepository.save(client).then(_ => {
