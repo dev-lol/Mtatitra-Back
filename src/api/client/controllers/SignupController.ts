@@ -55,17 +55,16 @@ export default class SignupController extends Controller {
                 var client: Client = this.clientRepository.create(req.body as Object)
 
                 let bcrypt = require("bcrypt")
-                console.log(process.env.SALT)
-                await bcrypt.hash(client.passCli, Number(process.env.SALT), function (err, hash) {
-                    if(err)
+                await bcrypt.hash(client.passCli, Number(process.env.SALT), async (err, hash) => {
+                    if (err)
                         throw err
                     client.passCli = hash
+                    client.confirmationCli = Math.floor((Math.random() * (999999 - 100000)) + 100000).toString()
+                    await this.clientRepository.save(client).then(_ => {
+                        Utils.sendEmail(client.emailCli, client.confirmationCli)
+                    })
+                    this.sendResponse(res, 200, { message: "Veuillez confirmer votre compte via email" })
                 });
-                client.confirmationCli = Math.floor((Math.random() * (999999 - 100000)) + 100000).toString()
-                await this.clientRepository.save(client).then(_ => {
-                    Utils.sendEmail(client.emailCli, client.confirmationCli)
-                })
-                this.sendResponse(res, 200, { message: "Veuillez confirmer votre compte via email" })
             } catch (error) {
                 this.sendResponse(res, 400, { message: error.toString() })
             }
@@ -101,10 +100,10 @@ export default class SignupController extends Controller {
                     client.confirmationCli = ""
                 }
                 await this.clientRepository.save(client)
-                res.status(200).sendFile(__dirname.substring(0,__dirname.indexOf("/api")) + "/views/confirmation.html")
+                res.status(200).sendFile(__dirname.substring(0, __dirname.indexOf("/api")) + "/views/confirmation.html")
             } catch (error) {
-                res.status(200).sendFile(__dirname.substring(0,__dirname.indexOf("/api")) + "/views/404-notfound.html")
-                
+                res.status(200).sendFile(__dirname.substring(0, __dirname.indexOf("/api")) + "/views/404-notfound.html")
+
             }
         })
     }
