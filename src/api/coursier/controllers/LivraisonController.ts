@@ -28,30 +28,43 @@ export default class LivraisonController extends Controller {
         this.etatRepository = connection.getRepository(Etats)
     }
     async addGet(router: Router): Promise<void> {
-        await this.recentLivraison(router)
-       
+        await this.todayLivraison(router)
+        await this.tomorrowLivraison(router)
+
     }
 
-    async recentLivraison(router: Router): Promise<void> {
-        router.get("/", async (req: Request, res: Response, next: NextFunction) => {
+    async tomorrowLivraison(router): Promise<void> {
+        router.get("/livraison/demain", async (req: Request, res: Response, next: NextFunction) => {
             try {
-                const currentDate = new Date().toISOString()
-                let next8Hours = new Date()
-                next8Hours.setHours(next8Hours.getHours() + 24)
-                next8Hours.toISOString()
-                let nas: string = sqlDateFormat(next8Hours)
-                let blabla: Livraison[] = await this.livraisonRepository
+                let tomorrowLiv: Livraison[] = await this.livraisonRepository
                     .createQueryBuilder("livraison")
-                    .where("livraison.dateLiv > :date1", { date1: currentDate })
-                    .andWhere("livraison.dateLiv < :date2", { date2: next8Hours })
+                    .where("livraison.dateLiv > CURRENT_DATE  ")
+                    .andWhere("livraison.dateLiv < CURRENT_DATE +2 ")
                     .getMany()
 
-                this.sendResponse(res, 200, blabla)
+                this.sendResponse(res, 200, tomorrowLiv)
             } catch (err) {
 
             }
         })
     }
+    async todayLivraison(router: Router): Promise<void> {
+        router.get("/livraison/aujourdhui", async (req: Request, res: Response, next: NextFunction) => {
+            try {
+
+                let todayLiv: Livraison[] = await this.livraisonRepository
+                    .createQueryBuilder("livraison")
+                    .where("livraison.dateLiv >= CURRENT_DATE  ")
+                    .andWhere("livraison.dateLiv < CURRENT_DATE +1 ")
+                    .getMany()
+
+                this.sendResponse(res, 200, todayLiv)
+            } catch (err) {
+
+            }
+        })
+    }
+
     async addPost(router: Router): Promise<void> {
 
 
