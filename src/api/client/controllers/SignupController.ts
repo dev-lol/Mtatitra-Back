@@ -55,7 +55,10 @@ export default class SignupController extends Controller {
                 var client: Client = this.clientRepository.create(req.body as Object)
 
                 let bcrypt = require("bcrypt")
-                await bcrypt.hash(client.passCli, process.env.SALT, function (err, hash) {
+                console.log(process.env.SALT)
+                await bcrypt.hash(client.passCli, Number(process.env.SALT), function (err, hash) {
+                    if(err)
+                        throw err
                     client.passCli = hash
                 });
                 client.confirmationCli = Math.floor((Math.random() * (999999 - 100000)) + 100000).toString()
@@ -98,9 +101,10 @@ export default class SignupController extends Controller {
                     client.confirmationCli = ""
                 }
                 await this.clientRepository.save(client)
-                this.sendResponse(res, 200, { message: "Confirmation succes" })
+                res.status(200).sendFile(__dirname.substring(0,__dirname.indexOf("/api")) + "/views/confirmation.html")
             } catch (error) {
-                this.sendResponse(res, 400, { message: error.toString() })
+                res.status(200).sendFile(__dirname.substring(0,__dirname.indexOf("/api")) + "/views/404-notfound.html")
+                
             }
         })
     }

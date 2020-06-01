@@ -7,10 +7,11 @@ import jwt from 'jsonwebtoken';
 import { sqlDateFormat } from "../../../utils/DateSqlFormat";
 import { Livraison } from "../../../entities/Livraison";
 import { Etats } from "../../../entities/Etats";
+import { CustomServer } from '../../Server';
 export default class LivraisonController extends Controller {
     coursierRepository: Repository<Coursier>
-    livraisonRepository : Repository<Livraison>
-    etatRepository : Repository<Etats>
+    livraisonRepository: Repository<Livraison>
+    etatRepository: Repository<Etats>
     constructor() {
         super()
         this.createConnectionAndAssignRepository()
@@ -27,65 +28,68 @@ export default class LivraisonController extends Controller {
         this.etatRepository = connection.getRepository(Etats)
     }
     async addGet(router: Router): Promise<void> {
-        await this.recentLivraison(router)
+        await this.todayLivraison(router)
+        await this.tomorrowLivraison(router)
+
     }
 
-    async recentLivraison(router : Router) : Promise<void>{
-        router.get("/livraison",async(req:Request,res:Response,next : NextFunction) =>{
-            try{
-                const currentDate =new Date().toISOString()
-                let next8Hours = new Date()
-                next8Hours.setHours(next8Hours.getHours() + 24)
-                next8Hours.toISOString()
-                let nas : string = sqlDateFormat(next8Hours)
-                  let blabla : Livraison[]= await  this.livraisonRepository
-                  .createQueryBuilder("livraison")
-                  .where("livraison.dateLiv > :date1",{date1 : currentDate})
-                  .andWhere("livraison.dateLiv < :date2",{date2 : next8Hours})
-                .getMany()
+    async tomorrowLivraison(router): Promise<void> {
+        router.get("/livraison/demain", async (req: Request, res: Response, next: NextFunction) => {
+            try {
+                let tomorrowLiv: Livraison[] = await this.livraisonRepository
+                    .createQueryBuilder("livraison")
+                    .where("livraison.dateLiv > CURRENT_DATE  ")
+                    .andWhere("livraison.dateLiv < CURRENT_DATE +2 ")
+                    .getMany()
 
-               this.sendResponse(res,200, blabla)
-            }catch(err) {
+                this.sendResponse(res, 200, tomorrowLiv)
+            } catch (err) {
 
             }
         })
     }
+    async todayLivraison(router: Router): Promise<void> {
+        router.get("/livraison/aujourdhui", async (req: Request, res: Response, next: NextFunction) => {
+            try {
+
+                let todayLiv: Livraison[] = await this.livraisonRepository
+                    .createQueryBuilder("livraison")
+                    .where("livraison.dateLiv >= CURRENT_DATE  ")
+                    .andWhere("livraison.dateLiv < CURRENT_DATE +1 ")
+                    .getMany()
+
+                this.sendResponse(res, 200, todayLiv)
+            } catch (err) {
+
+            }
+        })
+    }
+
     async addPost(router: Router): Promise<void> {
-       
-        
+
+
     }
 
-  
-    
+
+
     async addPut(router: Router): Promise<void> {
-        await this.updateLivraison(router)
+        await this.patchEtat(router)
     }
 
-    async updateLivraison(router) : Promise<void>{
-        router.put("/livraison/:idLivraison",async(req:Request,res:Response,next :NextFunction) =>{
-            let livraisonToUpdate : Livraison = await this.fetchLivraisonToUpdateFromDb(req)
-            let nouveauEtat : Etats = await this.createEtatFromRequest(req)
-            let livraisonUpdated : Livraison= await this.updateEtatLivraison(livraisonToUpdate,nouveauEtat)
-
-            this.sendResponse(res, 200 , {
-                message : "success",
-                data : livraisonUpdated
+    async patchEtat(router): Promise<void> {
+        router.patch("/:idLivraison", async (req: Request, res: Response, next: NextFunction) => {
+            let livraisonToUpdate: Livraison = await this.fetchLivraisonToUpdateFromDb(req)
+            livraisonToUpdate.idEtaEtats = await this.etatRepository.findOneOrFail(req.body.idEta)
+            let livraison = await this.livraisonRepository.save(livraisonToUpdate)
+            CustomServer.io.to("client " + livraison.idCliClient.idCli).emit("etats", livraison.idEtaEtats.etatEta)
+            this.sendResponse(res, 200, {
+                message: "Etat changed"
             })
         })
     }
 
-    private async updateEtatLivraison( liv : Livraison,etat : Etats) : Promise<Livraison>{
-        liv.idEtaEtats = etat
-        return this.livraisonRepository.save(liv)
-    }
-
-    private async createEtatFromRequest(req : Request) : Promise<Etats>{
-        return await this.etatRepository.create(req.body as Object)
-    }
-
-
-    private async fetchLivraisonToUpdateFromDb(req : Request) : Promise<Livraison> {
-        return await this.livraisonRepository.findOne(req.params.idLivraison)
+    private async fetchLivraisonToUpdateFromDb(req: Request): Promise<Livraison> {
+        return await this.livraisonRepository.findOneOrFail(req.params.idLivraison)
     }
 
 

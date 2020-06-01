@@ -10,6 +10,9 @@ export class Etats {
     @Column("character varying", { name: "etat_eta", length: 30 })
     etatEta: string;
 
+    @Column("integer",{name: "ordre_eta",nullable:false})
+    ordreEta: number
+
     @OneToMany(() => Livraison, (livraison) => livraison.idEtaEtats)
     livraisons: Livraison[];
 }
