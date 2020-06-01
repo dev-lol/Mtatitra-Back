@@ -4,6 +4,7 @@ import { Client } from "../../../entities/Client"
 import { Repository, Connection, createConnection } from "typeorm";
 import { ormconfig } from "../../../config";
 import jwt from 'jsonwebtoken';
+import { checkId } from "../../security/SecurityClient";
 export default class ClientController extends Controller {
     clientRepository: Repository<Client>
     constructor() {
@@ -20,7 +21,14 @@ export default class ClientController extends Controller {
         this.clientRepository = connection.getRepository(Client)
     }
     async addGet(router: Router): Promise<void> {
-
+        router.get("user-profile/:idCli", async (req: Request, res: Response, next: NextFunction) => {
+            try {
+                checkId(req, res, next, req.params.idCli)
+                this.sendResponse(res, 200, { data: this.clientRepository.findOneOrFail(req.params.idCli) })
+            } catch (error) {
+                this.sendResponse(res, 404, {message: "not found"})
+            }
+        })
     }
     async addPost(router: Router): Promise<void> {
         await this.postClient(router)
@@ -28,11 +36,11 @@ export default class ClientController extends Controller {
 
     async postClient(router: Router) {
         router.post("/login", async (req: Request, res: Response, next: NextFunction) => {
-            try{
+            try {
 
-                let client = await this.clientRepository.findOneOrFail({where: {emailCli: req.body.username}})
-                if(client.confirmationCli){
-                    return this.sendResponse(res,401,{message: "Compte non confirmee"})
+                let client = await this.clientRepository.findOneOrFail({ where: { emailCli: req.body.username } })
+                if (client.confirmationCli) {
+                    return this.sendResponse(res, 401, { message: "Compte non confirmee" })
                 }
                 var bcrypt = require("bcrypt")
                 bcrypt.compare(req.body.password, client.passCli, (err, isSame) => {
@@ -46,8 +54,8 @@ export default class ClientController extends Controller {
                         })
                     }
                 })
-                
-            }catch(error){
+
+            } catch (error) {
                 this.sendResponse(res, 401, {
                     message: "Invalid credentials"
                 })

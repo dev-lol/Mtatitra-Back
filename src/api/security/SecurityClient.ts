@@ -26,3 +26,12 @@ export default function securityClient(req: Request, res: Response, next: NextFu
         return;
     }
 }
+
+export function checkId(req: Request, res: Response, next: NextFunction, id) {
+    var jwtToken: string = req.headers["authorization"]
+    jwt.decode(jwtToken.split(" ")[1], (error, payload) => {
+        if (payload.id != id) {
+            return this.sendResponse(res, 404, { message: "notFound" })
+        }
+    })
+}
