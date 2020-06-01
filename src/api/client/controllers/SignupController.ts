@@ -72,7 +72,7 @@ export default class SignupController extends Controller {
     }
 
     async postResend(router: Router) {
-        router.post("/resend/:email", async (req: Request, res: Response, next: NextFunction) => {
+        router.post("/resend", async (req: Request, res: Response, next: NextFunction) => {
             try {
                 var client: Client = await this.clientRepository.findOneOrFail({ where: { emailCli: req.body.emailCli } })
                 if (client.confirmationCli == "") {
