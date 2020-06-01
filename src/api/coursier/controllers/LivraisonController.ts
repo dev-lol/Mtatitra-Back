@@ -29,6 +29,7 @@ export default class LivraisonController extends Controller {
     }
     async addGet(router: Router): Promise<void> {
         await this.recentLivraison(router)
+       
     }
 
     async recentLivraison(router: Router): Promise<void> {
