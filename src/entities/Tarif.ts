@@ -11,9 +11,6 @@ export class Tarif {
     @Column("double precision", { name: "tarif_tar" })
     tarifTar: number;
     
-    @Column("boolean", {name: "est_suprime"})
-    estSupprime: boolean
-
     @ManyToOne(() => Zone, (zone) => zone.idZon, {
         onDelete: "SET NULL",
         onUpdate: "CASCADE",
