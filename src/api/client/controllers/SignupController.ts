@@ -55,7 +55,8 @@ export default class SignupController extends Controller {
                 var client: Client = this.clientRepository.create(req.body as Object)
 
                 let bcrypt = require("bcrypt")
-                await bcrypt.hash(client.passCli, process.env.SALT, function (err, hash) {
+                console.log(process.env.SALT)
+                await bcrypt.hash(client.passCli, Number(process.env.SALT), function (err, hash) {
                     if(err)
                         throw err
                     client.passCli = hash

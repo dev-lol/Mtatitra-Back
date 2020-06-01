@@ -67,7 +67,7 @@ export default class CoursierController extends Controller {
     private async createCoursierFromRequest(req: Request): Promise<Coursier> {
         let coursier = this.coursierRepository.create(req.body as Object)
         let bcrypt = require("bcrypt")
-        await bcrypt.hash(coursier.passCou, process.env.SALT, function(err, hash) {
+        await bcrypt.hash(coursier.passCou, Number(process.env.SALT), function(err, hash) {
             coursier.passCou = hash
         });
         return coursier
