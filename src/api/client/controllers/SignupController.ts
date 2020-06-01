@@ -86,6 +86,20 @@ export default class SignupController extends Controller {
         })
     }
 
+    async postReset(router: Router) {
+        router.post("/reset", async (req: Request, res: Response, next: NextFunction) => {
+            try {
+                var client: Client = await this.clientRepository.findOneOrFail({ where: { emailCli: req.body.emailCli } })
+                client.resetCodeCli = Math.floor((Math.random() * (999999 - 100000)) + 100000).toString()
+                await this.clientRepository.save(client)
+                Utils.sendResetEmail(client.emailCli, client.resetCodeCli)
+                this.sendResponse(res, 200, { message: "Veuillez confirmer votre compte via email" })
+            } catch (error) {
+                this.sendResponse(res, 400, { message: error.toString() })
+            }
+        })
+    }
+
     /**
      *
      *
