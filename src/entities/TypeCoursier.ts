@@ -1,6 +1,6 @@
 import { Column, Entity, Index, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Coursier } from "./Coursier";
-import { Client } from './Client';
+import { Tarif } from './Tarif';
 
 @Index("Type Coursier_pk", ["idTypeCou"], { unique: true })
 @Entity("Type_Coursier", { schema: "public" })
@@ -16,4 +16,8 @@ export class TypeCoursier {
 
     @OneToMany(() => Coursier, (coursier) => coursier.idTypeCouTypeCoursier)
     coursiers: Coursier[];
+
+    @OneToMany(() => Tarif, (tarif) => tarif.idTar)
+    tarifs: Tarif[];
+    
 }
