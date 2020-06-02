@@ -21,10 +21,10 @@ export default class ClientController extends Controller {
         this.clientRepository = connection.getRepository(Client)
     }
     async addGet(router: Router): Promise<void> {
-        router.get("profile/:idCli", async (req: Request, res: Response, next: NextFunction) => {
+        router.get("/profile/:idCli", async (req: Request, res: Response, next: NextFunction) => {
             try {
                 checkId(req, res, next, req.params.idCli)
-                this.sendResponse(res, 200, { data: this.clientRepository.findOneOrFail(req.params.idCli) })
+                this.sendResponse(res, 200, { data: await this.clientRepository.findOneOrFail(req.params.idCli) })
             } catch (error) {
                 this.sendResponse(res, 404, {message: "not found"})
             }

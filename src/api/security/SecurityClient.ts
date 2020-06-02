@@ -1,6 +1,7 @@
 
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
+import { print } from 'util';
 export default function securityClient(req: Request, res: Response, next: NextFunction) {
     if (req.path == "/login" || req.path.includes("confirmation") || req.path.includes("resend") || req.path.includes("signup")) return next()
     var jwtToken: string = req.headers["authorization"]
@@ -18,6 +19,9 @@ export default function securityClient(req: Request, res: Response, next: NextFu
                     message: error.message
                 })
             }
+            else{
+                return next()
+            }
         })
     } catch (error) {
         res.status(401).send({
@@ -30,8 +34,11 @@ export default function securityClient(req: Request, res: Response, next: NextFu
 export function checkId(req: Request, res: Response, next: NextFunction, id) {
     var jwtToken: string = req.headers["authorization"]
     jwt.decode(jwtToken.split(" ")[1], (error, payload) => {
+        console.log(payload)
         if (payload.id != id) {
-            return this.sendResponse(res, 404, { message: "notFound" })
+            throw "Not found";
+        }else{
+            return
         }
     })
 }
