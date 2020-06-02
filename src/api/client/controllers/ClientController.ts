@@ -24,7 +24,11 @@ export default class ClientController extends Controller {
         router.get("/profile/:idCli", async (req: Request, res: Response, next: NextFunction) => {
             try {
                 checkId(req, res, next, req.params.idCli)
-                this.sendResponse(res, 200, { data: await this.clientRepository.findOneOrFail(req.params.idCli) })
+                var data = await this.clientRepository.findOneOrFail(req.params.idCli)
+                delete(data["passCli"])
+                delete(data["resetCodeCli"])
+                delete(data["confirmationCli"])
+                this.sendResponse(res, 200, { data: data})
             } catch (error) {
                 this.sendResponse(res, 404, {message: "not found"})
             }

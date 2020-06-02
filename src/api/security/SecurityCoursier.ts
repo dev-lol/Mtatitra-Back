@@ -17,6 +17,8 @@ export default function securityCoursier(req: Request, res: Response, next: Next
                 res.status(401).send({
                     message: error.message
                 })
+            }else{
+                return next()
             }
         })
     } catch (error) {

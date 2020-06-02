@@ -20,6 +20,8 @@ export default function securityAdmin(req: Request, res: Response, next: NextFun
                     message: error.message
                 })
                 return
+            }else{
+                return next()
             }
         })
     } catch (error) {
