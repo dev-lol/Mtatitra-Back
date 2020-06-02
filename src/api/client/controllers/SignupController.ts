@@ -28,13 +28,14 @@ export default class SignupController extends Controller {
     }
 
     async addGet(router: Router): Promise<void> {
-        this.getConfirmation(router)
+        
     }
 
 
     async addPost(router: Router): Promise<void> {
         await this.postSignup(router)
         await this.postResend(router)
+        await this.postConfirmation(router)
     }
     /**
      *
@@ -106,17 +107,17 @@ export default class SignupController extends Controller {
      * @param {Router} router
      * @memberof SignupController
      */
-    async getConfirmation(router: Router) {
-        router.get("/confirmations/:emailCli/:code", async (req: Request, res: Response, next: NextFunction) => {
+    async postConfirmation(router: Router) {
+        router.post("/confirmation", async (req: Request, res: Response, next: NextFunction) => {
             try {
-                var client: Client = await this.clientRepository.findOneOrFail({ where: { emailCli: req.params.emailCli } })
-                if (client.confirmationCli == req.params.code) {
+                var client: Client = await this.clientRepository.findOneOrFail({ where: { emailCli: req.body.email} })
+                if (client.confirmationCli == req.body.code) {
                     client.confirmationCli = ""
                 }
                 await this.clientRepository.save(client)
-                res.status(200).sendFile(__dirname.substring(0, __dirname.indexOf("/api")) + "/views/confirmation.html")
+                this.sendResponse(res,200,{message: "Confirmation succesfully"})
             } catch (error) {
-                res.status(200).sendFile(__dirname.substring(0, __dirname.indexOf("/api")) + "/views/404-notfound.html")
+                this.sendResponse(res,400,{message: "Bad request"})
 
             }
         })
