@@ -38,19 +38,26 @@ export default class CoursierController extends Controller {
 
     async postCoursier(router: Router) {
         router.post("/login", async (req: Request, res: Response, next: NextFunction) => {
-            let coursier = await this.coursierRepository.findOneOrFail({ where: { usernameCou: req.body.username } })
-            var bcrypt = require("bcrypt")
-            bcrypt.compare(req.body.password, coursier.passCou, (err, isSame) => {
-                if (!err && isSame) {
-                    this.sendResponse(res, 200, {
-                        token: jwt.sign({ coursier: coursier.usernameCou }, process.env.COURSIER_PASS_PHRASE, { expiresIn: "30d" })
-                    })
-                } else {
-                    this.sendResponse(res, 401, {
-                        message: "Invalid credentials"
-                    })
-                }
-            })
+            try {
+
+                let coursier = await this.coursierRepository.findOneOrFail({ where: { usernameCou: req.body.username } })
+                var bcrypt = require("bcrypt")
+                bcrypt.compare(req.body.password, coursier.passCou, (err, isSame) => {
+                    if (!err && isSame) {
+                        this.sendResponse(res, 200, {
+                            token: jwt.sign({ coursier: coursier.usernameCou }, process.env.COURSIER_PASS_PHRASE, { expiresIn: "30d" })
+                        })
+                    } else {
+                        this.sendResponse(res, 401, {
+                            message: "Invalid credentials"
+                        })
+                    }
+                })
+            } catch (error) {
+                this.sendResponse(res, 401, {
+                    message: "Invalid credentials"
+                })
+            }
 
         })
     }
