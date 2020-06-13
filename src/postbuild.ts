@@ -73,8 +73,7 @@ import { TypeProduit } from './entities/TypeProduit';
         await etatRepository.save(etats)
     }
 
-    if (await limiteDatRepository.count() != 2) {
-        await limiteDatRepository.createQueryBuilder().delete().execute()
+    if (await limiteDatRepository.count() < 1) {
         let limites = []
         let limite = new DateLimite()
         limite.limiteDat = "Avant midi"
