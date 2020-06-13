@@ -3,8 +3,6 @@ import { Controller } from "../../Controller"
 import { Coursier } from "../../../entities/Coursier"
 import { Repository, Connection, createConnection, MoreThan } from "typeorm";
 import { ormconfig } from "../../../config";
-import jwt from 'jsonwebtoken';
-import { sqlDateFormat } from "../../../utils/DateSqlFormat";
 import { Livraison } from "../../../entities/Livraison";
 import { Etats } from "../../../entities/Etats";
 import { CustomServer } from '../../Server';
@@ -34,11 +32,20 @@ export default class LivraisonController extends Controller {
     }
 
     async tomorrowLivraison(router): Promise<void> {
-        router.get("/livraison/demain", async (req: Request, res: Response, next: NextFunction) => {
+        router.get(":idCou/demain", async (req: Request, res: Response, next: NextFunction) => {
             try {
                 let tomorrowLiv: Livraison[] = await this.livraisonRepository
                     .createQueryBuilder("livraison")
-                    .where("livraison.dateLiv > CURRENT_DATE  ")
+                    .leftJoinAndSelect("livraison.idCliClient", "client")
+                    .leftJoinAndSelect("livraison.idLimiteDat", "limiteDat")
+                    .leftJoinAndSelect("livraison.idEtaEtats", "etat")
+                    .leftJoinAndSelect("livraison.idTypeLivTypeLivraison", "typeLivraison")
+                    .leftJoinAndSelect("livraison.idZonDepart", "zoneDepart")
+                    .leftJoinAndSelect("livraison.idZonArrivee", "zoneArrivee")
+                    .leftJoinAndSelect("livraison.produits", "produits")
+                    .leftJoinAndSelect("produits.idTypeProTypeProduit", "typeProduits")
+                    .where("livraison.idCouCoursier = :id", { id: req.params.idCou })
+                    .andWhere("livraison.dateLiv > CURRENT_DATE  ")
                     .andWhere("livraison.dateLiv < CURRENT_DATE +2 ")
                     .getMany()
 
@@ -49,12 +56,21 @@ export default class LivraisonController extends Controller {
         })
     }
     async todayLivraison(router: Router): Promise<void> {
-        router.get("/livraison/aujourdhui", async (req: Request, res: Response, next: NextFunction) => {
+        router.get(":idCou/aujourdhui", async (req: Request, res: Response, next: NextFunction) => {
             try {
 
                 let todayLiv: Livraison[] = await this.livraisonRepository
                     .createQueryBuilder("livraison")
-                    .where("livraison.dateLiv >= CURRENT_DATE  ")
+                    .leftJoinAndSelect("livraison.idCliClient", "client")
+                    .leftJoinAndSelect("livraison.idLimiteDat", "limiteDat")
+                    .leftJoinAndSelect("livraison.idEtaEtats", "etat")
+                    .leftJoinAndSelect("livraison.idTypeLivTypeLivraison", "typeLivraison")
+                    .leftJoinAndSelect("livraison.idZonDepart", "zoneDepart")
+                    .leftJoinAndSelect("livraison.idZonArrivee", "zoneArrivee")
+                    .leftJoinAndSelect("livraison.produits", "produits")
+                    .leftJoinAndSelect("produits.idTypeProTypeProduit", "typeProduits")
+                    .where("livraison.idCouCoursier = :id", { id: req.params.idCou })
+                    .andWhere("livraison.dateLiv >= CURRENT_DATE  ")
                     .andWhere("livraison.dateLiv < CURRENT_DATE +1 ")
                     .getMany()
 

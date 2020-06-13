@@ -1,0 +1,52 @@
+import { Router, Response, Request, NextFunction, ErrorRequestHandler } from "express";
+import { Controller } from "../../Controller"
+import { Etats } from "../../../entities/Etats"
+import { Repository, Connection, createConnection } from "typeorm";
+import { ormconfig } from "../../../config";
+export default class EtatsController extends Controller {
+    etatsRepository: Repository<Etats>
+    constructor() {
+        super()
+        this.createConnectionAndAssignRepository()
+            .then(async (_) => {
+                await this.addAllRoutes(this.mainRouter)
+            })
+    }
+
+
+    async createConnectionAndAssignRepository(): Promise<any> {
+        let connection: Connection = await createConnection(ormconfig)
+        this.etatsRepository = connection.getRepository(Etats)
+    }
+    async addGet(router: Router): Promise<void> {
+        await this.getAllEtats(router)
+    }
+
+
+    private async getAllEtats(router: Router): Promise<void> {
+        router.get("/", async (req: Request, res: Response, next: NextFunction) => {
+            try {
+
+                let etatss: Etats[] = await this.fetchEtatssFromDatabase()
+
+                this.sendResponse(res, 200, { data: etatss })
+            } catch (err) {
+
+            }
+        })
+
+    }
+
+    private async fetchEtatssFromDatabase(): Promise<Etats[]> {
+        return await this.etatsRepository.find({ where: { estSupprime: false } })
+    }
+    async addPost(router: Router): Promise<void> {
+    }
+
+    async addPut(router: Router): Promise<void> {
+    }
+
+    async addDelete(router: Router): Promise<void> {
+
+    }
+}
