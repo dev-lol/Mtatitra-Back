@@ -4,7 +4,6 @@ import { Coursier } from "../../../entities/Coursier"
 import { Repository, Connection, createConnection, getConnection } from "typeorm";
 import { ormconfig } from "../../../config";
 import jwt from 'jsonwebtoken';
-import { sqlDateFormat } from "../../../utils/DateSqlFormat";
 import { Livraison } from "../../../entities/Livraison";
 import { Etats } from "../../../entities/Etats";
 export default class CoursierController extends Controller {
@@ -27,9 +26,31 @@ export default class CoursierController extends Controller {
         this.etatRepository = connection.getRepository(Etats)
     }
     async addGet(router: Router): Promise<void> {
-
+        this.getProfile(router);
     }
 
+
+    private getProfile(router: Router) {
+        router.get("/profile", async (req: Request, res: Response, next: NextFunction) => {
+            try {
+                let idCou;
+                var jwtToken: string = req.headers["authorization"];
+                jwt.decode(jwtToken.split(" ")[1], (error, payload) => {
+                    if (error)
+                        throw error;
+                    else {
+                        idCou = payload.id;
+                    }
+                });
+                let coursier = await this.coursierRepository.findOneOrFail(idCou);
+                delete coursier.passCou;
+                this.sendResponse(res, 200, coursier);
+            }
+            catch (error) {
+                this.sendResponse(res, 404, { message: "Not found" });
+            }
+        });
+    }
 
     async addPost(router: Router): Promise<void> {
         await this.postCoursier(router)
