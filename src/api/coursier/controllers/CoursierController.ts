@@ -33,21 +33,15 @@ export default class CoursierController extends Controller {
     private getProfile(router: Router) {
         router.get("/profile", async (req: Request, res: Response, next: NextFunction) => {
             try {
-                let idCou;
-                var jwtToken: string = req.headers["authorization"];
-                jwt.decode(jwtToken.split(" ")[1], (error, payload) => {
-                    if (error)
-                        throw error;
-                    else {
-                        idCou = payload.id;
-                    }
-                });
-                let coursier = await this.coursierRepository.findOneOrFail(idCou);
+                console.log(res.locals.id)
+                let coursier = await this.coursierRepository.findOneOrFail(res.locals.id);
                 delete coursier.passCou;
                 this.sendResponse(res, 200, coursier);
             }
             catch (error) {
+
                 this.sendResponse(res, 404, { message: "Not found" });
+
             }
         });
     }

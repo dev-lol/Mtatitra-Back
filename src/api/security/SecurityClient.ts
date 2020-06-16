@@ -5,7 +5,6 @@ import { print } from 'util';
 export default function securityClient(req: Request, res: Response, next: NextFunction) {
     if (req.path == "/login" || req.path.includes("confirmation") || req.path.includes("resend") || req.path.includes("signup")) return next()
     var jwtToken: string = req.headers["authorization"]
-    console.log(jwtToken)
     if (jwtToken == undefined) {
         res.status(401).send({
             message: "JWT token Missing"

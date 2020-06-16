@@ -29,21 +29,11 @@ export default class LivraisonController extends Controller {
     async addGet(router: Router): Promise<void> {
         await this.todayLivraison(router)
         await this.tomorrowLivraison(router)
-
     }
 
     async tomorrowLivraison(router): Promise<void> {
         router.get("/demain", async (req: Request, res: Response, next: NextFunction) => {
             try {
-                let idCou
-                var jwtToken: string = req.headers["authorization"]
-                jwt.decode(jwtToken.split(" ")[1], (error, payload) => {
-                    if (error)
-                        throw error;
-                    else {
-                        idCou = payload.id
-                    }
-                })
                 let tomorrowLiv: Livraison[] = await this.livraisonRepository
                     .createQueryBuilder("livraison")
                     .leftJoinAndSelect("livraison.idCliClient", "client")
@@ -54,7 +44,7 @@ export default class LivraisonController extends Controller {
                     .leftJoinAndSelect("livraison.idZonArrivee", "zoneArrivee")
                     .leftJoinAndSelect("livraison.produits", "produits")
                     .leftJoinAndSelect("produits.idTypeProTypeProduit", "typeProduits")
-                    .where("livraison.idCouCoursier = :id", { id: idCou })
+                    .where("livraison.idCouCoursier = :id", { id: res.locals.id })
                     .andWhere("livraison.dateLiv > CURRENT_DATE  ")
                     .andWhere("livraison.dateLiv < CURRENT_DATE +2 ")
                     .getMany()
@@ -68,15 +58,6 @@ export default class LivraisonController extends Controller {
     async todayLivraison(router: Router): Promise<void> {
         router.get("/aujourdhui", async (req: Request, res: Response, next: NextFunction) => {
             try {
-                let idCou
-                var jwtToken: string = req.headers["authorization"]
-                jwt.decode(jwtToken.split(" ")[1], (error, payload) => {
-                    if (error)
-                        throw error;
-                    else {
-                        idCou = payload.id
-                    }
-                })
                 let todayLiv: Livraison[] = await this.livraisonRepository
                     .createQueryBuilder("livraison")
                     .leftJoinAndSelect("livraison.idCliClient", "client")
@@ -87,14 +68,14 @@ export default class LivraisonController extends Controller {
                     .leftJoinAndSelect("livraison.idZonArrivee", "zoneArrivee")
                     .leftJoinAndSelect("livraison.produits", "produits")
                     .leftJoinAndSelect("produits.idTypeProTypeProduit", "typeProduits")
-                    .where("livraison.idCouCoursier = :id", { id: idCou })
+                    .where("livraison.idCouCoursier = :id", { id: res.locals.id })
                     .andWhere("livraison.dateLiv >= CURRENT_DATE  ")
                     .andWhere("livraison.dateLiv < CURRENT_DATE +1 ")
                     .getMany()
 
                 this.sendResponse(res, 200, todayLiv)
             } catch (err) {
-
+                this.sendResponse(res,404,err)
             }
         })
     }
