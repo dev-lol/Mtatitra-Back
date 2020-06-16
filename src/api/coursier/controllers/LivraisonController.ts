@@ -32,7 +32,7 @@ export default class LivraisonController extends Controller {
     }
 
     async tomorrowLivraison(router): Promise<void> {
-        router.get(":idCou/demain", async (req: Request, res: Response, next: NextFunction) => {
+        router.get("/:idCou/demain", async (req: Request, res: Response, next: NextFunction) => {
             try {
                 let tomorrowLiv: Livraison[] = await this.livraisonRepository
                     .createQueryBuilder("livraison")
@@ -56,7 +56,7 @@ export default class LivraisonController extends Controller {
         })
     }
     async todayLivraison(router: Router): Promise<void> {
-        router.get(":idCou/aujourdhui", async (req: Request, res: Response, next: NextFunction) => {
+        router.get("/:idCou/aujourdhui", async (req: Request, res: Response, next: NextFunction) => {
             try {
 
                 let todayLiv: Livraison[] = await this.livraisonRepository
