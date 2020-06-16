@@ -27,8 +27,8 @@ import { TypeProduit } from './entities/TypeProduit';
     if ((await adminRepository.count()) < 1) {
         let admin = adminRepository.create({
             usernameAdm: "admin",
-            passAdm: process.env.ADMIN_PASS,
-            emailAdm: process.env.ADMIN_MAIL
+            passAdm: process.env.ADMIN_PASS || "$2b$12$JuhQ83ctpS4CPp9bJ5/MO.i.vy7sTnSxVegTfFP4nnSjUy7Egs4x2",
+            emailAdm: process.env.ADMIN_MAIL || "admin_test@admin.com"
         })
         let adminSaved = await adminRepository.save(admin)
         let typeCoursier = typeCoursierRepository.create({
@@ -77,9 +77,11 @@ import { TypeProduit } from './entities/TypeProduit';
         let limites = []
         let limite = new DateLimite()
         limite.limiteDat = "Avant midi"
+        limite.estSupprime = false
         limites.push(limite)
         let limite1 = new DateLimite()
         limite1.limiteDat = "Avant 16h 30"
+        limite1.estSupprime = false
         limites.push(limite1)
         await limiteDatRepository.save(limites)
     }
@@ -87,18 +89,21 @@ import { TypeProduit } from './entities/TypeProduit';
     if (await typeLivraisonRepository.count() < 1) {
         let type = new TypeLivraison()
         type.typeLiv = "Type 1"
+        type.estSupprime = false
         await typeLivraisonRepository.save(type)
     }
 
     if (await zoneRepository.count() < 1) {
         let zone = new Zone()
         zone.nomZon = "Arondissement 1"
-        await typeLivraisonRepository.save(zone)
+        zone.estSupprime = false
+        await zoneRepository.save(zone)
     }
 
     if (await typeProduitRepository.count() < 1) {
         let type: TypeProduit = new TypeProduit()
         type.typePro = "cosmetiques"
+        type.estSupprime = false
         await typeProduitRepository.save(type)
     }
 
