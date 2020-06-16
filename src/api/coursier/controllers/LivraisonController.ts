@@ -106,6 +106,20 @@ export default class LivraisonController extends Controller {
                 console.log(e)
             }
         })
+        router.patch("/:idLivraison/commencer", async (req: Request, res: Response, next: NextFunction) => {
+            try {
+                let livraisonToUpdate: Livraison = await this.fetchLivraisonToUpdateFromDb(req)
+                livraisonToUpdate.idEtaEtats = await this.etatRepository.findOneOrFail({ where: { ordreEta: 0 } })
+                let livraison = await this.livraisonRepository.save(livraisonToUpdate)
+                this.sendResponse(res, 200, {
+                    message: "Etat changed"
+                })
+                const liv: Livraison = await this.livraisonRepository.createQueryBuilder("livraison").leftJoinAndSelect("livraison.idCliClient", "client").where("livraison.idLiv = :id", { id: livraison.idLiv }).getOne()
+                CustomServer.io.to("client " + liv.idCliClient.idCli).emit("etats", livraisonToUpdate.idEtaEtats.etatEta)
+            } catch (e) {
+                console.log(e)
+            }
+        })
     }
 
     private async fetchLivraisonToUpdateFromDb(req: Request): Promise<Livraison> {
