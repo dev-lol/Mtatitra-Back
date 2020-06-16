@@ -45,7 +45,7 @@ export default class CoursierController extends Controller {
                 bcrypt.compare(req.body.password, coursier.passCou, (err, isSame) => {
                     if (!err && isSame) {
                         this.sendResponse(res, 200, {
-                            token: jwt.sign({ coursier: coursier.usernameCou }, process.env.COURSIER_PASS_PHRASE, { expiresIn: "30d" })
+                            token: jwt.sign({ id: coursier.idCou, username: coursier.usernameCou }, process.env.COURSIER_PASS_PHRASE, { expiresIn: "30d" })
                         })
                     } else {
                         this.sendResponse(res, 401, {
