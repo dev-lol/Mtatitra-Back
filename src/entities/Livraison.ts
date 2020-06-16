@@ -31,7 +31,7 @@ export class Livraison {
     @Column("character varying", { name: "num_recep_liv", length: 10 })
     numRecepLiv: string;
 
-    @Column("timestamp without time zone", { name: "date_liv" })
+    @Column("date", { name: "date_liv" })
     dateLiv: Date;
 
    
