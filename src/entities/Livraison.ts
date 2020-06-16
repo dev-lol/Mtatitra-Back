@@ -72,8 +72,9 @@ export class Livraison {
     @ManyToOne(() => Etats, (etats) => etats.livraisons, {
         onDelete: "SET NULL",
         onUpdate: "CASCADE",
+        nullable: true
     })
-    @JoinColumn([{ name: "id_eta_Etats", referencedColumnName: "idEta" }])
+    @JoinColumn([{ name: "id_eta_Etats", referencedColumnName: "idEta"}])
     idEtaEtats: Etats;
 
     @ManyToOne(() => TypeLivraison, (typeLivraison) => typeLivraison.livraisons, {
