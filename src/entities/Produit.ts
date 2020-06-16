@@ -18,10 +18,10 @@ export class Produit {
     longueurPro: number | null;
 
     @Column("double precision", {
-        name: "largueur_pro",
+        name: "largeur_pro",
         nullable: true,
     })
-    largueurPro: number | null;
+    largeurPro: number | null;
 
     @Column("double precision", {
         name: "hauteur_pro",

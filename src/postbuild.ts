@@ -114,7 +114,7 @@ import { TypeProduit } from './entities/TypeProduit';
             pros[i].consignePro = "dasfasd"
             pros[i].fragilePro = (i % 2) ? true : false
             pros[i].hauteurPro = 10
-            pros[i].largueurPro = 5
+            pros[i].largeurPro = 5
             pros[i].longueurPro = 30
             pros[i].poidsPro = 2000
             pros[i].prixPro = 30000
