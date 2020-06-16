@@ -5,7 +5,7 @@ import TypeLivraisonController from './controllers/TypeLivraisonController';
 import TypeProduitController from './controllers/TypeProduitController';
 import TypeCoursierController from './controllers/TypeCoursierController';
 import ZoneController from './controllers/ZoneController';
-import CoursierController from '../coursier/controllers/CoursierController';
+import CoursierController from './controllers/CoursierController';
 import EtatsController from './controllers/EtatController';
 import LivraisonController from "./controllers/LivraisonController";
 import TarifController from './controllers/TarifController';
