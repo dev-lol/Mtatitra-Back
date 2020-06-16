@@ -27,9 +27,9 @@ export default class EtatsController extends Controller {
         router.get("/", async (req: Request, res: Response, next: NextFunction) => {
             try {
 
-                let etatss: Etats[] = await this.fetchEtatssFromDatabase()
+                let etats: Etats[] = await this.fetchEtatssFromDatabase()
 
-                this.sendResponse(res, 200, { data: etatss })
+                this.sendResponse(res, 200,etats)
             } catch (err) {
 
             }
@@ -38,7 +38,7 @@ export default class EtatsController extends Controller {
     }
 
     private async fetchEtatssFromDatabase(): Promise<Etats[]> {
-        return await this.etatsRepository.find({ where: { estSupprime: false } })
+        return await this.etatsRepository.find({ where: { estSupprime: false },order: {ordreEta: "ASC"} })
     }
     async addPost(router: Router): Promise<void> {
     }
