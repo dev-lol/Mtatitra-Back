@@ -6,7 +6,7 @@ import securityAdmin from './security/SecurityAdmin';
 import securityCoursier from './security/SecurityCoursier';
 import securityClient from './security/SecurityClient';
 var router = express.Router()
-router.use("/admin", securityAdmin);
+// router.use("/admin", securityAdmin);
 router.use("/admin", routerAdmin);
 router.use("/client", securityClient);
 router.use("/client", routerClient);
