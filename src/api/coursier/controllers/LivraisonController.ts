@@ -75,7 +75,7 @@ export default class LivraisonController extends Controller {
 
                 this.sendResponse(res, 200, todayLiv)
             } catch (err) {
-                this.sendResponse(res,404,err)
+                this.sendResponse(res, 404, err)
             }
         })
     }
@@ -93,13 +93,18 @@ export default class LivraisonController extends Controller {
 
     async patchEtat(router): Promise<void> {
         router.patch("/:idLivraison", async (req: Request, res: Response, next: NextFunction) => {
-            let livraisonToUpdate: Livraison = await this.fetchLivraisonToUpdateFromDb(req)
-            livraisonToUpdate.idEtaEtats = await this.etatRepository.findOneOrFail(req.body.idEta)
-            let livraison = await this.livraisonRepository.save(livraisonToUpdate)
-            CustomServer.io.to("client " + livraison.idCliClient.idCli).emit("etats", livraison.idEtaEtats.etatEta)
-            this.sendResponse(res, 200, {
-                message: "Etat changed"
-            })
+            try {
+                let livraisonToUpdate: Livraison = await this.fetchLivraisonToUpdateFromDb(req)
+                livraisonToUpdate.idEtaEtats = await this.etatRepository.findOneOrFail(req.body.idEta)
+                let livraison = await this.livraisonRepository.save(livraisonToUpdate)
+                this.sendResponse(res, 200, {
+                    message: "Etat changed"
+                })
+                const liv: Livraison = await this.livraisonRepository.createQueryBuilder("livraison").leftJoinAndSelect("livraison.idCliClient", "client").where("livraison.idLiv = :id", { id: livraison.idLiv }).getOne()
+                CustomServer.io.to("client " + liv.idCliClient.idCli).emit("etats", livraisonToUpdate.idEtaEtats.etatEta)
+            } catch (e) {
+                console.log(e)
+            }
         })
     }
 
