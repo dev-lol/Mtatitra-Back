@@ -6,6 +6,7 @@ import { ormconfig } from "../../../config";
 import { Livraison } from "../../../entities/Livraison";
 import { Etats } from "../../../entities/Etats";
 import { CustomServer } from '../../Server';
+import jwt from 'jsonwebtoken';
 export default class LivraisonController extends Controller {
     coursierRepository: Repository<Coursier>
     livraisonRepository: Repository<Livraison>
@@ -32,8 +33,17 @@ export default class LivraisonController extends Controller {
     }
 
     async tomorrowLivraison(router): Promise<void> {
-        router.get("/:idCou/demain", async (req: Request, res: Response, next: NextFunction) => {
+        router.get("/demain", async (req: Request, res: Response, next: NextFunction) => {
             try {
+                let idCou
+                var jwtToken: string = req.headers["authorization"]
+                jwt.decode(jwtToken.split(" ")[1], (error, payload) => {
+                    if (error)
+                        throw error;
+                    else {
+                        idCou = payload.id
+                    }
+                })
                 let tomorrowLiv: Livraison[] = await this.livraisonRepository
                     .createQueryBuilder("livraison")
                     .leftJoinAndSelect("livraison.idCliClient", "client")
@@ -44,7 +54,7 @@ export default class LivraisonController extends Controller {
                     .leftJoinAndSelect("livraison.idZonArrivee", "zoneArrivee")
                     .leftJoinAndSelect("livraison.produits", "produits")
                     .leftJoinAndSelect("produits.idTypeProTypeProduit", "typeProduits")
-                    .where("livraison.idCouCoursier = :id", { id: req.params.idCou })
+                    .where("livraison.idCouCoursier = :id", { id: idCou })
                     .andWhere("livraison.dateLiv > CURRENT_DATE  ")
                     .andWhere("livraison.dateLiv < CURRENT_DATE +2 ")
                     .getMany()
@@ -56,9 +66,17 @@ export default class LivraisonController extends Controller {
         })
     }
     async todayLivraison(router: Router): Promise<void> {
-        router.get("/:idCou/aujourdhui", async (req: Request, res: Response, next: NextFunction) => {
+        router.get("/aujourdhui", async (req: Request, res: Response, next: NextFunction) => {
             try {
-
+                let idCou
+                var jwtToken: string = req.headers["authorization"]
+                jwt.decode(jwtToken.split(" ")[1], (error, payload) => {
+                    if (error)
+                        throw error;
+                    else {
+                        idCou = payload.id
+                    }
+                })
                 let todayLiv: Livraison[] = await this.livraisonRepository
                     .createQueryBuilder("livraison")
                     .leftJoinAndSelect("livraison.idCliClient", "client")
@@ -69,7 +87,7 @@ export default class LivraisonController extends Controller {
                     .leftJoinAndSelect("livraison.idZonArrivee", "zoneArrivee")
                     .leftJoinAndSelect("livraison.produits", "produits")
                     .leftJoinAndSelect("produits.idTypeProTypeProduit", "typeProduits")
-                    .where("livraison.idCouCoursier = :id", { id: req.params.idCou })
+                    .where("livraison.idCouCoursier = :id", { id: idCou })
                     .andWhere("livraison.dateLiv >= CURRENT_DATE  ")
                     .andWhere("livraison.dateLiv < CURRENT_DATE +1 ")
                     .getMany()

@@ -4,7 +4,6 @@ import { Client } from "../../../entities/Client"
 import { Repository, Connection, createConnection } from "typeorm";
 import { ormconfig } from "../../../config";
 import jwt from 'jsonwebtoken';
-import { checkId } from "../../security/SecurityClient";
 export default class ClientController extends Controller {
     clientRepository: Repository<Client>
     constructor() {
@@ -21,10 +20,18 @@ export default class ClientController extends Controller {
         this.clientRepository = connection.getRepository(Client)
     }
     async addGet(router: Router): Promise<void> {
-        router.get("/profile/:idCli", async (req: Request, res: Response, next: NextFunction) => {
+        router.get("/profile", async (req: Request, res: Response, next: NextFunction) => {
             try {
-                checkId(req, res, next, req.params.idCli)
-                var data = await this.clientRepository.findOneOrFail(req.params.idCli)
+                let idCli
+                var jwtToken: string = req.headers["authorization"]
+                jwt.decode(jwtToken.split(" ")[1], (error, payload) => {
+                    if (error)
+                        throw error;
+                    else {
+                        idCli = payload.id
+                    }
+                })
+                var data = await this.clientRepository.findOneOrFail(idCli)
                 delete(data["passCli"])
                 delete(data["resetCodeCli"])
                 delete(data["confirmationCli"])
@@ -50,7 +57,7 @@ export default class ClientController extends Controller {
                 bcrypt.compare(req.body.password, client.passCli, (err, isSame) => {
                     if (!err && isSame) {
                         this.sendResponse(res, 200, {
-                            token: jwt.sign({ client: client.emailCli, id: client.idCli }, process.env.CLIENT_PASS_PHRASE, { expiresIn: "30d" })
+                            token: jwt.sign({ username: client.emailCli, id: client.idCli }, process.env.CLIENT_PASS_PHRASE, { expiresIn: "30d" })
                         })
                     } else {
                         this.sendResponse(res, 401, {
