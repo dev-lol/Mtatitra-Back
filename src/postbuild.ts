@@ -141,6 +141,97 @@ import { TypeProduit } from './entities/TypeProduit';
         liv.sommeRecepLiv = 30000
         liv.produits = await produitRepository.find()
         await livraisonRepository.save(liv)
+
+        liv = new Livraison()
+        liv.dateLiv = new Date()
+        liv.departLiv = "Androndra"
+        liv.descriptionLiv = "Entana kely"
+        liv.destinationLiv = "Itaosy"
+        liv.expressLiv = true
+        liv.idCliClient = await clientRepository.findOne()
+        liv.idCouCoursier = await coursierRepository.findOne()
+        liv.idEtaEtats = await etatRepository.findOne({ where: { ordreEta: 1 } })
+        liv.idLimiteDat = await limiteDatRepository.findOne()
+        liv.idTypeLivTypeLivraison = await typeLivraisonRepository.findOne()
+        liv.idZonArrivee = await zoneRepository.findOne()
+        liv.idZonDepart = await zoneRepository.findOne()
+        liv.numRecepLiv = "0333333333"
+        liv.sommeRecepLiv = 30000
+        liv.produits = await produitRepository.find()
+        await livraisonRepository.save(liv)
+
+        liv = new Livraison()
+        liv.dateLiv = new Date()
+        liv.departLiv = "Androndra"
+        liv.descriptionLiv = "Entana kely"
+        liv.destinationLiv = "Itaosy"
+        liv.expressLiv = true
+        liv.idCliClient = await clientRepository.findOne()
+        liv.idCouCoursier = await coursierRepository.findOne()
+        liv.idLimiteDat = await limiteDatRepository.findOne()
+        liv.idTypeLivTypeLivraison = await typeLivraisonRepository.findOne()
+        liv.idZonArrivee = await zoneRepository.findOne()
+        liv.idZonDepart = await zoneRepository.findOne()
+        liv.numRecepLiv = "0333333333"
+        liv.sommeRecepLiv = 30000
+        liv.produits = await produitRepository.find()
+        await livraisonRepository.save(liv)
+
+        let dem = new Date()
+        dem.setDate(dem.getDate()+1);
+
+        liv = new Livraison()
+        liv.dateLiv = dem
+        liv.departLiv = "Androndra"
+        liv.descriptionLiv = "Entana kely"
+        liv.destinationLiv = "Itaosy"
+        liv.expressLiv = true
+        liv.idCliClient = await clientRepository.findOne()
+        liv.idCouCoursier = await coursierRepository.findOne()
+        liv.idEtaEtats = await etatRepository.findOne({ where: { ordreEta: 2 } })
+        liv.idLimiteDat = await limiteDatRepository.findOne()
+        liv.idTypeLivTypeLivraison = await typeLivraisonRepository.findOne()
+        liv.idZonArrivee = await zoneRepository.findOne()
+        liv.idZonDepart = await zoneRepository.findOne()
+        liv.numRecepLiv = "0333333333"
+        liv.sommeRecepLiv = 30000
+        liv.produits = await produitRepository.find()
+        await livraisonRepository.save(liv)
+        
+        liv = new Livraison()
+        liv.dateLiv = dem
+        liv.departLiv = "Androndra"
+        liv.descriptionLiv = "Entana kely"
+        liv.destinationLiv = "Itaosy"
+        liv.expressLiv = true
+        liv.idCliClient = await clientRepository.findOne()
+        liv.idCouCoursier = await coursierRepository.findOne()
+        liv.idEtaEtats = await etatRepository.findOne({ where: { ordreEta: 1 } })
+        liv.idLimiteDat = await limiteDatRepository.findOne()
+        liv.idTypeLivTypeLivraison = await typeLivraisonRepository.findOne()
+        liv.idZonArrivee = await zoneRepository.findOne()
+        liv.idZonDepart = await zoneRepository.findOne()
+        liv.numRecepLiv = "0333333333"
+        liv.sommeRecepLiv = 30000
+        liv.produits = await produitRepository.find()
+        await livraisonRepository.save(liv)
+
+        liv = new Livraison()
+        liv.dateLiv = dem
+        liv.departLiv = "Androndra"
+        liv.descriptionLiv = "Entana kely"
+        liv.destinationLiv = "Itaosy"
+        liv.expressLiv = true
+        liv.idCliClient = await clientRepository.findOne()
+        liv.idCouCoursier = await coursierRepository.findOne()
+        liv.idLimiteDat = await limiteDatRepository.findOne()
+        liv.idTypeLivTypeLivraison = await typeLivraisonRepository.findOne()
+        liv.idZonArrivee = await zoneRepository.findOne()
+        liv.idZonDepart = await zoneRepository.findOne()
+        liv.numRecepLiv = "0333333333"
+        liv.sommeRecepLiv = 30000
+        liv.produits = await produitRepository.find()
+        await livraisonRepository.save(liv)
     }
 })()
 
