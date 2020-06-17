@@ -100,6 +100,6 @@ export class Livraison {
     @JoinColumn([{ name: "id_zon_arrivee", referencedColumnName: "idZon" }])
     idZonArrivee: Zone;
 
-    @OneToMany(() => Produit, (produit) => produit.idLivLivraison)
+    @OneToMany(() => Produit, (produit) => produit.idLivLivraison, {cascade: true})
     produits: Produit[];
 }

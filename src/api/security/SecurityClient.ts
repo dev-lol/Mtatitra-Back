@@ -19,6 +19,7 @@ export default function securityClient(req: Request, res: Response, next: NextFu
                 })
             }
             else{
+                res.locals.id = payload.id
                 return next()
             }
         })
