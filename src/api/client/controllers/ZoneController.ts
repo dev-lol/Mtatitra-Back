@@ -1,11 +1,11 @@
 import { Router, Response, Request, NextFunction, ErrorRequestHandler } from "express";
 import { Controller } from "../../Controller"
-import { TypeCoursier } from "../../../entities/TypeCoursier"
+import { Zone } from "../../../entities/Zone"
 import { Repository, Connection, createConnection } from "typeorm";
 import { ormconfig } from "../../../config";
 import { runInThisContext } from "vm";
-export default class TypeCoursierController extends Controller {
-    typeCoursierRepository: Repository<TypeCoursier>
+export default class ZoneController extends Controller {
+    zoneRepository: Repository<Zone>
     constructor() {
         super()
         this.createConnectionAndAssignRepository()
@@ -17,20 +17,20 @@ export default class TypeCoursierController extends Controller {
 
     async createConnectionAndAssignRepository(): Promise<any> {
         let connection: Connection = await createConnection(ormconfig)
-        this.typeCoursierRepository = connection.getRepository(TypeCoursier)
+        this.zoneRepository = connection.getRepository(Zone)
     }
     async addGet(router: Router): Promise<void> {
-        await this.getAllTypeCoursier(router)
+        await this.getAllZone(router)
     }
 
 
-    private async getAllTypeCoursier(router: Router): Promise<void> {
+    private async getAllZone(router: Router): Promise<void> {
         router.get("/", async (req: Request, res: Response, next: NextFunction) => {
             try {
 
-                let typeCoursiers: TypeCoursier[] = await this.fetchTypeCoursiersFromDatabase()
+                let zones: Zone[] = await this.fetchZonesFromDatabase()
 
-                this.sendResponse(res, 200, typeCoursiers)
+                this.sendResponse(res, 200, { data: zones })
             } catch (err) {
 
             }
@@ -38,19 +38,14 @@ export default class TypeCoursierController extends Controller {
 
     }
 
-    private async fetchTypeCoursiersFromDatabase(): Promise<TypeCoursier[]> {
-        return await this.typeCoursierRepository.find({ where: { estSupprime: false } })
+    private async fetchZonesFromDatabase(): Promise<Zone[]> {
+        return await this.zoneRepository.find({ where: { estSupprime: false } })
     }
     async addPost(router: Router): Promise<void> {
-
     }
-
-
     async addPut(router: Router): Promise<void> {
-
     }
 
     async addDelete(router: Router): Promise<void> {
-
     }
 }
