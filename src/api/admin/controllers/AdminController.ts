@@ -26,6 +26,7 @@ export default class AdminController extends Controller {
         this.livraisonRepository = connection.getRepository(Livraison)
         this.coursierRepository = connection.getRepository(Coursier)
     }
+    
     async addGet(router: Router): Promise<void> {
       
     }

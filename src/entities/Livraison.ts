@@ -45,7 +45,7 @@ export class Livraison {
     })
     sommeRecepLiv: number;
 
-    @Column("smallint", { name: "description_liv", nullable: true })
+    @Column("character varying", { name: "description_liv", nullable: true })
     descriptionLiv: number | null;
 
     @ManyToOne(() => Client, (client) => client.livraisons, {

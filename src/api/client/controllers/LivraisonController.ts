@@ -65,12 +65,14 @@ export default class LivraisonController extends Controller{
 
             try{
                 let livraisonInfo : Livraison = await this.createLivraisonFromRequest(req)
-                    
-                let livraisonInfoSaved : Livraison = await this.saveLivraisonInfoToDatabase(livraisonInfo)
+               
+               
+     let livraisonInfoSaved : Livraison = await this.saveLivraisonInfoToDatabase(livraisonInfo, req.body.produit)
 
+            
                 let produitLivraison : Produit[] = await this.createProduitsFromRequest(req)
 
-                
+                 
                  await this.saveLivraisonProduitToDb(produitLivraison,livraisonInfoSaved)
                     .then(()=>{
                         this.sendResponse(res,200,{
@@ -78,7 +80,7 @@ export default class LivraisonController extends Controller{
                         })
                     }).catch(err=>{
                         this.passErrorToExpress(err, next)
-                    }) 
+                    })  
 
                
             }catch(err) {
@@ -92,7 +94,8 @@ export default class LivraisonController extends Controller{
     private async isLivraisionInfoSet(liv : Livraison) : Promise<boolean> {
         return liv !== undefined
     }
-    private async saveLivraisonInfoToDatabase(liv : Livraison) : Promise<Livraison> {
+    private async saveLivraisonInfoToDatabase(liv : Livraison,prod : Produit[]) : Promise<Livraison> {
+        liv.produits = prod
         return await this.livraisonRepository.save(liv)
     }
     private async createLivraisonFromRequest(req:Request) : Promise<Livraison>{

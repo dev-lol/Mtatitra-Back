@@ -82,7 +82,10 @@ export default class TypeCoursierController extends Controller {
         router.put("/:idType",async (req: Request, res: Response, next: NextFunction) => {
             try {
                 let type: TypeCoursier = await this.typeCoursierRepository.findOneOrFail(Number(req.params.idType))
+
+              
                 type = this.typeCoursierRepository.merge(type, req.body as Object)
+                console.log(type)
                 type.estSupprime = false
                 await this.typeCoursierRepository.save(type)
                 this.sendResponse(res,200, {message: "Type changed"})
