@@ -36,7 +36,7 @@ export default class CoursierController extends Controller {
             try{
                 let tomorrowLiv : Livraison[]= await  this.livraisonRepository
                 .createQueryBuilder("livraison")
-                .where("livraison.dateLiv > CURRENT_DATE  ")
+                .where("livraison.dateLiv > CURRENT_DATE +1  ")
                 .andWhere("livraison.dateLiv < CURRENT_DATE +2 ")
               .getMany() 
             

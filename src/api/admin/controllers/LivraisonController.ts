@@ -1,10 +1,12 @@
 import { Router, Response, Request, NextFunction, ErrorRequestHandler } from "express";
 import { Controller } from "../../Controller"
 import { Admin } from "../../../entities/Admin"
-import { Repository, Connection, createConnection } from "typeorm";
+import { Repository, Connection, createConnection, Not, IsNull, LessThan, MoreThan } from "typeorm";
 import { ormconfig } from "../../../config";
 import { Livraison } from "../../../entities/Livraison";
 import { Coursier } from "../../../entities/Coursier";
+import { isNull } from "util";
+
 export default class LivraisonController extends Controller {
     adminRepository: Repository<Admin>
     livraisonRepository : Repository<Livraison>
@@ -53,6 +55,7 @@ export default class LivraisonController extends Controller {
            
             let liv =await this.livraisonRepository.find({
                relations : ["produits","idCliClient","idCouCoursier"],
+              where : {idCouCoursier : MoreThan(0)}
             })
             if(liv !==undefined) {
                 this.sendResponse(res,200,{
@@ -67,8 +70,8 @@ export default class LivraisonController extends Controller {
         try {
             router.get("/livraison/no-coursier",async (req: Request,res: Response, next : NextFunction) =>{
                 let livSansCoursier =await  this.livraisonRepository.find({
-                    relations : ["idCouCoursier"],
-                   where : {idCouCoursier : null}
+                    relations : ["idCouCoursier","idCliClient","produits"],
+                    where  : {idCouCoursier : null}
                 })
                 this.sendResponse(res,200,{
                     message :"success",
