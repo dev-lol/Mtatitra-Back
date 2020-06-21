@@ -27,5 +27,4 @@ export default function securityAdmin(req: Request, res: Response, next: NextFun
         })
         return;
     }
-    next()
 }
