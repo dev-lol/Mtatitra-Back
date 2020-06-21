@@ -1,7 +1,7 @@
 import { Router, Response, Request, NextFunction, ErrorRequestHandler } from "express";
 import { Controller } from "../../Controller"
 import { Admin } from "../../../entities/Admin"
-import { getRepository, Connection, createConnection, getConnection } from "typeorm";
+import { getRepository, MoreThan } from "typeorm";
 import { ormconfig } from "../../../config";
 import jwt from 'jsonwebtoken';
 import { Livraison } from "../../../entities/Livraison";
@@ -10,113 +10,82 @@ import { Coursier } from "../../../entities/Coursier";
 export default class LivraisonController extends Controller {
     constructor() {
         super()
-this.addAllRoutes(this.mainRouter)
+        this.addAllRoutes(this.mainRouter)
     }
     async addGet(router: Router): Promise<void> {
-        await this.livraisonSansCoursier(router)
-        await this.allLivraison(router)
+        await this.getLivraison(router)
     }
+    async getLivraison(router: Router): Promise<void> {
+        router.get("/", async (req: Request, res: Response, next: NextFunction) => {
+            if (req.query.coursier && req.query.date) {
+                let liv
+                switch (req.query.coursier) {
+                    case 'all':
+                        liv = await getRepository(Livraison).find({
+                            relations: ["idCouCoursier", "idCliClient", "produits"],
+                            where: { dateLiv: req.query.date }
+                        })
+                        break;
 
-    async livraisonBetweenDate(router) : Promise<void> {
-        try{
-            router.get("/livraison/:date1/:date2",async (req: Request, res:Response, next : NextFunction) =>{
-                let livraison : Livraison[] = await getRepository(Livraison)
-                    .createQueryBuilder("livraison")
-                    .where("livraison.dateLiv >= :date1",{date1  : req.params.date1})
-                    .andWhere("livraison.dateLiv <= :date2",{date2 : req.params.date2})
-                    .getMany()
-                this.sendResponse(res, 200, {
-                    message : "success",
-                    data : livraison
-                })
-            })
-        }catch(err) 
-        {
+                    case 'true':
+                        liv = await getRepository(Livraison).find({
+                            relations: ["idCouCoursier", "idCliClient", "produits"],
+                            where: { idCouCoursier: MoreThan(0), dateLiv: req.query.date }
+                        })
+                        break;
+                    case 'false':
+                        liv = await getRepository(Livraison).find({
+                            relations: ["idCouCoursier", "idCliClient", "produits"],
+                            where: { idCouCoursier: null, dateLiv: req.query.date }
+                        })
+                        break;
+                    default:
+                        break;
+                }
 
-        }
-    }
-
-    async allLivraison(router : Router) : Promise<void>{
-        router.get("/livraison",async (req:Request,res:Response,next : NextFunction)=>{
-           
-            let liv =await getRepository(Livraison).find({
-               relations : ["produits","idCliClient","idCouCoursier"],
-            })
-            if(liv !==undefined) {
-                this.sendResponse(res,200,{
-                    message : "success",
-                    data : liv
-                })
+                this.sendResponse(res, 200, liv)
+            } else {
+                this.sendResponse(res, 400, { message: "query incomplete" })
             }
         })
     }
-
-    async livraisonSansCoursier(router : Router) : Promise<void>{
-        try {
-            router.get("/livraison/no-coursier",async (req: Request,res: Response, next : NextFunction) =>{
-                let livSansCoursier =await  getRepository(Livraison).find({
-                    relations : ["idCouCoursier"],
-                   where : {idCouCoursier : null}
-                })
-                this.sendResponse(res,200,{
-                    message :"success",
-                    data :livSansCoursier
-                })
-            })
-        }catch(err){
-           // this.passErrorToExpress(err, next)
-        }
-        
-    }
-
-    
     async addPost(router: Router): Promise<void> {
-       
-        
+
+
     }
 
-      
 
-    
+
+
     async addPut(router: Router): Promise<void> {
         await this.addCoursierToLivraison(router)
     }
 
-    async addCoursierToLivraison(router : Router)  : Promise<void>{
-        try{
-            router.put("/:idCoursier/livraison/:idLivraison",async (req: Request,res : Response, next : NextFunction) =>{
-                let livraisonToAsign : Livraison = await this.fetchLivraisonToAsign(req)
-                let coursier : Coursier = await this.createCoursierFromRequest(req)
-    
-                let livraisonAsigned = await this.asignCouriserToLivraison(coursier,livraisonToAsign)
+    async addCoursierToLivraison(router: Router): Promise<void> {
+        router.patch("/:idLivraison/coursier/:idCoursier", async (req: Request, res: Response, next: NextFunction) => {
+            try {
+                let livraisonToAsign: Livraison = await this.fetchLivraisonToAsign(req)
+                let coursier: Coursier = await this.createCoursierFromRequest(req)
+                await this.asignCouriserToLivraison(coursier, livraisonToAsign)
+                this.sendResponse(res, 200, { message: "Coursier Assigned to Livraison" })
+            }
+            catch (err) {
+                this.sendResponse(res, 400, { message: "Erreur" })
+            }
+        })
+    }
 
-                this.sendResponse(res,200, {
-                    message :"success",
-                    data : livraisonAsigned
-                })
-            })
-        }
-        catch(err) {
-
-//            this.passErrorToExpress(err, next)
-        }
-        
-
-            
-       
-    } 
-
-    private async asignCouriserToLivraison(cou : Coursier, liv : Livraison ) : Promise<Livraison> {
+    private async asignCouriserToLivraison(cou: Coursier, liv: Livraison): Promise<Livraison> {
         liv.idCouCoursier = cou
         return await getRepository(Livraison).save(liv)
     }
 
-    private async fetchLivraisonToAsign(req : Request) : Promise<Livraison> {
+    private async fetchLivraisonToAsign(req: Request): Promise<Livraison> {
         return await getRepository(Livraison).findOne(req.params.idLivraison)
     }
 
-    private async createCoursierFromRequest(req : Request) : Promise<Coursier>{
-        return await getRepository(Coursier).findOne(req.params.idCoursier)
+    private async createCoursierFromRequest(req: Request): Promise<Coursier> {
+        return { ...new Coursier(), idCou: Number(req.params.idCoursier) }
     }
 
     async addDelete(router: Router): Promise<void> {

@@ -20,7 +20,7 @@ export default class ZoneController extends Controller {
 
                 let zones: Zone[] = await this.fetchZonesFromDatabase()
 
-                this.sendResponse(res, 200, { data: zones })
+                this.sendResponse(res, 200, zones)
             } catch (err) {
 
             }
