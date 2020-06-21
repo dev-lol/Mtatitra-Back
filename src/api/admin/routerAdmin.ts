@@ -9,6 +9,7 @@ import CoursierController from './controllers/CoursierController';
 import EtatsController from './controllers/EtatController';
 import LivraisonController from "./controllers/LivraisonController";
 import TarifController from './controllers/TarifController';
+import ClientController from './controllers/ClientController';
 
 var routerAdmin = express.Router()
  routerAdmin.use("/",new AdminController().mainRouter)
@@ -21,5 +22,6 @@ routerAdmin.use("/",new LivraisonController().mainRouter)
  routerAdmin.use("/coursier", new CoursierController().mainRouter)
  routerAdmin.use("/etats", new EtatsController().mainRouter)
  routerAdmin.use("/tarifs", new TarifController().mainRouter)
+ routerAdmin.use("/client", new ClientController().mainRouter)
 
 export default routerAdmin;
