@@ -1,21 +1,12 @@
 import { Router, Response, Request, NextFunction, ErrorRequestHandler } from "express";
 import { Controller } from "../../Controller"
 import { Tarif } from "../../../entities/Tarif"
-import { Repository, Connection, createConnection, getConnection } from "typeorm";
+import { getRepository } from "typeorm";
 import { ormconfig } from "../../../config";
 export default class TarifController extends Controller {
-    getRepository(Tarif): Repository<Tarif>
     constructor() {
         super()
-this.addAllRoutes(this.mainRouter)
-    }
-
-
-    async createConnectionAndAssignRepository(): Promise<any> {
-        let connection: Connection = getConnection()
-if(!connection)
-connection = await createConnection(ormconfig)
-        getRepository(Tarif) = connection.getRepository(Tarif)
+        this.addAllRoutes(this.mainRouter)
     }
     async addGet(router: Router): Promise<void> {
         await this.getAllTarif(router)

@@ -5,7 +5,6 @@ import router from './routerApi';
 import { createConnection } from 'typeorm';
 import { ormconfig } from '../config';
 import { createServer } from 'http';
-import { createConnection } from 'typeorm';
 import { Client } from '../entities/Client';
 export class CustomServer {
     app = express()

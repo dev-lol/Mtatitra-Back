@@ -6,7 +6,7 @@ import { ormconfig } from "../../../config";
 export default class TarifController extends Controller {
     constructor() {
         super()
-this.addAllRoutes(this.mainRouter)
+        this.addAllRoutes(this.mainRouter)
     }
 
     async addGet(router: Router): Promise<void> {
