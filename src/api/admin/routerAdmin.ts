@@ -13,7 +13,7 @@ import ClientController from './controllers/ClientController';
 
 var routerAdmin = express.Router()
  routerAdmin.use("/",new AdminController().mainRouter)
-routerAdmin.use("/",new LivraisonController().mainRouter)
+routerAdmin.use("/livraison",new LivraisonController().mainRouter)
  routerAdmin.use("/datelimite", new DateLimiteController().mainRouter)
  routerAdmin.use("/typelivraison", new TypeLivraisonController().mainRouter)
  routerAdmin.use("/typecoursier", new TypeCoursierController().mainRouter)
