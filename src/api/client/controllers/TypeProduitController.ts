@@ -1,24 +1,15 @@
 import { Router, Response, Request, NextFunction, ErrorRequestHandler } from "express";
 import { Controller } from "../../Controller"
 import { TypeProduit } from "../../../entities/TypeProduit"
-import { Repository, Connection, createConnection } from "typeorm";
+import { getRepository} from "typeorm";
 import { ormconfig } from "../../../config";
 import { runInThisContext } from "vm";
 export default class TypeProduitController extends Controller {
-    typeProduitRepository: Repository<TypeProduit>
     constructor() {
         super()
-        this.createConnectionAndAssignRepository()
-            .then(async (_) => {
-                await this.addAllRoutes(this.mainRouter)
-            })
+this.addAllRoutes(this.mainRouter)
     }
 
-
-    async createConnectionAndAssignRepository(): Promise<any> {
-        let connection: Connection = await createConnection(ormconfig)
-        this.typeProduitRepository = connection.getRepository(TypeProduit)
-    }
     async addGet(router: Router): Promise<void> {
         await this.getAllTypeProduit(router)
     }
@@ -37,7 +28,7 @@ export default class TypeProduitController extends Controller {
     }
 
     private async fetchTypeProduitsFromDatabase(): Promise<TypeProduit[]> {
-        return await this.typeProduitRepository.find({where: {estSupprime: false}})
+        return await getRepository(TypeProduit).find({where: {estSupprime: false}})
     }
     async addPost(router: Router): Promise<void> {
         await this.postTypeProduit(router)

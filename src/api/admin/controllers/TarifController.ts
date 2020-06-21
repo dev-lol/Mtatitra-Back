@@ -1,23 +1,14 @@
 import { Router, Response, Request, NextFunction, ErrorRequestHandler } from "express";
 import { Controller } from "../../Controller"
 import { Tarif } from "../../../entities/Tarif"
-import { Repository, Connection, createConnection } from "typeorm";
+import { getRepository } from "typeorm";
 import { ormconfig } from "../../../config";
 export default class TarifController extends Controller {
-    tarifRepository: Repository<Tarif>
     constructor() {
         super()
-        this.createConnectionAndAssignRepository()
-            .then(async (_) => {
-                await this.addAllRoutes(this.mainRouter)
-            })
+this.addAllRoutes(this.mainRouter)
     }
 
-
-    async createConnectionAndAssignRepository(): Promise<any> {
-        let connection: Connection = await createConnection(ormconfig)
-        this.tarifRepository = connection.getRepository(Tarif)
-    }
     async addGet(router: Router): Promise<void> {
         await this.getAllTarif(router)
     }
@@ -39,7 +30,7 @@ export default class TarifController extends Controller {
 
     private async fetchTarifsFromDatabase(): Promise<Tarif[]> {
 
-        return await this.tarifRepository.createQueryBuilder("tarif")
+        return await getRepository(Tarif).createQueryBuilder("tarif")
             .leftJoinAndSelect("tarif.idTypeCouTypeCoursier", "typeCoursier")
             .orderBy("typeCoursier.typeCoursier").getMany()
     }
@@ -66,12 +57,12 @@ export default class TarifController extends Controller {
     }
 
     private async createTarifFromRequest(req: Request): Promise<Tarif> {
-        let tarif = this.tarifRepository.create(req.body as Object)
+        let tarif = getRepository(Tarif).create(req.body as Object)
         return tarif
     }
 
     private async saveTarifToDatabase(tarif: Tarif): Promise<Tarif> {
-        return await this.tarifRepository.save(tarif)
+        return await getRepository(Tarif).save(tarif)
     }
 
 
@@ -81,9 +72,9 @@ export default class TarifController extends Controller {
     async addPut(router: Router): Promise<void> {
         router.put("/:idTarif", async (req: Request, res: Response, next: NextFunction) => {
             try {
-                let tarif: Tarif = await this.tarifRepository.findOneOrFail(Number(req.params.idTarif))
-                tarif = this.tarifRepository.merge(tarif, req.body as Object)
-                await this.tarifRepository.save(tarif)
+                let tarif: Tarif = await getRepository(Tarif).findOneOrFail(Number(req.params.idTarif))
+                tarif = getRepository(Tarif).merge(tarif, req.body as Object)
+                await getRepository(Tarif).save(tarif)
                 this.sendResponse(res, 200, { message: "Tarif changed" })
             } catch (error) {
                 console.log(error)
@@ -96,8 +87,8 @@ export default class TarifController extends Controller {
     async addDelete(router: Router): Promise<void> {
         router.delete("/:idTarif", async (req: Request, res: Response, next: NextFunction) => {
             try {
-                let tarif: Tarif = await this.tarifRepository.findOneOrFail(Number(req.params.idTarif))
-                await this.tarifRepository.remove(tarif)
+                let tarif: Tarif = await getRepository(Tarif).findOneOrFail(Number(req.params.idTarif))
+                await getRepository(Tarif).remove(tarif)
                 this.sendResponse(res, 203, { message: "Tarif deleted" })
             } catch (error) {
                 this.sendResponse(res, 404, { message: "Tarif not found" })

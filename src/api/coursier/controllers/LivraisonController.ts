@@ -1,30 +1,16 @@
 import { Router, Response, Request, NextFunction, ErrorRequestHandler } from "express";
 import { Controller } from "../../Controller"
 import { Coursier } from "../../../entities/Coursier"
-import { Repository, Connection, createConnection, MoreThan } from "typeorm";
+import { getRepository, Connection, createConnection, getConnection, MoreThan } from "typeorm";
 import { ormconfig } from "../../../config";
 import { Livraison } from "../../../entities/Livraison";
 import { Etats } from "../../../entities/Etats";
 import { CustomServer } from '../../Server';
 import jwt from 'jsonwebtoken';
 export default class LivraisonController extends Controller {
-    coursierRepository: Repository<Coursier>
-    livraisonRepository: Repository<Livraison>
-    etatRepository: Repository<Etats>
     constructor() {
         super()
-        this.createConnectionAndAssignRepository()
-            .then(async (_) => {
-                await this.addAllRoutes(this.mainRouter)
-            })
-    }
-
-
-    async createConnectionAndAssignRepository(): Promise<any> {
-        let connection: Connection = await createConnection(ormconfig)
-        this.coursierRepository = connection.getRepository(Coursier)
-        this.livraisonRepository = connection.getRepository(Livraison)
-        this.etatRepository = connection.getRepository(Etats)
+        this.addAllRoutes(this.mainRouter)
     }
     async addGet(router: Router): Promise<void> {
         await this.todayLivraison(router)
@@ -34,7 +20,7 @@ export default class LivraisonController extends Controller {
     async tomorrowLivraison(router): Promise<void> {
         router.get("/demain", async (req: Request, res: Response, next: NextFunction) => {
             try {
-                let tomorrowLiv: Livraison[] = await this.livraisonRepository
+                let tomorrowLiv: Livraison[] = await getRepository(Livraison)
                     .createQueryBuilder("livraison")
                     .leftJoinAndSelect("livraison.idCliClient", "client")
                     .leftJoinAndSelect("livraison.idLimiteDat", "limiteDat")
@@ -58,7 +44,7 @@ export default class LivraisonController extends Controller {
     async todayLivraison(router: Router): Promise<void> {
         router.get("/aujourdhui", async (req: Request, res: Response, next: NextFunction) => {
             try {
-                let todayLiv: Livraison[] = await this.livraisonRepository
+                let todayLiv: Livraison[] = await getRepository(Livraison)
                     .createQueryBuilder("livraison")
                     .leftJoinAndSelect("livraison.idCliClient", "client")
                     .leftJoinAndSelect("livraison.idLimiteDat", "limiteDat")
@@ -95,12 +81,12 @@ export default class LivraisonController extends Controller {
         router.patch("/:idLivraison", async (req: Request, res: Response, next: NextFunction) => {
             try {
                 let livraisonToUpdate: Livraison = await this.fetchLivraisonToUpdateFromDb(req)
-                livraisonToUpdate.idEtaEtats = await this.etatRepository.findOneOrFail(req.body.idEta)
-                let livraison = await this.livraisonRepository.save(livraisonToUpdate)
+                livraisonToUpdate.idEtaEtats = await getRepository(Etats).findOneOrFail(req.body.idEta)
+                let livraison = await getRepository(Livraison).save(livraisonToUpdate)
                 this.sendResponse(res, 200, {
                     message: "Etat changed"
                 })
-                const liv: Livraison = await this.livraisonRepository.createQueryBuilder("livraison").leftJoinAndSelect("livraison.idCliClient", "client").where("livraison.idLiv = :id", { id: livraison.idLiv }).getOne()
+                const liv: Livraison = await getRepository(Livraison).createQueryBuilder("livraison").leftJoinAndSelect("livraison.idCliClient", "client").where("livraison.idLiv = :id", { id: livraison.idLiv }).getOne()
                 CustomServer.io.to("client " + liv.idCliClient.idCli).emit("etats", livraisonToUpdate.idEtaEtats.etatEta)
             } catch (e) {
                 console.log(e)
@@ -109,12 +95,12 @@ export default class LivraisonController extends Controller {
         router.patch("/:idLivraison/commencer", async (req: Request, res: Response, next: NextFunction) => {
             try {
                 let livraisonToUpdate: Livraison = await this.fetchLivraisonToUpdateFromDb(req)
-                livraisonToUpdate.idEtaEtats = await this.etatRepository.findOneOrFail({ where: { ordreEta: 0 } })
-                let livraison = await this.livraisonRepository.save(livraisonToUpdate)
+                livraisonToUpdate.idEtaEtats = await getRepository(Etats).findOneOrFail({ where: { ordreEta: 0 } })
+                let livraison = await getRepository(Livraison).save(livraisonToUpdate)
                 this.sendResponse(res, 200, {
                     message: "Etat changed"
                 })
-                const liv: Livraison = await this.livraisonRepository.createQueryBuilder("livraison").leftJoinAndSelect("livraison.idCliClient", "client").where("livraison.idLiv = :id", { id: livraison.idLiv }).getOne()
+                const liv: Livraison = await getRepository(Livraison).createQueryBuilder("livraison").leftJoinAndSelect("livraison.idCliClient", "client").where("livraison.idLiv = :id", { id: livraison.idLiv }).getOne()
                 CustomServer.io.to("client " + liv.idCliClient.idCli).emit("etats", livraisonToUpdate.idEtaEtats.etatEta)
             } catch (e) {
                 console.log(e)
@@ -123,7 +109,7 @@ export default class LivraisonController extends Controller {
     }
 
     private async fetchLivraisonToUpdateFromDb(req: Request): Promise<Livraison> {
-        return await this.livraisonRepository.findOneOrFail(req.params.idLivraison)
+        return await getRepository(Livraison).findOneOrFail(req.params.idLivraison)
     }
 
 

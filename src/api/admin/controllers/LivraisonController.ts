@@ -1,30 +1,16 @@
 import { Router, Response, Request, NextFunction, ErrorRequestHandler } from "express";
 import { Controller } from "../../Controller"
 import { Admin } from "../../../entities/Admin"
-import { Repository, Connection, createConnection } from "typeorm";
+import { getRepository, Connection, createConnection, getConnection } from "typeorm";
 import { ormconfig } from "../../../config";
 import jwt from 'jsonwebtoken';
 import { Livraison } from "../../../entities/Livraison";
 import { isNull } from "util";
 import { Coursier } from "../../../entities/Coursier";
 export default class LivraisonController extends Controller {
-    adminRepository: Repository<Admin>
-    livraisonRepository : Repository<Livraison>
-    coursierRepository : Repository<Coursier>
     constructor() {
         super()
-        this.createConnectionAndAssignRepository()
-            .then(async (_) => {
-                await this.addAllRoutes(this.mainRouter)
-            })
-    }
-
-
-    async createConnectionAndAssignRepository(): Promise<any> {
-        let connection: Connection = await createConnection(ormconfig)
-        this.adminRepository = connection.getRepository(Admin)
-        this.livraisonRepository = connection.getRepository(Livraison)
-        this.coursierRepository = connection.getRepository(Coursier)
+this.addAllRoutes(this.mainRouter)
     }
     async addGet(router: Router): Promise<void> {
         await this.livraisonSansCoursier(router)
@@ -34,7 +20,7 @@ export default class LivraisonController extends Controller {
     async livraisonBetweenDate(router) : Promise<void> {
         try{
             router.get("/livraison/:date1/:date2",async (req: Request, res:Response, next : NextFunction) =>{
-                let livraison : Livraison[] = await this.livraisonRepository
+                let livraison : Livraison[] = await getRepository(Livraison)
                     .createQueryBuilder("livraison")
                     .where("livraison.dateLiv >= :date1",{date1  : req.params.date1})
                     .andWhere("livraison.dateLiv <= :date2",{date2 : req.params.date2})
@@ -53,7 +39,7 @@ export default class LivraisonController extends Controller {
     async allLivraison(router : Router) : Promise<void>{
         router.get("/livraison",async (req:Request,res:Response,next : NextFunction)=>{
            
-            let liv =await this.livraisonRepository.find({
+            let liv =await getRepository(Livraison).find({
                relations : ["produits","idCliClient","idCouCoursier"],
             })
             if(liv !==undefined) {
@@ -68,7 +54,7 @@ export default class LivraisonController extends Controller {
     async livraisonSansCoursier(router : Router) : Promise<void>{
         try {
             router.get("/livraison/no-coursier",async (req: Request,res: Response, next : NextFunction) =>{
-                let livSansCoursier =await  this.livraisonRepository.find({
+                let livSansCoursier =await  getRepository(Livraison).find({
                     relations : ["idCouCoursier"],
                    where : {idCouCoursier : null}
                 })
@@ -122,15 +108,15 @@ export default class LivraisonController extends Controller {
 
     private async asignCouriserToLivraison(cou : Coursier, liv : Livraison ) : Promise<Livraison> {
         liv.idCouCoursier = cou
-        return await this.livraisonRepository.save(liv)
+        return await getRepository(Livraison).save(liv)
     }
 
     private async fetchLivraisonToAsign(req : Request) : Promise<Livraison> {
-        return await this.livraisonRepository.findOne(req.params.idLivraison)
+        return await getRepository(Livraison).findOne(req.params.idLivraison)
     }
 
     private async createCoursierFromRequest(req : Request) : Promise<Coursier>{
-        return await this.coursierRepository.findOne(req.params.idCoursier)
+        return await getRepository(Coursier).findOne(req.params.idCoursier)
     }
 
     async addDelete(router: Router): Promise<void> {

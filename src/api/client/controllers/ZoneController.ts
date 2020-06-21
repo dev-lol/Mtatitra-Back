@@ -1,24 +1,17 @@
 import { Router, Response, Request, NextFunction, ErrorRequestHandler } from "express";
 import { Controller } from "../../Controller"
 import { Zone } from "../../../entities/Zone"
-import { Repository, Connection, createConnection } from "typeorm";
+import { getRepository } from "typeorm";
 import { ormconfig } from "../../../config";
 import { runInThisContext } from "vm";
 export default class ZoneController extends Controller {
-    zoneRepository: Repository<Zone>
     constructor() {
         super()
-        this.createConnectionAndAssignRepository()
-            .then(async (_) => {
-                await this.addAllRoutes(this.mainRouter)
-            })
+this.addAllRoutes(this.mainRouter)
     }
 
 
-    async createConnectionAndAssignRepository(): Promise<any> {
-        let connection: Connection = await createConnection(ormconfig)
-        this.zoneRepository = connection.getRepository(Zone)
-    }
+
     async addGet(router: Router): Promise<void> {
         await this.getAllZone(router)
     }
@@ -39,7 +32,7 @@ export default class ZoneController extends Controller {
     }
 
     private async fetchZonesFromDatabase(): Promise<Zone[]> {
-        return await this.zoneRepository.find({ where: { estSupprime: false } })
+        return await getRepository(Zone).find({ where: { estSupprime: false } })
     }
     async addPost(router: Router): Promise<void> {
     }

@@ -1,23 +1,13 @@
 import { Router, Response, Request, NextFunction, ErrorRequestHandler } from "express";
 import { Controller } from "../../Controller"
 import { TypeLivraison } from "../../../entities/TypeLivraison"
-import { Repository, Connection, createConnection } from "typeorm";
+import { getRepository} from "typeorm";
 import { ormconfig } from "../../../config";
 import { runInThisContext } from "vm";
 export default class TypeLivraisonController extends Controller {
-    typeLivraisonRepository: Repository<TypeLivraison>
     constructor() {
         super()
-        this.createConnectionAndAssignRepository()
-            .then(async (_) => {
-                await this.addAllRoutes(this.mainRouter)
-            })
-    }
-
-
-    async createConnectionAndAssignRepository(): Promise<any> {
-        let connection: Connection = await createConnection(ormconfig)
-        this.typeLivraisonRepository = connection.getRepository(TypeLivraison)
+this.addAllRoutes(this.mainRouter)
     }
     async addGet(router: Router): Promise<void> {
         await this.getAllTypeLivraison(router)
@@ -39,7 +29,7 @@ export default class TypeLivraisonController extends Controller {
     }
 
     private async fetchTypeLivraisonsFromDatabase(): Promise<TypeLivraison[]> {
-        return await this.typeLivraisonRepository.find({where: {estSupprime: false}})
+        return await getRepository(TypeLivraison).find({where: {estSupprime: false}})
     }
     async addPost(router: Router): Promise<void> {
         await this.postTypeLivraison(router)
@@ -66,13 +56,13 @@ export default class TypeLivraisonController extends Controller {
     }
 
     private async createTypeLivraisonFromRequest(req: Request): Promise<TypeLivraison> {
-        let type = this.typeLivraisonRepository.create(req.body as Object)
+        let type = getRepository(TypeLivraison).create(req.body as Object)
         type.estSupprime = false
         return type
     }
 
     private async saveTypeLivraisonToDatabase(typeLivraison: TypeLivraison): Promise<TypeLivraison> {
-        return await this.typeLivraisonRepository.save(typeLivraison)
+        return await getRepository(TypeLivraison).save(typeLivraison)
     }
 
 
@@ -82,10 +72,10 @@ export default class TypeLivraisonController extends Controller {
     async addPut(router: Router): Promise<void> {
         router.put("/:idType",async (req: Request, res: Response, next: NextFunction) => {
             try {
-                let type: TypeLivraison = await this.typeLivraisonRepository.findOneOrFail(Number(req.params.idType))
-                type = this.typeLivraisonRepository.merge(type, req.body as Object)
+                let type: TypeLivraison = await getRepository(TypeLivraison).findOneOrFail(Number(req.params.idType))
+                type = getRepository(TypeLivraison).merge(type, req.body as Object)
                 type.estSupprime = false
-                await this.typeLivraisonRepository.save(type)
+                await getRepository(TypeLivraison).save(type)
                 this.sendResponse(res,200, {message: "Type changed"})
             } catch (error) {
                 console.log(error)
@@ -98,9 +88,9 @@ export default class TypeLivraisonController extends Controller {
     async addDelete(router: Router): Promise<void> {
         router.delete("/:idType", async (req: Request, res: Response, next: NextFunction) => {
             try {
-                let type: TypeLivraison = await this.typeLivraisonRepository.findOneOrFail(Number(req.params.idType))
+                let type: TypeLivraison = await getRepository(TypeLivraison).findOneOrFail(Number(req.params.idType))
                 type.estSupprime = false
-                await this.typeLivraisonRepository.save(type)
+                await getRepository(TypeLivraison).save(type)
                 this.sendResponse(res,203, {message: "Type deleted"})
             } catch (error) {
                 this.sendResponse(res,404, {message: "Type not found"})   

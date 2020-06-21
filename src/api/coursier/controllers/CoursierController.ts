@@ -1,29 +1,15 @@
 import { Router, Response, Request, NextFunction, ErrorRequestHandler } from "express";
 import { Controller } from "../../Controller"
 import { Coursier } from "../../../entities/Coursier"
-import { Repository, Connection, createConnection, getConnection } from "typeorm";
+import { getRepository, Connection, createConnection, getConnection } from "typeorm";
 import { ormconfig } from "../../../config";
 import jwt from 'jsonwebtoken';
 import { Livraison } from "../../../entities/Livraison";
 import { Etats } from "../../../entities/Etats";
 export default class CoursierController extends Controller {
-    coursierRepository: Repository<Coursier>
-    livraisonRepository: Repository<Livraison>
-    etatRepository: Repository<Etats>
     constructor() {
         super()
-        this.createConnectionAndAssignRepository()
-            .then(async (_) => {
-                await this.addAllRoutes(this.mainRouter)
-            })
-    }
-
-
-    async createConnectionAndAssignRepository(): Promise<any> {
-        let connection: Connection = await createConnection(ormconfig)
-        this.coursierRepository = connection.getRepository(Coursier)
-        this.livraisonRepository = connection.getRepository(Livraison)
-        this.etatRepository = connection.getRepository(Etats)
+        this.addAllRoutes(this.mainRouter)
     }
     async addGet(router: Router): Promise<void> {
         this.getProfile(router);
@@ -34,7 +20,7 @@ export default class CoursierController extends Controller {
         router.get("/profile", async (req: Request, res: Response, next: NextFunction) => {
             try {
                 console.log(res.locals.id)
-                let coursier = await this.coursierRepository.findOneOrFail(res.locals.id);
+                let coursier = await getRepository(Coursier).findOneOrFail(res.locals.id);
                 delete coursier.passCou;
                 this.sendResponse(res, 200, coursier);
             }
@@ -55,7 +41,7 @@ export default class CoursierController extends Controller {
         router.post("/login", async (req: Request, res: Response, next: NextFunction) => {
             try {
 
-                let coursier = await this.coursierRepository.findOneOrFail({ where: { usernameCou: req.body.username } })
+                let coursier = await getRepository(Coursier).findOneOrFail({ where: { usernameCou: req.body.username } })
                 var bcrypt = require("bcrypt")
                 bcrypt.compare(req.body.password, coursier.passCou, (err, isSame) => {
                     if (!err && isSame) {
@@ -98,16 +84,16 @@ export default class CoursierController extends Controller {
 
     private async updateEtatLivraison(liv: Livraison, etat: Etats): Promise<Livraison> {
         liv.idEtaEtats = etat
-        return this.livraisonRepository.save(liv)
+        return getRepository(Livraison).save(liv)
     }
 
     private async createEtatFromRequest(req: Request): Promise<Etats> {
-        return await this.etatRepository.create(req.body as Object)
+        return await getRepository(Etats).create(req.body as Object)
     }
 
 
     private async fetchLivraisonToUpdateFromDb(req: Request): Promise<Livraison> {
-        return await this.livraisonRepository.findOne(req.params.idLivraison)
+        return await getRepository(Livraison).findOne(req.params.idLivraison)
     }
 
 

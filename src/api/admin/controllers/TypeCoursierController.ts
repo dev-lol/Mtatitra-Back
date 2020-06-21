@@ -1,24 +1,15 @@
 import { Router, Response, Request, NextFunction, ErrorRequestHandler } from "express";
 import { Controller } from "../../Controller"
 import { TypeCoursier } from "../../../entities/TypeCoursier"
-import { Repository, Connection, createConnection } from "typeorm";
+import { getRepository } from "typeorm";
 import { ormconfig } from "../../../config";
 import { runInThisContext } from "vm";
 export default class TypeCoursierController extends Controller {
-    typeCoursierRepository: Repository<TypeCoursier>
     constructor() {
         super()
-        this.createConnectionAndAssignRepository()
-            .then(async (_) => {
-                await this.addAllRoutes(this.mainRouter)
-            })
+this.addAllRoutes(this.mainRouter)
     }
 
-
-    async createConnectionAndAssignRepository(): Promise<any> {
-        let connection: Connection = await createConnection(ormconfig)
-        this.typeCoursierRepository = connection.getRepository(TypeCoursier)
-    }
     async addGet(router: Router): Promise<void> {
         await this.getAllTypeCoursier(router)
     }
@@ -39,7 +30,7 @@ export default class TypeCoursierController extends Controller {
     }
 
     private async fetchTypeCoursiersFromDatabase(): Promise<TypeCoursier[]> {
-        return await this.typeCoursierRepository.find({where: {estSupprime: false}})
+        return await getRepository(TypeCoursier).find({where: {estSupprime: false}})
     }
     async addPost(router: Router): Promise<void> {
         await this.postTypeCoursier(router)
@@ -66,12 +57,12 @@ export default class TypeCoursierController extends Controller {
     }
 
     private async createTypeCoursierFromRequest(req: Request): Promise<TypeCoursier> {
-        let type = this.typeCoursierRepository.create(req.body as Object)
+        let type = getRepository(TypeCoursier).create(req.body as Object)
         return type
     }
 
     private async saveTypeCoursierToDatabase(typeCoursier: TypeCoursier): Promise<TypeCoursier> {
-        return await this.typeCoursierRepository.save(typeCoursier)
+        return await getRepository(TypeCoursier).save(typeCoursier)
     }
 
 
@@ -81,10 +72,10 @@ export default class TypeCoursierController extends Controller {
     async addPut(router: Router): Promise<void> {
         router.put("/:idType",async (req: Request, res: Response, next: NextFunction) => {
             try {
-                let type: TypeCoursier = await this.typeCoursierRepository.findOneOrFail(Number(req.params.idType))
-                type = this.typeCoursierRepository.merge(type, req.body as Object)
+                let type: TypeCoursier = await getRepository(TypeCoursier).findOneOrFail(Number(req.params.idType))
+                type = getRepository(TypeCoursier).merge(type, req.body as Object)
                 type.estSupprime = false
-                await this.typeCoursierRepository.save(type)
+                await getRepository(TypeCoursier).save(type)
                 this.sendResponse(res,200, {message: "Type changed"})
             } catch (error) {
                 console.log(error)
@@ -97,9 +88,9 @@ export default class TypeCoursierController extends Controller {
     async addDelete(router: Router): Promise<void> {
         router.delete("/:idType", async (req: Request, res: Response, next: NextFunction) => {
             try {
-                let type: TypeCoursier = await this.typeCoursierRepository.findOneOrFail(Number(req.params.idType))
+                let type: TypeCoursier = await getRepository(TypeCoursier).findOneOrFail(Number(req.params.idType))
                 type.estSupprime = true
-                await this.typeCoursierRepository.save(type)
+                await getRepository(TypeCoursier).save(type)
                 this.sendResponse(res,203, {message: "Type deleted"})
             } catch (error) {
                 this.sendResponse(res,404, {message: "Type not found"})   

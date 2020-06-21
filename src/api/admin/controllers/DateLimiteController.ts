@@ -1,22 +1,21 @@
 import { Router, Response, Request, NextFunction, ErrorRequestHandler } from "express";
 import { Controller } from "../../Controller"
 import { DateLimite } from "../../../entities/DateLimite"
-import { Repository, Connection, createConnection } from "typeorm";
+import { Repository, Connection, createConnection, getConnection } from "typeorm";
 import { ormconfig } from "../../../config";
 import { runInThisContext } from "vm";
 export default class DateLimiteController extends Controller {
     dateLimiteRepository: Repository<DateLimite>
     constructor() {
         super()
-        this.createConnectionAndAssignRepository()
-            .then(async (_) => {
-                await this.addAllRoutes(this.mainRouter)
-            })
+this.addAllRoutes(this.mainRouter)
     }
 
 
     async createConnectionAndAssignRepository(): Promise<any> {
-        let connection: Connection = await createConnection(ormconfig)
+        let connection: Connection = getConnection()
+if(!connection)
+connection = await createConnection(ormconfig)
         this.dateLimiteRepository = connection.getRepository(DateLimite)
     }
     async addGet(router: Router): Promise<void> {

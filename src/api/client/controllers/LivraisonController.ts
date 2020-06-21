@@ -1,5 +1,5 @@
 import { Controller } from "../../Controller";
-import { Connection, Repository, createConnection, ObjectID } from "typeorm";
+import { getRepository } from "typeorm";
 
 
 import { Client } from "../../../entities/Client";
@@ -12,23 +12,9 @@ import { Coursier } from "../../../entities/Coursier";
 import { Zone } from "../../../entities/Zone";
 import { DateLimite } from "../../../entities/DateLimite";
 export default class LivraisonController extends Controller {
-    clientRepository: Repository<Client>
-    livraisonRepository: Repository<Livraison>
-    produitRepository: Repository<Produit>
-    coursierRepository: Repository<Coursier>
     constructor() {
         super()
-        this.createConnectionAndAssignRepository()
-            .then(async (_) => {
-                await this.addAllRoutes(this.mainRouter)
-            })
-    }
-    async createConnectionAndAssignRepository(): Promise<void> {
-        let connection: Connection = await createConnection(ormconfig)
-        this.clientRepository = connection.getRepository(Client)
-        this.livraisonRepository = connection.getRepository(Livraison)
-        this.produitRepository = connection.getRepository(Produit)
-        this.coursierRepository = connection.getRepository(Coursier)
+this.addAllRoutes(this.mainRouter)
     }
     async addGet(router: Router) {
         await this.allLivraison(router)
@@ -37,7 +23,7 @@ export default class LivraisonController extends Controller {
 
     async allLivraison(router: Router): Promise<void> {
         router.get("/", async (req: Request, res: Response, next: NextFunction) => {
-            this.livraisonRepository.find({ where: { idCliClient: res.locals.idCli } })
+            getRepository(Livraison).find({ where: { idCliClient: res.locals.idCli } })
         })
     }
     async addPost(router: Router) {
@@ -50,17 +36,17 @@ export default class LivraisonController extends Controller {
                 console.log(req.body.livraison)
                 let produits: Produit[] = []
                 for (const p of req.body.produits) {
-                    const produit: Produit = this.produitRepository.create(p as object)
+                    const produit: Produit = getRepository(Produit).create(p as object)
                     produit.idTypeProTypeProduit = {...new TypeProduit(), idTypePro: p["typePro"] }
                     produits.push(produit)
                 }
-                const livraison: Livraison = this.livraisonRepository.create(req.body.livraison as object)
+                const livraison: Livraison = getRepository(Livraison).create(req.body.livraison as object)
                 livraison.produits = produits;
                 livraison.idZonArrivee = {... new Zone(), idZon: req.body.livraison.zoneLiv}
                 livraison.idCliClient = {... new Client(), idCli: res.locals.id}
                 livraison.idLimiteDat = {... new DateLimite(), idLimiteDat: req.body.livraison.dateLimite}
                 livraison.expressLiv = new Date(req.body.dateLiv).toDateString() == new Date().toDateString()
-                await this.livraisonRepository.save(livraison)
+                await getRepository(Livraison).save(livraison)
                 this.sendResponse(res,200,{message: "livraison inseré"})
             } catch (err) {
                 console.log(err)
@@ -77,7 +63,7 @@ export default class LivraisonController extends Controller {
 
         return await pr.forEach(prod => {
             prod.idLivLivraison = liv
-            this.produitRepository.save(prod)
+            getRepository(Produit).save(prod)
         })
 
     }

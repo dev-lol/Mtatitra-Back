@@ -1,22 +1,21 @@
 import { Router, Response, Request, NextFunction, ErrorRequestHandler } from "express";
 import { Controller } from "../../Controller"
 import { Tarif } from "../../../entities/Tarif"
-import { Repository, Connection, createConnection } from "typeorm";
+import { Repository, Connection, createConnection, getConnection } from "typeorm";
 import { ormconfig } from "../../../config";
 export default class TarifController extends Controller {
-    tarifRepository: Repository<Tarif>
+    getRepository(Tarif): Repository<Tarif>
     constructor() {
         super()
-        this.createConnectionAndAssignRepository()
-            .then(async (_) => {
-                await this.addAllRoutes(this.mainRouter)
-            })
+this.addAllRoutes(this.mainRouter)
     }
 
 
     async createConnectionAndAssignRepository(): Promise<any> {
-        let connection: Connection = await createConnection(ormconfig)
-        this.tarifRepository = connection.getRepository(Tarif)
+        let connection: Connection = getConnection()
+if(!connection)
+connection = await createConnection(ormconfig)
+        getRepository(Tarif) = connection.getRepository(Tarif)
     }
     async addGet(router: Router): Promise<void> {
         await this.getAllTarif(router)
@@ -39,7 +38,7 @@ export default class TarifController extends Controller {
 
     private async fetchTarifsFromDatabase(): Promise<Tarif[]> {
 
-        return await this.tarifRepository.createQueryBuilder("tarif")
+        return await getRepository(Tarif).createQueryBuilder("tarif")
             .leftJoinAndSelect("tarif.idTypeCouTypeCoursier", "typeCoursier")
             .orderBy("typeCoursier.typeCoursier").getMany()
     }
