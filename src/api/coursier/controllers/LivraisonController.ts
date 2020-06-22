@@ -81,13 +81,18 @@ export default class LivraisonController extends Controller {
         router.patch("/:idLivraison", async (req: Request, res: Response, next: NextFunction) => {
             try {
                 let livraisonToUpdate: Livraison = await this.fetchLivraisonToUpdateFromDb(req)
-                livraisonToUpdate.idEtaEtats = await getRepository(Etats).findOneOrFail(req.body.idEta)
-                let livraison = await getRepository(Livraison).save(livraisonToUpdate)
-                this.sendResponse(res, 200, {
-                    message: "Etat changed"
-                })
-                const liv: Livraison = await getRepository(Livraison).createQueryBuilder("livraison").leftJoinAndSelect("livraison.idCliClient", "client").where("livraison.idLiv = :id", { id: livraison.idLiv }).getOne()
-                CustomServer.io.to("client " + liv.idCliClient.idCli).emit("etats", livraisonToUpdate.idEtaEtats.etatEta)
+                if (req.body.idEtat) {
+
+                    livraisonToUpdate.idEtaEtats = await getRepository(Etats).findOneOrFail(req.body.idEta)
+                    let livraison = await getRepository(Livraison).save(livraisonToUpdate)
+                    this.sendResponse(res, 200, {
+                        message: "Etat changed"
+                    })
+                    const liv: Livraison = await getRepository(Livraison).createQueryBuilder("livraison").leftJoinAndSelect("livraison.idCliClient", "client").where("livraison.idLiv = :id", { id: livraison.idLiv }).getOne()
+                    CustomServer.io.to(liv.idCliClient.idCli).emit("etats", livraisonToUpdate.idEtaEtats.etatEta)
+                }else{
+                    this.sendResponse(res,400, {message: "Requette manquante"})
+                }
             } catch (e) {
                 console.log(e)
             }
