@@ -13,15 +13,7 @@ export default class ClientController extends Controller {
     async addGet(router: Router): Promise<void> {
         router.get("/profile", async (req: Request, res: Response, next: NextFunction) => {
             try {
-                let idCli
-                var jwtToken: string = req.headers["authorization"]
-                jwt.decode(jwtToken.split(" ")[1], (error, payload) => {
-                    if (error)
-                        throw error;
-                    else {
-                        idCli = payload.id
-                    }
-                })
+                let idCli = res.locals.id
                 var data = await getRepository(Client).findOneOrFail(idCli)
                 delete (data["passCli"])
                 delete (data["resetCodeCli"])
