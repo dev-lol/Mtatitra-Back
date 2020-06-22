@@ -44,6 +44,7 @@ export default class Utils {
                     style="background-color: #EF1233;font-size: 15px;border: none;border-radius: 0%; color: white; font-weight: 700; padding: 7px; display: inline-block; margin-top: 10px; border-radius: 1px;margin-top: px;">
                     Confirmer
                 </button>
+                <span>CODE: ${code} </span>
             </a>
         </div>
     </div>
