@@ -89,7 +89,7 @@ export default class LivraisonController extends Controller {
                         message: "Etat changed"
                     })
                     const liv: Livraison = await getRepository(Livraison).createQueryBuilder("livraison").leftJoinAndSelect("livraison.idCliClient", "client").where("livraison.idLiv = :id", { id: livraison.idLiv }).getOne()
-                    CustomServer.io.to(liv.idCliClient.idCli).emit("etats", livraisonToUpdate.idEtaEtats.etatEta)
+                    CustomServer.io.to(liv.idCliClient.idCli).emit("etats", livraisonToUpdate)
                 }else{
                     this.sendResponse(res,400, {message: "Requette manquante"})
                 }
@@ -106,7 +106,7 @@ export default class LivraisonController extends Controller {
                     message: "Etat changed"
                 })
                 const liv: Livraison = await getRepository(Livraison).createQueryBuilder("livraison").leftJoinAndSelect("livraison.idCliClient", "client").where("livraison.idLiv = :id", { id: livraison.idLiv }).getOne()
-                CustomServer.io.to("client " + liv.idCliClient.idCli).emit("etats", livraisonToUpdate.idEtaEtats.etatEta)
+                CustomServer.io.to(liv.idCliClient.idCli).emit("etats", livraisonToUpdate)
             } catch (e) {
                 console.log(e)
             }
