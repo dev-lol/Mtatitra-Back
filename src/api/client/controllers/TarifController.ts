@@ -21,6 +21,8 @@ export default class TarifController extends Controller {
 
                 this.sendResponse(res, 200, { data: tarifs })
             } catch (err) {
+                console.log(err)
+                this.sendResponse(res, 404, { message: "Tarif not found" })
 
             }
         })
@@ -33,7 +35,9 @@ export default class TarifController extends Controller {
             .createQueryBuilder("tarif")
             .leftJoinAndSelect("tarif.idTypeCouTypeCoursier", "typeCoursier")
             .leftJoinAndSelect("tarif.idZonZone", "zone")
-            .orderBy("typeCoursier.typeCoursier")
+            .orderBy("typeCoursier.idTypeCou")
+            .where("zone.est_supprime = false")
+            .andWhere(`"typeCoursier".est_supprime = false`)
             .getMany()
     }
     async addPost(router: Router): Promise<void> {

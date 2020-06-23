@@ -11,6 +11,7 @@ import { TypeLivraison } from './entities/TypeLivraison';
 import { Zone } from './entities/Zone';
 import { Produit } from './entities/Produit';
 import { TypeProduit } from './entities/TypeProduit';
+import { Tarif } from './entities/Tarif';
 (async () => {
     let connection = await createConnection(ormconfig)
     let adminRepository = connection.getRepository(Admin)
@@ -23,6 +24,7 @@ import { TypeProduit } from './entities/TypeProduit';
     let zoneRepository = connection.getRepository(Zone)
     let produitRepository = connection.getRepository(Produit)
     let typeProduitRepository = connection.getRepository(TypeProduit)
+    let tarifRepository = connection.getRepository(Tarif)
 
     if ((await adminRepository.count()) < 1) {
         let admin = adminRepository.create({
@@ -36,6 +38,16 @@ import { TypeProduit } from './entities/TypeProduit';
             typeCou: "Voiture"
         })
         let typeCoursierSaved = await typeCoursierRepository.save(typeCoursier)
+        typeCoursier = typeCoursierRepository.create({
+            estSupprime: false,
+            typeCou: "Velo"
+        })
+        typeCoursierSaved = await typeCoursierRepository.save(typeCoursier)
+        typeCoursier = typeCoursierRepository.create({
+            estSupprime: false,
+            typeCou: "Moto"
+        })
+        typeCoursierSaved = await typeCoursierRepository.save(typeCoursier)
 
         let coursier = coursierRepository.create({
             nomCou: "TEST",
@@ -94,10 +106,14 @@ import { TypeProduit } from './entities/TypeProduit';
     }
 
     if (await zoneRepository.count() < 1) {
-        let zone = new Zone()
-        zone.nomZon = "Arondissement 1"
-        zone.estSupprime = false
-        await zoneRepository.save(zone)
+        const zones = []
+        for (let i of [1, 2, 3, 4, 5, 6]) {
+            let zone = new Zone()
+            zone.nomZon = "Arondissement " + i
+            zone.estSupprime = false
+            zones.push(zone)
+        }
+        await zoneRepository.save(zones)
     }
 
     if (await typeProduitRepository.count() < 1) {
@@ -121,6 +137,22 @@ import { TypeProduit } from './entities/TypeProduit';
             pros[i].idTypeProTypeProduit = await typeProduitRepository.findOne()
         }
         await produitRepository.save(pros)
+    }
+
+    if (await tarifRepository.count() < 1) {
+        let typeCoursier = await typeCoursierRepository.find()
+        let zones = await zoneRepository.find()
+        let tarifs = []
+        for (let type of typeCoursier) {
+            for (let zone of zones) {
+                let tarif = new Tarif()
+                tarif.idTypeCouTypeCoursier = type
+                tarif.idZonZone = zone
+                tarif.tarifTar = Math.floor(Math.random() * (10 - 3) - 3) * 1000
+                tarifs.push(tarif)
+            }
+        }
+        await tarifRepository.save(tarifs)
     }
 
     if (await livraisonRepository.count() < 1) {
@@ -178,7 +210,7 @@ import { TypeProduit } from './entities/TypeProduit';
         await livraisonRepository.save(liv)
 
         let dem = new Date()
-        dem.setDate(dem.getDate()+1);
+        dem.setDate(dem.getDate() + 1);
 
         liv = new Livraison()
         liv.dateLiv = dem
@@ -197,7 +229,7 @@ import { TypeProduit } from './entities/TypeProduit';
         liv.sommeRecepLiv = 30000
         liv.produits = await produitRepository.find()
         await livraisonRepository.save(liv)
-        
+
         liv = new Livraison()
         liv.dateLiv = dem
         liv.departLiv = "Androndra"
