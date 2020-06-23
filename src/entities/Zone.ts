@@ -11,7 +11,7 @@ export class Zone {
     @Column("character varying", { name: "nom_zon", length: 100 })
     nomZon: string;
 
-    @Column("boolean", { name: "est_suprime" })
+    @Column("boolean", { name: "est_supprime" })
     estSupprime: boolean
 
     @OneToMany(() => Livraison, (livraison) => livraison.idZonDepart)
