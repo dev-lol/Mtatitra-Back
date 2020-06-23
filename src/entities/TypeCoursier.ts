@@ -17,7 +17,7 @@ export class TypeCoursier {
     @OneToMany(() => Coursier, (coursier) => coursier.idTypeCouTypeCoursier)
     coursiers: Coursier[];
 
-    @OneToMany(() => Tarif, (tarif) => tarif.idTar)
+    @OneToMany(() => Tarif, (tarif) => tarif.idTypeCouTypeCoursier)
     tarifs: Tarif[];
     
 }
