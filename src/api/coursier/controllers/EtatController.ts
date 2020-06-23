@@ -1,10 +1,9 @@
 import { Router, Response, Request, NextFunction, ErrorRequestHandler } from "express";
 import { Controller } from "../../Controller"
 import { Etats } from "../../../entities/Etats"
-import { Repository, Connection, createConnection, getConnection } from "typeorm";
+import { Repository, Connection, createConnection, getConnection, getRepository } from "typeorm";
 import { ormconfig } from "../../../config";
 export default class EtatsController extends Controller {
-    etatsRepository: Repository<Etats>
     constructor() {
         super()
         this.addAllRoutes(this.mainRouter)
@@ -22,14 +21,14 @@ export default class EtatsController extends Controller {
 
                 this.sendResponse(res, 200, etats)
             } catch (err) {
-
+                this.sendResponse(res, 404, { message: "Not found" })
             }
         })
 
     }
 
     private async fetchEtatssFromDatabase(): Promise<Etats[]> {
-        return await this.etatsRepository.find({ where: { estSupprime: false }, order: { ordreEta: "ASC" } })
+        return await getRepository(Etats).find({ where: { estSupprime: false }, order: { ordreEta: "ASC" } })
     }
     async addPost(router: Router): Promise<void> {
     }
