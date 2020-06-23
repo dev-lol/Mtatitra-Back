@@ -40,7 +40,7 @@ export default class ClientController extends Controller {
                 bcrypt.compare(req.body.password, client.passCli, (err, isSame) => {
                     if (!err && isSame) {
                         this.sendResponse(res, 200, {
-                            token: jwt.sign({ username: client.emailCli, id: client.idCli }, process.env.CLIENT_PASS_PHRASE, { expiresIn: "30s" })
+                            token: jwt.sign({ username: client.emailCli, id: client.idCli }, process.env.CLIENT_PASS_PHRASE, { expiresIn: "30d" })
                         })
                     } else {
                         this.sendResponse(res, 401, {
