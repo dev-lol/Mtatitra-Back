@@ -2,8 +2,8 @@ import { Router, Response, Request, NextFunction, ErrorRequestHandler } from "ex
 import { Controller } from "../../Controller"
 import { Client } from "../../../entities/Client"
 import { getRepository, Connection, createConnection, getConnection } from "typeorm";
-import { ormconfig } from "../../../config";
 import jwt from 'jsonwebtoken';
+import Password from '../../../utils/Password';
 export default class ClientController extends Controller {
     constructor() {
         super()
@@ -40,7 +40,7 @@ export default class ClientController extends Controller {
                 bcrypt.compare(req.body.password, client.passCli, (err, isSame) => {
                     if (!err && isSame) {
                         this.sendResponse(res, 200, {
-                            token: jwt.sign({ username: client.emailCli, id: client.idCli }, process.env.CLIENT_PASS_PHRASE, { expiresIn: "30d" })
+                            token: jwt.sign({ username: client.emailCli, id: client.idCli }, process.env.CLIENT_PASS_PHRASE, { expiresIn: "30s" })
                         })
                     } else {
                         this.sendResponse(res, 401, {
@@ -57,6 +57,28 @@ export default class ClientController extends Controller {
         })
     }
     async addPut(router: Router): Promise<void> {
+        router.put("/profile", async (req: Request, res: Response, next: NextFunction) => {
+            try {
+
+
+                var clientToModify: Client = await getRepository(Client).findOneOrFail(res.locals.id)
+                var clientFromRequest: Client = getRepository(Client).create(req.body as Object)
+                delete clientFromRequest["passCli"]
+                clientToModify = { ...clientToModify, ...clientFromRequest }
+                if (req.body.oldPassword) {
+                    const isSame = await Password.compare(req.body.oldPassword, clientToModify.passCli)
+                    if (isSame) {
+                        clientToModify.passCli = await Password.hash(req.body.newPassword)
+                    }
+                }
+                await getRepository(Client).save(clientToModify)
+                this.sendResponse(res, 200, { message: "Profile updated" })
+            } catch (error) {
+                this.sendResponse(res, 400, {
+                    message: "Bad request"
+                })
+            }
+        })
 
     }
 
