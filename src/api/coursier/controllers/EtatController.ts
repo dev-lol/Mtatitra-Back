@@ -1,21 +1,12 @@
 import { Router, Response, Request, NextFunction, ErrorRequestHandler } from "express";
 import { Controller } from "../../Controller"
 import { Etats } from "../../../entities/Etats"
-import { Repository, Connection, createConnection, getConnection } from "typeorm";
+import { Repository, Connection, createConnection, getConnection, getRepository } from "typeorm";
 import { ormconfig } from "../../../config";
 export default class EtatsController extends Controller {
-    etatsRepository: Repository<Etats>
     constructor() {
         super()
-this.addAllRoutes(this.mainRouter)
-    }
-
-
-    async createConnectionAndAssignRepository(): Promise<any> {
-        let connection: Connection = getConnection()
-if(!connection)
-connection = await createConnection(ormconfig)
-        this.etatsRepository = connection.getRepository(Etats)
+        this.addAllRoutes(this.mainRouter)
     }
     async addGet(router: Router): Promise<void> {
         await this.getAllEtats(router)
@@ -28,16 +19,16 @@ connection = await createConnection(ormconfig)
 
                 let etats: Etats[] = await this.fetchEtatssFromDatabase()
 
-                this.sendResponse(res, 200,etats)
+                this.sendResponse(res, 200, etats)
             } catch (err) {
-
+                this.sendResponse(res, 404, { message: "Not found" })
             }
         })
 
     }
 
     private async fetchEtatssFromDatabase(): Promise<Etats[]> {
-        return await this.etatsRepository.find({ where: { estSupprime: false },order: {ordreEta: "ASC"} })
+        return await getRepository(Etats).find({ where: { estSupprime: false }, order: { ordreEta: "ASC" } })
     }
     async addPost(router: Router): Promise<void> {
     }
