@@ -29,9 +29,12 @@ export default class TarifController extends Controller {
 
     private async fetchTarifsFromDatabase(): Promise<Tarif[]> {
 
-        return await getRepository(Tarif).createQueryBuilder("tarif")
+        return await getRepository(Tarif)
+            .createQueryBuilder("tarif")
             .leftJoinAndSelect("tarif.idTypeCouTypeCoursier", "typeCoursier")
-            .orderBy("typeCoursier.typeCoursier").getMany()
+            .leftJoinAndSelect("tarif.idZonZone", "zone")
+            .orderBy("typeCoursier.typeCoursier")
+            .getMany()
     }
     async addPost(router: Router): Promise<void> {
     }
