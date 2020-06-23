@@ -8,16 +8,9 @@ export default class DateLimiteController extends Controller {
     dateLimiteRepository: Repository<DateLimite>
     constructor() {
         super()
-this.addAllRoutes(this.mainRouter)
+        this.addAllRoutes(this.mainRouter)
     }
 
-
-    async createConnectionAndAssignRepository(): Promise<any> {
-        let connection: Connection = getConnection()
-if(!connection)
-connection = await createConnection(ormconfig)
-        this.dateLimiteRepository = connection.getRepository(DateLimite)
-    }
     async addGet(router: Router): Promise<void> {
         await this.getAllDateLimite(router)
     }
@@ -38,7 +31,7 @@ connection = await createConnection(ormconfig)
     }
 
     private async fetchDateLimitesFromDatabase(): Promise<DateLimite[]> {
-        return await this.dateLimiteRepository.find({where: {estSupprime: false}})
+        return await this.dateLimiteRepository.find({ where: { estSupprime: false } })
     }
     async addPost(router: Router): Promise<void> {
         await this.postDateLimite(router)
@@ -52,9 +45,9 @@ connection = await createConnection(ormconfig)
             let dateLimiteSaved: DateLimite = await this.saveDateLimiteToDatabase(dateLimiteToSave)
 
             if (await this.isDateLimiteSaved(dateLimiteSaved)) {
-                this.sendResponse(res,200,{message: "OK"})
+                this.sendResponse(res, 200, { message: "OK" })
             } else {
-                this.sendResponse(res,400,{message: "KO"})
+                this.sendResponse(res, 400, { message: "KO" })
             }
 
         })
@@ -79,18 +72,18 @@ connection = await createConnection(ormconfig)
 
 
     async addPut(router: Router): Promise<void> {
-        router.put("/:idDate",async (req: Request, res: Response, next: NextFunction) => {
+        router.put("/:idDate", async (req: Request, res: Response, next: NextFunction) => {
             try {
                 let date: DateLimite = await this.dateLimiteRepository.findOneOrFail(Number(req.params.idDate))
                 date = this.dateLimiteRepository.merge(date, req.body as Object)
                 date.estSupprime = false
                 await this.dateLimiteRepository.save(date)
-                this.sendResponse(res,200, {message: "Date changed"})
+                this.sendResponse(res, 200, { message: "Date changed" })
             } catch (error) {
                 console.log(error)
-                this.sendResponse(res,404, {message: "Date not found"})   
+                this.sendResponse(res, 404, { message: "Date not found" })
             }
-                
+
         })
     }
 
@@ -100,11 +93,11 @@ connection = await createConnection(ormconfig)
                 let date: DateLimite = await this.dateLimiteRepository.findOneOrFail(Number(req.params.idDate))
                 date.estSupprime = true
                 await this.dateLimiteRepository.save(date)
-                this.sendResponse(res,203, {message: "Date deleted"})
+                this.sendResponse(res, 203, { message: "Date deleted" })
             } catch (error) {
-                this.sendResponse(res,404, {message: "Date not found"})   
+                this.sendResponse(res, 404, { message: "Date not found" })
             }
-                
+
         })
     }
 }
