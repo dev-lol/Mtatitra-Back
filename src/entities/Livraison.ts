@@ -15,6 +15,7 @@ import { TypeLivraison } from "./TypeLivraison";
 import { Zone } from "./Zone";
 import { Produit } from "./Produit";
 import { DateLimite } from './DateLimite';
+import { TypeCoursier } from './TypeCoursier';
 
 @Index("Livraison_pk", ["idLiv"], { unique: true })
 @Entity("Livraison", { schema: "public" })
@@ -34,7 +35,7 @@ export class Livraison {
     @Column("date", { name: "date_liv" })
     dateLiv: Date;
 
-   
+
 
     @Column("boolean", { name: "express_liv" })
     expressLiv: Boolean;
@@ -74,7 +75,7 @@ export class Livraison {
         onUpdate: "CASCADE",
         nullable: true
     })
-    @JoinColumn([{ name: "id_eta_Etats", referencedColumnName: "idEta"}])
+    @JoinColumn([{ name: "id_eta_Etats", referencedColumnName: "idEta" }])
     idEtaEtats: Etats;
 
     @ManyToOne(() => TypeLivraison, (typeLivraison) => typeLivraison.livraisons, {
@@ -100,6 +101,14 @@ export class Livraison {
     @JoinColumn([{ name: "id_zon_arrivee", referencedColumnName: "idZon" }])
     idZonArrivee: Zone;
 
-    @OneToMany(() => Produit, (produit) => produit.idLivLivraison, {cascade: true})
+    @OneToMany(() => Produit, (produit) => produit.idLivLivraison, { cascade: true })
     produits: Produit[];
+
+    @ManyToOne(() => Zone, (zone) => zone.livraisons2, {
+        onDelete: "SET NULL",
+        onUpdate: "CASCADE",
+        nullable: false
+    })
+    @JoinColumn([{ name: "id_type_cou_Type Coursier", referencedColumnName: "idTypeCou" }])
+    idTypeCouTypeCoursier: TypeCoursier;
 }
