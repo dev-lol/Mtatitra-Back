@@ -18,25 +18,26 @@ export default class LivraisonController extends Controller {
     async getLivraison(router: Router): Promise<void> {
         router.get("/", async (req: Request, res: Response, next: NextFunction) => {
             if (req.query.coursier && req.query.date) {
-                let liv
+                let liv = []
+                const date = new Date(req.query.date)
                 switch (req.query.coursier) {
                     case 'all':
                         liv = await getRepository(Livraison).find({
                             relations: ["idCouCoursier", "idCliClient", "produits"],
-                            where: { dateLiv: req.query.date }
+                            where: { dateLiv: date }
                         })
                         break;
 
                     case 'true':
                         liv = await getRepository(Livraison).find({
                             relations: ["idCouCoursier", "idCliClient", "produits"],
-                            where: { idCouCoursier: MoreThan(0), dateLiv: req.query.date }
+                            where: { idCouCoursier: MoreThan(0), dateLiv: date }
                         })
                         break;
                     case 'false':
                         liv = await getRepository(Livraison).find({
                             relations: ["idCouCoursier", "idCliClient", "produits"],
-                            where: { idCouCoursier: null, dateLiv: req.query.date }
+                            where: { idCouCoursier: null, dateLiv: date }
                         })
                         break;
                     default:
