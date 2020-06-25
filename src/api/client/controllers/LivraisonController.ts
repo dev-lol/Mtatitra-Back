@@ -11,6 +11,7 @@ import { TypeProduit } from "../../../entities/TypeProduit";
 import { Coursier } from "../../../entities/Coursier";
 import { Zone } from "../../../entities/Zone";
 import { DateLimite } from "../../../entities/DateLimite";
+import { TypeCoursier } from "../../../entities/TypeCoursier";
 export default class LivraisonController extends Controller {
     constructor() {
         super()
@@ -46,6 +47,7 @@ this.addAllRoutes(this.mainRouter)
                 livraison.idCliClient = {... new Client(), idCli: res.locals.id}
                 livraison.idLimiteDat = {... new DateLimite(), idLimiteDat: req.body.livraison.dateLimite}
                 livraison.expressLiv = new Date(req.body.dateLiv).toDateString() == new Date().toDateString()
+                livraison.idTypeCouTypeCoursier = {... new TypeCoursier(), idTypeCou: req.body.livraison.typeCoursier}
                 await getRepository(Livraison).save(livraison)
                 this.sendResponse(res,200,{message: "livraison inseré"})
             } catch (err) {
