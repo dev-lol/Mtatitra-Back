@@ -172,6 +172,7 @@ import { Tarif } from './entities/Tarif';
         liv.numRecepLiv = "0333333333"
         liv.sommeRecepLiv = 30000
         liv.produits = await produitRepository.find()
+        liv.idTypeCouTypeCoursier = await typeCoursierRepository.findOne(1)
         await livraisonRepository.save(liv)
 
         liv = new Livraison()
@@ -190,6 +191,7 @@ import { Tarif } from './entities/Tarif';
         liv.numRecepLiv = "0333333333"
         liv.sommeRecepLiv = 30000
         liv.produits = await produitRepository.find()
+        liv.idTypeCouTypeCoursier = await typeCoursierRepository.findOne(2)
         await livraisonRepository.save(liv)
 
         liv = new Livraison()
@@ -207,6 +209,7 @@ import { Tarif } from './entities/Tarif';
         liv.numRecepLiv = "0333333333"
         liv.sommeRecepLiv = 30000
         liv.produits = await produitRepository.find()
+        liv.idTypeCouTypeCoursier = await typeCoursierRepository.findOne(3)
         await livraisonRepository.save(liv)
 
         let dem = new Date()
@@ -228,6 +231,7 @@ import { Tarif } from './entities/Tarif';
         liv.numRecepLiv = "0333333333"
         liv.sommeRecepLiv = 30000
         liv.produits = await produitRepository.find()
+        liv.idTypeCouTypeCoursier = await typeCoursierRepository.findOne(1)
         await livraisonRepository.save(liv)
 
         liv = new Livraison()
@@ -246,6 +250,7 @@ import { Tarif } from './entities/Tarif';
         liv.numRecepLiv = "0333333333"
         liv.sommeRecepLiv = 30000
         liv.produits = await produitRepository.find()
+        liv.idTypeCouTypeCoursier = await typeCoursierRepository.findOne(2)
         await livraisonRepository.save(liv)
 
         liv = new Livraison()
@@ -263,6 +268,7 @@ import { Tarif } from './entities/Tarif';
         liv.numRecepLiv = "0333333333"
         liv.sommeRecepLiv = 30000
         liv.produits = await produitRepository.find()
+        liv.idTypeCouTypeCoursier = await typeCoursierRepository.findOne(3)
         await livraisonRepository.save(liv)
     }
 })()
