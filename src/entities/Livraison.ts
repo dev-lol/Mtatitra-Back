@@ -104,7 +104,7 @@ export class Livraison {
     @OneToMany(() => Produit, (produit) => produit.idLivLivraison, { cascade: true })
     produits: Produit[];
 
-    @ManyToOne(() => Zone, (zone) => zone.livraisons2, {
+    @ManyToOne(() => TypeCoursier, (type) => type.livraisons, {
         onDelete: "SET NULL",
         onUpdate: "CASCADE",
         nullable: false
