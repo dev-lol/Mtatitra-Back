@@ -11,7 +11,6 @@ import {
 import { Client } from "./Client";
 import { Coursier } from "./Coursier";
 import { Etats } from "./Etats";
-import { TypeLivraison } from "./TypeLivraison";
 import { Zone } from "./Zone";
 import { Produit } from "./Produit";
 import { DateLimite } from './DateLimite';
@@ -77,15 +76,6 @@ export class Livraison {
     })
     @JoinColumn([{ name: "id_eta_Etats", referencedColumnName: "idEta" }])
     idEtaEtats: Etats;
-
-    @ManyToOne(() => TypeLivraison, (typeLivraison) => typeLivraison.livraisons, {
-        onDelete: "SET NULL",
-        onUpdate: "CASCADE",
-    })
-    @JoinColumn([
-        { name: "id_type_liv_Type Livraison", referencedColumnName: "idTypeLiv" },
-    ])
-    idTypeLivTypeLivraison: TypeLivraison;
 
     @ManyToOne(() => Zone, (zone) => zone.livraisons, {
         onDelete: "SET NULL",

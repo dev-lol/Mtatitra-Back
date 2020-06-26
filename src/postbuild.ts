@@ -7,7 +7,6 @@ import { TypeCoursier } from './entities/TypeCoursier';
 import { Livraison } from './entities/Livraison';
 import { Etats } from './entities/Etats';
 import { DateLimite } from './entities/DateLimite';
-import { TypeLivraison } from './entities/TypeLivraison';
 import { Zone } from './entities/Zone';
 import { Produit } from './entities/Produit';
 import { TypeProduit } from './entities/TypeProduit';
@@ -20,7 +19,6 @@ import { Tarif } from './entities/Tarif';
     let livraisonRepository = connection.getRepository(Livraison)
     let etatRepository = connection.getRepository(Etats)
     let limiteDatRepository = connection.getRepository(DateLimite)
-    let typeLivraisonRepository = connection.getRepository(TypeLivraison)
     let zoneRepository = connection.getRepository(Zone)
     let produitRepository = connection.getRepository(Produit)
     let typeProduitRepository = connection.getRepository(TypeProduit)
@@ -109,13 +107,6 @@ import { Tarif } from './entities/Tarif';
         await limiteDatRepository.save(limites)
     }
 
-    if (await typeLivraisonRepository.count() < 1) {
-        let type = new TypeLivraison()
-        type.typeLiv = "Type 1"
-        type.estSupprime = false
-        await typeLivraisonRepository.save(type)
-    }
-
     if (await zoneRepository.count() < 1) {
         const zones = []
         for (let i of [1, 2, 3, 4, 5, 6]) {
@@ -178,7 +169,6 @@ import { Tarif } from './entities/Tarif';
         liv.idCouCoursier = await coursierRepository.findOne()
         liv.idEtaEtats = await etatRepository.findOne({ where: { ordreEta: 2 } })
         liv.idLimiteDat = await limiteDatRepository.findOne()
-        liv.idTypeLivTypeLivraison = await typeLivraisonRepository.findOne()
         liv.idZonArrivee = await zoneRepository.findOne()
         liv.idZonDepart = await zoneRepository.findOne()
         liv.numRecepLiv = "0333333333"
@@ -197,7 +187,6 @@ import { Tarif } from './entities/Tarif';
         liv.idCouCoursier = await coursierRepository.findOne()
         liv.idEtaEtats = await etatRepository.findOne({ where: { ordreEta: 1 } })
         liv.idLimiteDat = await limiteDatRepository.findOne()
-        liv.idTypeLivTypeLivraison = await typeLivraisonRepository.findOne()
         liv.idZonArrivee = await zoneRepository.findOne()
         liv.idZonDepart = await zoneRepository.findOne()
         liv.numRecepLiv = "0333333333"
@@ -215,7 +204,6 @@ import { Tarif } from './entities/Tarif';
         liv.idCliClient = await clientRepository.findOne()
         liv.idCouCoursier = await coursierRepository.findOne()
         liv.idLimiteDat = await limiteDatRepository.findOne()
-        liv.idTypeLivTypeLivraison = await typeLivraisonRepository.findOne()
         liv.idZonArrivee = await zoneRepository.findOne()
         liv.idZonDepart = await zoneRepository.findOne()
         liv.numRecepLiv = "0333333333"
@@ -237,7 +225,6 @@ import { Tarif } from './entities/Tarif';
         liv.idCouCoursier = await coursierRepository.findOne()
         liv.idEtaEtats = await etatRepository.findOne({ where: { ordreEta: 2 } })
         liv.idLimiteDat = await limiteDatRepository.findOne()
-        liv.idTypeLivTypeLivraison = await typeLivraisonRepository.findOne()
         liv.idZonArrivee = await zoneRepository.findOne()
         liv.idZonDepart = await zoneRepository.findOne()
         liv.numRecepLiv = "0333333333"
@@ -256,7 +243,6 @@ import { Tarif } from './entities/Tarif';
         liv.idCouCoursier = await coursierRepository.findOne()
         liv.idEtaEtats = await etatRepository.findOne({ where: { ordreEta: 1 } })
         liv.idLimiteDat = await limiteDatRepository.findOne()
-        liv.idTypeLivTypeLivraison = await typeLivraisonRepository.findOne()
         liv.idZonArrivee = await zoneRepository.findOne()
         liv.idZonDepart = await zoneRepository.findOne()
         liv.numRecepLiv = "0333333333"
@@ -274,7 +260,6 @@ import { Tarif } from './entities/Tarif';
         liv.idCliClient = await clientRepository.findOne()
         liv.idCouCoursier = await coursierRepository.findOne()
         liv.idLimiteDat = await limiteDatRepository.findOne()
-        liv.idTypeLivTypeLivraison = await typeLivraisonRepository.findOne()
         liv.idZonArrivee = await zoneRepository.findOne()
         liv.idZonDepart = await zoneRepository.findOne()
         liv.numRecepLiv = "0333333333"
