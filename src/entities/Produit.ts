@@ -55,6 +55,7 @@ export class Produit {
     @ManyToOne(() => TypeProduit, (typeProduit) => typeProduit.produits, {
         onDelete: "SET NULL",
         onUpdate: "CASCADE",
+        eager: true
     })
     @JoinColumn([
         { name: "id_type_pro_Type_Produit", referencedColumnName: "idTypePro" },

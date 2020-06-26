@@ -50,14 +50,25 @@ import { Tarif } from './entities/Tarif';
         typeCoursierSaved = await typeCoursierRepository.save(typeCoursier)
 
         let coursier = coursierRepository.create({
-            nomCou: "TEST",
-            prenomCou: "lol",
+            nomCou: "Moto",
+            prenomCou: "man",
             usernameCou: "coursier_test@coursier.com",
             numTelCou: "0344822017",
             passCou: "$2b$12$NkZMgOfQDiTueABJ8.BCrujsjNlbEDZ2WL8ns1PTtWMX49l3u802G"
         })
         coursier.idAdmAdmin = adminSaved
         coursier.idTypeCouTypeCoursier = typeCoursierSaved
+        await coursierRepository.save(coursier)
+
+        coursier = coursierRepository.create({
+            nomCou: "Velo",
+            prenomCou: "man",
+            usernameCou: "coursier_test2@coursier.com",
+            numTelCou: "0344822017",
+            passCou: "$2b$12$NkZMgOfQDiTueABJ8.BCrujsjNlbEDZ2WL8ns1PTtWMX49l3u802G"
+        })
+        coursier.idAdmAdmin = adminSaved
+        coursier.idTypeCouTypeCoursier = { ... new TypeCoursier(), idTypeCou: 2 }
         await coursierRepository.save(coursier)
     }
     let clientRepository = connection.getRepository(Client)
