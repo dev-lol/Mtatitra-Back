@@ -49,6 +49,7 @@ export default class LivraisonController extends Controller {
                             .leftJoinAndSelect("livraison.idTypeCouTypeCoursier", "typeCoursier")
                             .leftJoinAndSelect("typeCoursier.coursiers", "coursierPossible")
                             .where("livraison.dateLiv = :date", { date: date })
+                            .andWhere("livraison.idCouCoursier is null")
                             .getMany()
                         break;
                     default:
