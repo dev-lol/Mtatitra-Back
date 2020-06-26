@@ -22,10 +22,15 @@ export default class LivraisonController extends Controller {
                 const date = new Date(req.query.date)
                 switch (req.query.coursier) {
                     case 'all':
-                        liv = await getRepository(Livraison).find({
-                            relations: ["idCouCoursier", "idCliClient", "produits"],
-                            where: { dateLiv: date }
-                        })
+                        liv = await getRepository(Livraison)
+                        .createQueryBuilder("livraison")
+                        .leftJoinAndSelect("livraison.idCliClient", "client")
+                        .leftJoinAndSelect("livraison.produits","produits")
+                        .leftJoinAndSelect("livraison.idCouCoursier","coursier")
+                        .leftJoinAndSelect("livraison.idTypeCouTypeCoursier", "typeCoursier")
+                        .leftJoinAndSelect("typeCoursier.coursiers", "coursierPossible")
+                        .where("livraison.dateLiv = :date", {date: date})
+                        .getMany()
                         break;
 
                     case 'true':
@@ -35,10 +40,14 @@ export default class LivraisonController extends Controller {
                         })
                         break;
                     case 'false':
-                        liv = await getRepository(Livraison).find({
-                            relations: ["idCouCoursier", "idCliClient", "produits"],
-                            where: { idCouCoursier: null, dateLiv: date }
-                        })
+                        liv = await getRepository(Livraison)
+                        .createQueryBuilder("livraison")
+                        .leftJoinAndSelect("livraison.idCliClient", "client")
+                        .leftJoinAndSelect("livraison.produits","produits")
+                        .leftJoinAndSelect("livraison.idTypeCouTypeCoursier", "typeCoursier")
+                        .leftJoinAndSelect("typeCoursier.coursiers", "coursierPossible")
+                        .where("livraison.dateLiv = :date", {date: date})
+                        .getMany()
                         break;
                     default:
                         break;
