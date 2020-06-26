@@ -110,6 +110,7 @@ import { Tarif } from './entities/Tarif';
         for (let i of [1, 2, 3, 4, 5, 6]) {
             let zone = new Zone()
             zone.nomZon = "Arondissement " + i
+            zone.detailsZon = "Details kely oe aiza " + i
             zone.estSupprime = false
             zones.push(zone)
         }
