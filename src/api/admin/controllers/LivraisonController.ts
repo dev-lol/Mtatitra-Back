@@ -36,15 +36,16 @@ export default class LivraisonController extends Controller {
 
                     case 'true':
                         liv = await getRepository(Livraison)
-                        .createQueryBuilder("livraison")
-                        .leftJoinAndSelect("livraison.idCliClient", "client")
-                        .leftJoinAndSelect("livraison.produits", "produits")
-                        .leftJoinAndSelect("produits.idTypeProTypeProduit", "typeProduit")
-                        .leftJoinAndSelect("livraison.idTypeCouTypeCoursier", "typeCoursier")
-                        .leftJoinAndSelect("typeCoursier.coursiers", "coursierPossible")
-                        .where("livraison.dateLiv = :date", { date: date })
-                        .andWhere("livraison.idCouCoursier is not null")
-                        .getMany()
+                            .createQueryBuilder("livraison")
+                            .leftJoinAndSelect("livraison.idCliClient", "client")
+                            .leftJoinAndSelect("livraison.produits", "produits")
+                            .leftJoinAndSelect("produits.idTypeProTypeProduit", "typeProduit")
+                            .leftJoinAndSelect("livraison.idCouCoursier", "coursier")
+                            .leftJoinAndSelect("livraison.idTypeCouTypeCoursier", "typeCoursier")
+                            .leftJoinAndSelect("typeCoursier.coursiers", "coursierPossible")
+                            .where("livraison.dateLiv = :date", { date: date })
+                            .andWhere("livraison.idCouCoursier is not null")
+                            .getMany()
                         break;
                     case 'false':
                         liv = await getRepository(Livraison)
@@ -53,6 +54,7 @@ export default class LivraisonController extends Controller {
                             .leftJoinAndSelect("livraison.produits", "produits")
                             .leftJoinAndSelect("produits.idTypeProTypeProduit", "typeProduit")
                             .leftJoinAndSelect("livraison.idTypeCouTypeCoursier", "typeCoursier")
+                            .leftJoinAndSelect("livraison.idCouCoursier", "coursier")
                             .leftJoinAndSelect("typeCoursier.coursiers", "coursierPossible")
                             .where("livraison.dateLiv = :date", { date: date })
                             .andWhere("livraison.idCouCoursier is null")
