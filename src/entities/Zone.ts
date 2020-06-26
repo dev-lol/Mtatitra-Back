@@ -10,6 +10,8 @@ export class Zone {
 
     @Column("character varying", { name: "nom_zon", length: 100 })
     nomZon: string;
+    @Column("character varying", { name: "details_zon", length: 100 })
+    detailsZon: string;
 
     @Column("boolean", { name: "est_supprime" })
     estSupprime: boolean
