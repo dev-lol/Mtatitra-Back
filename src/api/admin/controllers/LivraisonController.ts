@@ -23,14 +23,15 @@ export default class LivraisonController extends Controller {
                 switch (req.query.coursier) {
                     case 'all':
                         liv = await getRepository(Livraison)
-                        .createQueryBuilder("livraison")
-                        .leftJoinAndSelect("livraison.idCliClient", "client")
-                        .leftJoinAndSelect("livraison.produits","produits")
-                        .leftJoinAndSelect("livraison.idCouCoursier","coursier")
-                        .leftJoinAndSelect("livraison.idTypeCouTypeCoursier", "typeCoursier")
-                        .leftJoinAndSelect("typeCoursier.coursiers", "coursierPossible")
-                        .where("livraison.dateLiv = :date", {date: date})
-                        .getMany()
+                            .createQueryBuilder("livraison")
+                            .leftJoinAndSelect("livraison.idCliClient", "client")
+                            .leftJoinAndSelect("livraison.produits", "produits")
+                            .leftJoinAndSelect("produits.idTypeProTypeProduit", "typeProduit")
+                            .leftJoinAndSelect("livraison.idCouCoursier", "coursier")
+                            .leftJoinAndSelect("livraison.idTypeCouTypeCoursier", "typeCoursier")
+                            .leftJoinAndSelect("typeCoursier.coursiers", "coursierPossible")
+                            .where("livraison.dateLiv = :date", { date: date })
+                            .getMany()
                         break;
 
                     case 'true':
@@ -41,13 +42,14 @@ export default class LivraisonController extends Controller {
                         break;
                     case 'false':
                         liv = await getRepository(Livraison)
-                        .createQueryBuilder("livraison")
-                        .leftJoinAndSelect("livraison.idCliClient", "client")
-                        .leftJoinAndSelect("livraison.produits","produits")
-                        .leftJoinAndSelect("livraison.idTypeCouTypeCoursier", "typeCoursier")
-                        .leftJoinAndSelect("typeCoursier.coursiers", "coursierPossible")
-                        .where("livraison.dateLiv = :date", {date: date})
-                        .getMany()
+                            .createQueryBuilder("livraison")
+                            .leftJoinAndSelect("livraison.idCliClient", "client")
+                            .leftJoinAndSelect("livraison.produits", "produits")
+                            .leftJoinAndSelect("produits.idTypeProTypeProduit", "typeProduit")
+                            .leftJoinAndSelect("livraison.idTypeCouTypeCoursier", "typeCoursier")
+                            .leftJoinAndSelect("typeCoursier.coursiers", "coursierPossible")
+                            .where("livraison.dateLiv = :date", { date: date })
+                            .getMany()
                         break;
                     default:
                         break;
