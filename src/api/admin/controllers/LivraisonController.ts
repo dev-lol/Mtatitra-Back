@@ -1,7 +1,7 @@
 import { Router, Response, Request, NextFunction, ErrorRequestHandler } from "express";
 import { Controller } from "../../Controller"
 import { Admin } from "../../../entities/Admin"
-import { Repository, Connection, createConnection } from "typeorm";
+import { Repository, Connection, createConnection, Any } from "typeorm";
 import { ormconfig } from "../../../config";
 import jwt from 'jsonwebtoken';
 import { Livraison } from "../../../entities/Livraison";
@@ -29,7 +29,23 @@ export default class LivraisonController extends Controller {
     async addGet(router: Router): Promise<void> {
         await this.livraisonSansCoursier(router)
         await this.allLivraison(router)
+
+        await this.livStatByDate(router)
     }
+
+    async livStatByDate(router : Router) : Promise<void>{
+        router.get("/livraison/stat",async(req:Request,res:Response,next : NextFunction)=>{
+            let a = await this.livraisonRepository
+                .createQueryBuilder("livraison")
+                .select("livraison.dateLiv,count(livraison.dateLiv)")
+                
+                .groupBy("livraison.dateLiv")
+                .getRawMany()
+                
+            
+            res.json(a)
+        })
+    } 
 
     async livraisonBetweenDate(router) : Promise<void> {
         try{
