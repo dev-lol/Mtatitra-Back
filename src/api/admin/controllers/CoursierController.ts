@@ -42,7 +42,7 @@ export default class CoursierController extends Controller {
             try {
                 const coursierToSave: Coursier = await getRepository(Coursier).create(req.body as Object)
                 coursierToSave.passCou = await Password.hash(coursierToSave.passCou)
-                coursierToSave.idTypeCouTypeCoursier = { ... new TypeCoursier(), idTypeCou: req.body.idTypeCou }
+                coursierToSave.idTypeCouTypeCoursier = await getRepository(TypeCoursier).findOneOrFail(req.body.idTypeCou)
                 await getRepository(Coursier).save(coursierToSave)
                 this.sendResponse(res, 201, { message: "Coursier added" })
             } catch (error) {
@@ -54,10 +54,13 @@ export default class CoursierController extends Controller {
     async addPut(router: Router): Promise<void> {
         router.put("/:idCoursier", async (req: Request, res: Response, next: NextFunction) => {
             try {
-                let coursier: Coursier = await getRepository(Coursier).findOneOrFail(Number(req.params.idCoursier))
-                coursier = getRepository(Coursier).merge(coursier, req.body as Object)
+                let coursierOriginal: Coursier = await getRepository(Coursier).findOneOrFail(Number(req.params.idCoursier), { relations: ["idTypeCouTypeCoursier"] })
+                let coursier = getRepository(Coursier).merge(coursierOriginal, req.body as Object)
                 if (req.body.passCou) {
                     coursier.passCou = await Password.hash(coursier.passCou)
+                }
+                if (req.body.idTypeCou != coursierOriginal.idTypeCouTypeCoursier.idTypeCou) {
+                    coursier.idTypeCouTypeCoursier = await getRepository(TypeCoursier).findOneOrFail(req.body.idTypeCou)
                 }
                 await getRepository(Coursier).save(coursier)
                 this.sendResponse(res, 200, { message: "Coursier changed" })
