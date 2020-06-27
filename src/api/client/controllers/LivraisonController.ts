@@ -32,12 +32,12 @@ export default class LivraisonController extends Controller {
                     .leftJoinAndSelect("livraison.produits", "produits")
                     .select()
                     .where("livraison.dateLiv > CURRENT_DATE")
-                    .andWhere("livraison.idCliClient = :idCli", {idCli: res.locals.id})
+                    .andWhere("livraison.idCliClient = :idCli", { idCli: res.locals.id })
                     .orWhere("livraison.idEtaEtats is null")
                     .andWhere("livraison.dateLiv = CURRENT_DATE")
-                    .andWhere("livraison.idCliClient = :idCli", {idCli: res.locals.id})
+                    .andWhere("livraison.idCliClient = :idCli", { idCli: res.locals.id })
                     .getMany()
-                
+
                 const en_cours = await getRepository(Livraison)
                     .createQueryBuilder("livraison")
                     .leftJoinAndSelect("livraison.produits", "produits")
@@ -45,7 +45,7 @@ export default class LivraisonController extends Controller {
                     .where("livraison.idEtaEtats is not null")
                     .andWhere("livraison.idEtaEtats <> :id", { id: last.idEta })
                     .andWhere("livraison.dateLiv = CURRENT_DATE")
-                    .andWhere("livraison.idCliClient = :idCli", {idCli: res.locals.id})
+                    .andWhere("livraison.idCliClient = :idCli", { idCli: res.locals.id })
                     .getMany()
                 const historique = await getRepository(Livraison)
                     .createQueryBuilder("livraison")
@@ -53,7 +53,7 @@ export default class LivraisonController extends Controller {
                     .select()
                     .where("livraison.dateLiv < CURRENT_DATE")
                     .orWhere("livraison.idEtaEtats = :id", { id: last.idEta })
-                    .andWhere("livraison.idCliClient = :idCli", {idCli: res.locals.id})
+                    .andWhere("livraison.idCliClient = :idCli", { idCli: res.locals.id })
                     .getMany()
                 this.sendResponse(res, 200, {
                     planifie: planifie,
