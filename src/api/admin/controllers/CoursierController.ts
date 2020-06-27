@@ -29,7 +29,7 @@ export default class CoursierController extends Controller {
     }
 
     private async fetchCoursiersFromDatabase(): Promise<Coursier[]> {
-        return await getRepository(Coursier).find({ where: { estSupprime: false } })
+        return await getRepository(Coursier).find({ relations: ["idTypeCouTypeCoursier"],where: { estSupprime: false } })
     }
     async addPost(router: Router): Promise<void> {
         await this.postCoursier(router)
