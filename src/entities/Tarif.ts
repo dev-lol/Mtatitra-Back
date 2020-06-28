@@ -1,8 +1,9 @@
-import { Column, Entity, Index, OneToMany, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from "typeorm";
+import { Column, Entity, Index, OneToMany, PrimaryGeneratedColumn, ManyToOne, JoinColumn, Unique } from "typeorm";
 import { Zone } from './Zone';
 import { TypeCoursier } from './TypeCoursier';
 
 @Index("Tarif_pk", ["idTar"], { unique: true })
+@Unique(["idZonZone", "idTypeCouTypeCoursier"])
 @Entity("Tarif", { schema: "public" })
 export class Tarif {
     @PrimaryGeneratedColumn({ type: "integer", name: "id_tar" })
