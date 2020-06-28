@@ -3,10 +3,10 @@ import { Controller } from "../../Controller"
 import { Admin } from "../../../entities/Admin"
 import { getRepository, MoreThan } from "typeorm";
 import { ormconfig } from "../../../config";
-import jwt from 'jsonwebtoken';
 import { Livraison } from "../../../entities/Livraison";
-import { isNull } from "util";
 import { Coursier } from "../../../entities/Coursier";
+import { isNull } from "util";
+
 export default class LivraisonController extends Controller {
     constructor() {
         super()

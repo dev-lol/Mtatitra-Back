@@ -5,7 +5,11 @@ var connectionOption: ConnectionOptions = {
    host: process.env.DB_HOST || "localhost",
    port: Number(process.env.DB_PORT) || 5432,
    username: process.env.DB_USER || "postgres",
+<<<<<<< HEAD
    password: process.env.DB_PASSWORD  ,
+=======
+   password: process.env.DB_PASSWORD || "Hnavalona419" ,
+>>>>>>> b0121d8d616708c4853a7e91c0e093ce2608ef03
    database: process.env.DB_DATABASE || "Mtatitra",
    schema: "public",
    synchronize: false,

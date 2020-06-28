@@ -13,8 +13,13 @@ export default class LivraisonController extends Controller {
         this.addAllRoutes(this.mainRouter)
     }
     async addGet(router: Router): Promise<void> {
+<<<<<<< HEAD
         await this.todayLivraison(router)
         await this.tomorrowLivraison(router)
+=======
+        await this.recentLivraison(router)
+       
+>>>>>>> b0121d8d616708c4853a7e91c0e093ce2608ef03
     }
 
     async tomorrowLivraison(router): Promise<void> {
@@ -64,9 +69,34 @@ export default class LivraisonController extends Controller {
         })
     }
 
+<<<<<<< HEAD
     async addPost(router: Router): Promise<void> {
 
 
+=======
+    async updateLivraison(router) : Promise<void>{
+        try{
+            router.put("/livraison/:idLivraison",async(req:Request,res:Response,next :NextFunction) =>{
+                 let livraisonToUpdate : Livraison = await this.fetchLivraisonToUpdateFromDb(req)
+               let nouveauEtat : Etats = await this.createEtatFromRequest(req)
+               let livraisonUpdated : Livraison= await this.updateEtatLivraison(livraisonToUpdate,nouveauEtat)  
+
+               this.sendResponse(res, 200 , {
+                   message : "success",
+                   data : nouveauEtat
+               })
+           })
+        }catch(err) {
+            console.log(err)
+            //this.passErrorToExpress(next ,err)
+        }
+        
+    }
+
+    private async updateEtatLivraison( liv : Livraison,etat : Etats) : Promise<Livraison>{
+        liv.idEtaEtats = etat
+        return await this.livraisonRepository.save(liv)
+>>>>>>> b0121d8d616708c4853a7e91c0e093ce2608ef03
     }
 
 

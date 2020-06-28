@@ -9,6 +9,7 @@ export default class AdminController extends Controller {
         super()
         this.addAllRoutes(this.mainRouter)
     }
+    
     async addGet(router: Router): Promise<void> {
 
     }
