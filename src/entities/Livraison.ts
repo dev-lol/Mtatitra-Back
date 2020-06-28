@@ -11,10 +11,10 @@ import {
 import { Client } from "./Client";
 import { Coursier } from "./Coursier";
 import { Etats } from "./Etats";
-import { TypeLivraison } from "./TypeLivraison";
 import { Zone } from "./Zone";
 import { Produit } from "./Produit";
 import { DateLimite } from './DateLimite';
+import { TypeCoursier } from './TypeCoursier';
 
 @Index("Livraison_pk", ["idLiv"], { unique: true })
 @Entity("Livraison", { schema: "public" })
@@ -31,10 +31,10 @@ export class Livraison {
     @Column("character varying", { name: "num_recep_liv", length: 10 })
     numRecepLiv: string;
 
-    @Column("timestamp without time zone", { name: "date_liv" })
+    @Column("date", { name: "date_liv" })
     dateLiv: Date;
 
-   
+
 
     @Column("boolean", { name: "express_liv" })
     expressLiv: Boolean;
@@ -45,8 +45,8 @@ export class Livraison {
     })
     sommeRecepLiv: number;
 
-    @Column("smallint", { name: "description_liv", nullable: true })
-    descriptionLiv: number | null;
+    @Column("character varying", { name: "description_liv", nullable: true })
+    descriptionLiv: string | null;
 
     @ManyToOne(() => Client, (client) => client.livraisons, {
         onDelete: "SET NULL",
@@ -72,18 +72,10 @@ export class Livraison {
     @ManyToOne(() => Etats, (etats) => etats.livraisons, {
         onDelete: "SET NULL",
         onUpdate: "CASCADE",
+        nullable: true
     })
     @JoinColumn([{ name: "id_eta_Etats", referencedColumnName: "idEta" }])
     idEtaEtats: Etats;
-
-    @ManyToOne(() => TypeLivraison, (typeLivraison) => typeLivraison.livraisons, {
-        onDelete: "SET NULL",
-        onUpdate: "CASCADE",
-    })
-    @JoinColumn([
-        { name: "id_type_liv_Type Livraison", referencedColumnName: "idTypeLiv" },
-    ])
-    idTypeLivTypeLivraison: TypeLivraison;
 
     @ManyToOne(() => Zone, (zone) => zone.livraisons, {
         onDelete: "SET NULL",
@@ -99,6 +91,14 @@ export class Livraison {
     @JoinColumn([{ name: "id_zon_arrivee", referencedColumnName: "idZon" }])
     idZonArrivee: Zone;
 
-    @OneToMany(() => Produit, (produit) => produit.idLivLivraison)
+    @OneToMany(() => Produit, (produit) => produit.idLivLivraison, { cascade: true })
     produits: Produit[];
+
+    @ManyToOne(() => TypeCoursier, (type) => type.livraisons, {
+        onDelete: "SET NULL",
+        onUpdate: "CASCADE",
+        nullable: false
+    })
+    @JoinColumn([{ name: "id_type_cou_Type Coursier", referencedColumnName: "idTypeCou" }])
+    idTypeCouTypeCoursier: TypeCoursier;
 }

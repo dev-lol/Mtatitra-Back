@@ -1,26 +1,25 @@
 import { Router, Response, Request, NextFunction, ErrorRequestHandler } from "express";
 import { Controller } from "../../Controller"
-import { TypeCoursier } from "../../../entities/TypeCoursier"
-import { getRepository, Connection, createConnection, getConnection } from "typeorm";
+import { TypeProduit } from "../../../entities/TypeProduit"
+import { getRepository} from "typeorm";
 import { ormconfig } from "../../../config";
 import { runInThisContext } from "vm";
-export default class TypeCoursierController extends Controller {
+export default class TypeProduitController extends Controller {
     constructor() {
         super()
 this.addAllRoutes(this.mainRouter)
     }
+
     async addGet(router: Router): Promise<void> {
-        await this.getAllTypeCoursier(router)
+        await this.getAllTypeProduit(router)
     }
 
 
-    private async getAllTypeCoursier(router: Router): Promise<void> {
+    private async getAllTypeProduit(router: Router): Promise<void> {
         router.get("/", async (req: Request, res: Response, next: NextFunction) => {
             try {
-
-                let typeCoursiers: TypeCoursier[] = await this.fetchTypeCoursiersFromDatabase()
-
-                this.sendResponse(res, 200, typeCoursiers)
+                let typeProduits: TypeProduit[] = await this.fetchTypeProduitsFromDatabase()
+                this.sendResponse(res, 200, typeProduits)
             } catch (err) {
 
             }
@@ -28,19 +27,19 @@ this.addAllRoutes(this.mainRouter)
 
     }
 
-    private async fetchTypeCoursiersFromDatabase(): Promise<TypeCoursier[]> {
-        return await getRepository(TypeCoursier).find({ where: { estSupprime: false } })
+    private async fetchTypeProduitsFromDatabase(): Promise<TypeProduit[]> {
+        return await getRepository(TypeProduit).find({where: {estSupprime: false}})
     }
     async addPost(router: Router): Promise<void> {
-
+        await this.postTypeProduit(router)
     }
 
+    async postTypeProduit(router: Router) {
+    }
 
     async addPut(router: Router): Promise<void> {
-
     }
 
     async addDelete(router: Router): Promise<void> {
-
     }
 }

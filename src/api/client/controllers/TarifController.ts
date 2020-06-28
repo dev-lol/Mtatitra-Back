@@ -1,25 +1,18 @@
 import { Router, Response, Request, NextFunction, ErrorRequestHandler } from "express";
 import { Controller } from "../../Controller"
 import { Tarif } from "../../../entities/Tarif"
-import { Repository, Connection, createConnection } from "typeorm";
+import { getRepository } from "typeorm";
 import { ormconfig } from "../../../config";
+import { TypeCoursier } from '../../../entities/TypeCoursier';
+import { Zone } from "../../../entities/Zone";
 export default class TarifController extends Controller {
-    tarifRepository: Repository<Tarif>
     constructor() {
         super()
-        this.createConnectionAndAssignRepository()
-            .then(async (_) => {
-                await this.addAllRoutes(this.mainRouter)
-            })
-    }
-
-
-    async createConnectionAndAssignRepository(): Promise<any> {
-        let connection: Connection = await createConnection(ormconfig)
-        this.tarifRepository = connection.getRepository(Tarif)
+        this.addAllRoutes(this.mainRouter)
     }
     async addGet(router: Router): Promise<void> {
         await this.getAllTarif(router)
+        await this.getTarif(router)
     }
 
 
@@ -27,21 +20,46 @@ export default class TarifController extends Controller {
         router.get("/", async (req: Request, res: Response, next: NextFunction) => {
             try {
 
-                let tarifs: Tarif[] = await this.fetchTarifsFromDatabase()
+                let tarifs = await this.fetchTarifsFromDatabase()
 
-                this.sendResponse(res, 200, { data: tarifs })
+                this.sendResponse(res, 200, tarifs)
             } catch (err) {
+                console.log(err)
+                this.sendResponse(res, 404, { message: "Tarif not found" })
 
             }
         })
 
     }
 
-    private async fetchTarifsFromDatabase(): Promise<Tarif[]> {
+    private async getTarif(router: Router): Promise<void> {
+        router.get("/typecoursier/:typeCoursier/zone/:zone", async (req: Request, res: Response, next: NextFunction) => {
+            try {
 
-        return await this.tarifRepository.createQueryBuilder("tarif")
-            .leftJoinAndSelect("tarif.idTypeCouTypeCoursier", "typeCoursier")
-            .orderBy("typeCoursier.typeCoursier").getMany()
+                let tarifs = await getRepository(Tarif).findOneOrFail({
+                    where: {
+                        idTypeCouTypeCoursier: req.params.typeCoursier,
+                        idZonZone: req.params.zone
+                    }
+                })
+                this.sendResponse(res, 200, tarifs)
+            } catch (err) {
+                console.log(err)
+                this.sendResponse(res, 404, { message: "Tarif not found" })
+
+            }
+        })
+
+    }
+
+    private async fetchTarifsFromDatabase(): Promise<TypeCoursier[]> {
+        return await getRepository(TypeCoursier)
+            .createQueryBuilder("typeCoursier")
+            .innerJoinAndSelect("typeCoursier.tarifs", "tarif")
+            .leftJoinAndSelect("tarif.idZonZone", "zone")
+            .where("typeCoursier.estSupprime = false")
+            .where("zone.estSupprime = false")
+            .getMany()
     }
     async addPost(router: Router): Promise<void> {
     }

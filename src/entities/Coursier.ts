@@ -42,7 +42,7 @@ export class Coursier {
   @ManyToOne(() => TypeCoursier, (typeCoursier) => typeCoursier.coursiers, {
     onDelete: "SET NULL",
     onUpdate: "CASCADE",
-    
+    nullable: false
   })
   @JoinColumn([
     { name: "id_type_cou_Type_Coursier", referencedColumnName: "idTypeCou" },

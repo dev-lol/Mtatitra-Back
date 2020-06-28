@@ -6,7 +6,6 @@ import { Connection } from 'typeorm';
 export abstract class Controller{
     mainRouter: Router = Router()
     connection : Connection
-    abstract async createConnectionAndAssignRepository() : Promise<any>;
     protected async addAllRoutes(router : Router):Promise<void>{
         await this.addGet(router)
         await this.addPost(router)

@@ -28,6 +28,9 @@ export class Client {
     @Column("character varying", { name: "confirmation_cli", nullable: true, length: 6 })
     confirmationCli: string;
 
+    @Column("character varying", { name: "reset_code_cli", nullable: true, length: 6 })
+    resetCodeCli: string;
+
     @OneToMany(() => Livraison, (livraison) => livraison.idCliClient)
     livraisons: Livraison[];
 }
