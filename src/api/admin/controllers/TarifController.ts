@@ -19,7 +19,6 @@ export default class TarifController extends Controller {
             try {
 
                 let tarifs: Tarif[] = await this.fetchTarifsFromDatabase()
-
                 this.sendResponse(res, 200, { data: tarifs })
             } catch (err) {
 
@@ -32,7 +31,9 @@ export default class TarifController extends Controller {
 
         return await getRepository(Tarif).createQueryBuilder("tarif")
             .leftJoinAndSelect("tarif.idTypeCouTypeCoursier", "typeCoursier")
-            .orderBy("typeCoursier.typeCoursier").getMany()
+            .leftJoinAndSelect("tarif.idZonZone", "zone")
+            .orderBy("typeCoursier.typeCoursier")
+            .getMany()
     }
     async addPost(router: Router): Promise<void> {
         await this.postTarif(router)

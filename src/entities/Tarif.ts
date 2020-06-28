@@ -14,6 +14,7 @@ export class Tarif {
     @ManyToOne(() => Zone, (zone) => zone.idZon, {
         onDelete: "SET NULL",
         onUpdate: "CASCADE",
+        nullable: false
     })
     @JoinColumn([{ name: "id_zon_Zone", referencedColumnName: "idZon" }])
     idZonZone: Zone;
@@ -21,6 +22,7 @@ export class Tarif {
     @ManyToOne(() => TypeCoursier, (typeCoursier) => typeCoursier.idTypeCou, {
         onDelete: "SET NULL",
         onUpdate: "CASCADE",
+        nullable: false
     })
     @JoinColumn([{ name: "id_type_cou_Type_Coursier", referencedColumnName: "idTypeCou" }])
     idTypeCouTypeCoursier: TypeCoursier;
