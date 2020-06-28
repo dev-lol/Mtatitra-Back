@@ -73,6 +73,8 @@ export default class TarifController extends Controller {
             try {
                 let tarif: Tarif = await getRepository(Tarif).findOneOrFail(Number(req.params.idTarif))
                 tarif = getRepository(Tarif).merge(tarif, req.body as Object)
+                tarif.idTypeCouTypeCoursier = await getRepository(TypeCoursier).findOneOrFail(req.body.idTypeCouTypeCoursier)
+                tarif.idZonZone = await getRepository(Zone).findOneOrFail(req.body.idZonZone)
                 await getRepository(Tarif).save(tarif)
                 this.sendResponse(res, 200, { message: "Tarif changed" })
             } catch (error) {
