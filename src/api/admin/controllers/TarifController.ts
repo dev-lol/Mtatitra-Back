@@ -51,7 +51,10 @@ export default class TarifController extends Controller {
 
                 this.sendResponse(res, 201, { message: "OK" })
             } catch (error) {
-                this.sendResponse(res, 400, { message: "KO" })
+                if (error.code == 23505)
+                    this.sendResponse(res, 400, { message: "Tarif doit etre unique" })
+                else
+                    this.sendResponse(res, 404, { message: "Not found" })
             }
 
         })
@@ -73,8 +76,10 @@ export default class TarifController extends Controller {
                 await getRepository(Tarif).save(tarif)
                 this.sendResponse(res, 200, { message: "Tarif changed" })
             } catch (error) {
-                console.log(error)
-                this.sendResponse(res, 404, { message: "Tarif not found" })
+                if (error.code == 23505)
+                    this.sendResponse(res, 400, { message: "Tarif doit etre unique" })
+                else
+                    this.sendResponse(res, 404, { message: "Tarif not found" })
             }
 
         })
