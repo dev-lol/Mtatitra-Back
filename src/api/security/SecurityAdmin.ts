@@ -2,11 +2,8 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 export default function securityAdmin(req: Request, res: Response, next: NextFunction) {
-    console.log(req.path)
-    if(req.path == "/login") return next()
-
+    if (req.path == "/login") return next()
     var jwtToken: string = req.headers["authorization"]
-    console.log(jwtToken)
     if (jwtToken == undefined) {
         res.status(401).send({
             message: "JWT token Missing"
@@ -20,6 +17,8 @@ export default function securityAdmin(req: Request, res: Response, next: NextFun
                     message: error.message
                 })
                 return
+            } else {
+                return next()
             }
         })
     } catch (error) {
@@ -28,5 +27,4 @@ export default function securityAdmin(req: Request, res: Response, next: NextFun
         })
         return;
     }
-    next()
 }

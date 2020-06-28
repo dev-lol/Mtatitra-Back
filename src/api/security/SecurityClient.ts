@@ -1,10 +1,10 @@
 
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
+import { print } from 'util';
 export default function securityClient(req: Request, res: Response, next: NextFunction) {
-    if (req.path == "/login" || req.path.includes("confirmation") || req.path.includes("resend") || req.path.includes("signup")) return next()
+    if (req.path == "/login" || req.path.includes("confirmation") || req.path.includes("resend") || req.path.includes("signup") || req.path.includes("tarif")) return next()
     var jwtToken: string = req.headers["authorization"]
-    console.log(jwtToken)
     if (jwtToken == undefined) {
         res.status(401).send({
             message: "JWT token Missing"
@@ -17,6 +17,10 @@ export default function securityClient(req: Request, res: Response, next: NextFu
                 res.status(401).send({
                     message: error.message
                 })
+            }
+            else{
+                res.locals.id = payload.id
+                return next()
             }
         })
     } catch (error) {

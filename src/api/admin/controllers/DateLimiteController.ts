@@ -1,24 +1,16 @@
 import { Router, Response, Request, NextFunction, ErrorRequestHandler } from "express";
 import { Controller } from "../../Controller"
 import { DateLimite } from "../../../entities/DateLimite"
-import { Repository, Connection, createConnection } from "typeorm";
+import { Repository, Connection, createConnection, getConnection } from "typeorm";
 import { ormconfig } from "../../../config";
 import { runInThisContext } from "vm";
 export default class DateLimiteController extends Controller {
     dateLimiteRepository: Repository<DateLimite>
     constructor() {
         super()
-        this.createConnectionAndAssignRepository()
-            .then(async (_) => {
-                await this.addAllRoutes(this.mainRouter)
-            })
+        this.addAllRoutes(this.mainRouter)
     }
 
-
-    async createConnectionAndAssignRepository(): Promise<any> {
-        let connection: Connection = await createConnection(ormconfig)
-        this.dateLimiteRepository = connection.getRepository(DateLimite)
-    }
     async addGet(router: Router): Promise<void> {
         await this.getAllDateLimite(router)
     }
@@ -39,7 +31,7 @@ export default class DateLimiteController extends Controller {
     }
 
     private async fetchDateLimitesFromDatabase(): Promise<DateLimite[]> {
-        return await this.dateLimiteRepository.find({where: {estSupprime: false}})
+        return await this.dateLimiteRepository.find({ where: { estSupprime: false } })
     }
     async addPost(router: Router): Promise<void> {
         await this.postDateLimite(router)
@@ -53,9 +45,9 @@ export default class DateLimiteController extends Controller {
             let dateLimiteSaved: DateLimite = await this.saveDateLimiteToDatabase(dateLimiteToSave)
 
             if (await this.isDateLimiteSaved(dateLimiteSaved)) {
-                this.sendResponse(res,200,{message: "OK"})
+                this.sendResponse(res, 200, { message: "OK" })
             } else {
-                this.sendResponse(res,400,{message: "KO"})
+                this.sendResponse(res, 400, { message: "KO" })
             }
 
         })
@@ -80,18 +72,18 @@ export default class DateLimiteController extends Controller {
 
 
     async addPut(router: Router): Promise<void> {
-        router.put("/:idDate",async (req: Request, res: Response, next: NextFunction) => {
+        router.put("/:idDate", async (req: Request, res: Response, next: NextFunction) => {
             try {
                 let date: DateLimite = await this.dateLimiteRepository.findOneOrFail(Number(req.params.idDate))
                 date = this.dateLimiteRepository.merge(date, req.body as Object)
                 date.estSupprime = false
                 await this.dateLimiteRepository.save(date)
-                this.sendResponse(res,200, {message: "Date changed"})
+                this.sendResponse(res, 200, { message: "Date changed" })
             } catch (error) {
                 console.log(error)
-                this.sendResponse(res,404, {message: "Date not found"})   
+                this.sendResponse(res, 404, { message: "Date not found" })
             }
-                
+
         })
     }
 
@@ -101,11 +93,11 @@ export default class DateLimiteController extends Controller {
                 let date: DateLimite = await this.dateLimiteRepository.findOneOrFail(Number(req.params.idDate))
                 date.estSupprime = true
                 await this.dateLimiteRepository.save(date)
-                this.sendResponse(res,203, {message: "Date deleted"})
+                this.sendResponse(res, 203, { message: "Date deleted" })
             } catch (error) {
-                this.sendResponse(res,404, {message: "Date not found"})   
+                this.sendResponse(res, 404, { message: "Date not found" })
             }
-                
+
         })
     }
 }

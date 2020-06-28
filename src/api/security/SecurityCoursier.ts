@@ -4,7 +4,6 @@ import jwt from 'jsonwebtoken';
 export default function securityCoursier(req: Request, res: Response, next: NextFunction) {
     if(req.path == "/login") return next()
     var jwtToken: string = req.headers["authorization"]
-    console.log(jwtToken)
     if (jwtToken == undefined) {
         res.status(401).send({
             message: "JWT token Missing"
@@ -17,6 +16,9 @@ export default function securityCoursier(req: Request, res: Response, next: Next
                 res.status(401).send({
                     message: error.message
                 })
+            }else{
+                res.locals.id = payload.id
+                return next()
             }
         })
     } catch (error) {

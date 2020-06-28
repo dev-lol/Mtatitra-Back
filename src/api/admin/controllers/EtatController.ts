@@ -1,7 +1,7 @@
 import { Router, Response, Request, NextFunction, ErrorRequestHandler } from "express";
 import { Controller } from "../../Controller"
 import { Etats } from "../../../entities/Etats"
-import { Repository, Connection, createConnection } from "typeorm";
+import { Repository, Connection, createConnection, getConnection } from "typeorm";
 import { ormconfig } from "../../../config";
 import { runInThisContext } from "vm";
 import { json } from "body-parser";
@@ -9,16 +9,7 @@ export default class EtatsController extends Controller {
     etatsRepository: Repository<Etats>
     constructor() {
         super()
-        this.createConnectionAndAssignRepository()
-            .then(async (_) => {
-                await this.addAllRoutes(this.mainRouter)
-            })
-    }
-
-
-    async createConnectionAndAssignRepository(): Promise<any> {
-        let connection: Connection = await createConnection(ormconfig)
-        this.etatsRepository = connection.getRepository(Etats)
+        this.addAllRoutes(this.mainRouter)
     }
     async addGet(router: Router): Promise<void> {
         await this.getAllEtats(router)
@@ -116,7 +107,7 @@ export default class EtatsController extends Controller {
                 if (Object.keys(ordre).length != count || (new Set(Object.values(ordre))).size != count)
                     throw new Error("Ordre dupliquee ou manquante")
                 var etats = await this.etatsRepository.find()
-                for(let etat of etats){
+                for (let etat of etats) {
                     etat.ordreEta = ordre[etat.idEta]
                 }
                 await this.etatsRepository.save(etats);

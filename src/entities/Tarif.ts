@@ -1,8 +1,9 @@
-import { Column, Entity, Index, OneToMany, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from "typeorm";
+import { Column, Entity, Index, OneToMany, PrimaryGeneratedColumn, ManyToOne, JoinColumn, Unique } from "typeorm";
 import { Zone } from './Zone';
 import { TypeCoursier } from './TypeCoursier';
 
 @Index("Tarif_pk", ["idTar"], { unique: true })
+@Unique(["idZonZone", "idTypeCouTypeCoursier"])
 @Entity("Tarif", { schema: "public" })
 export class Tarif {
     @PrimaryGeneratedColumn({ type: "integer", name: "id_tar" })
@@ -14,6 +15,7 @@ export class Tarif {
     @ManyToOne(() => Zone, (zone) => zone.idZon, {
         onDelete: "SET NULL",
         onUpdate: "CASCADE",
+        nullable: false
     })
     @JoinColumn([{ name: "id_zon_Zone", referencedColumnName: "idZon" }])
     idZonZone: Zone;
@@ -21,6 +23,7 @@ export class Tarif {
     @ManyToOne(() => TypeCoursier, (typeCoursier) => typeCoursier.idTypeCou, {
         onDelete: "SET NULL",
         onUpdate: "CASCADE",
+        nullable: false
     })
     @JoinColumn([{ name: "id_type_cou_Type_Coursier", referencedColumnName: "idTypeCou" }])
     idTypeCouTypeCoursier: TypeCoursier;

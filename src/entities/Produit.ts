@@ -18,10 +18,10 @@ export class Produit {
     longueurPro: number | null;
 
     @Column("double precision", {
-        name: "largueur_pro",
+        name: "largeur_pro",
         nullable: true,
     })
-    largueurPro: number | null;
+    largeurPro: number | null;
 
     @Column("double precision", {
         name: "hauteur_pro",
@@ -55,6 +55,7 @@ export class Produit {
     @ManyToOne(() => TypeProduit, (typeProduit) => typeProduit.produits, {
         onDelete: "SET NULL",
         onUpdate: "CASCADE",
+        eager: true
     })
     @JoinColumn([
         { name: "id_type_pro_Type_Produit", referencedColumnName: "idTypePro" },
