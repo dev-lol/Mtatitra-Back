@@ -6,8 +6,8 @@
   "scripts": {
     "start": "npx ts-node ./src/index.ts",
     "postinstall": "npm run install-client && npm run install-backoffice",
-    "install-client": "cd Mtatitra-Front && npm run install",
-    "install-backoffice": "cd Mtatitra-backoffice && npm run install",
+    "install-client": "(cd Mtatitra-Front && npm install)",
+    "install-backoffice": "(cd Mtatitra-backoffice && npm install)",
     "heroku-postbuild": "npx ts-node ./src/postbuild.ts && npm run build",
     "dev": "npx ts-node-dev --inspect=4321 --poll --clear ./src/index.ts",
     "build-client": "cd Mtatitra-Front && npx ng build --prod",
