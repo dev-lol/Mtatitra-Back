@@ -10,6 +10,7 @@
     "build-client": "cd Mtatitra-Front && npm run install && npx ng build --prod",
     "build-backoffice": "cd Mtatitra-backoffice && npm run install && npx ng build --prod --base-href /admin/",
     "build": "npm run build-client && npm run build-backoffice"
+    
   },
   "author": "",
   "license": "ISC",
