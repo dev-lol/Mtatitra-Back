@@ -63,9 +63,7 @@ export default class LivraisonController extends Controller {
             }
         })
     }
-
     async addPost(router: Router): Promise<void> {
-
 
     }
 
