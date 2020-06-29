@@ -7,8 +7,8 @@
       "start": "npx ts-node ./src/index.ts",
       "heroku-postbuild": "npx ts-node ./src/postbuild.ts && npm run build",
       "dev": "npx ts-node-dev --inspect=4321 --poll --clear ./src/index.ts",
-      "build-client": "cd Mtatitra-Front && npx ng build",
-      "build-backoffice": "cd Mtatitra-backoffice && npx ng build",
+      "build-client": "cd Mtatitra-Front && npx ng build --prod",
+      "build-backoffice": "cd Mtatitra-backoffice && npx ng build --prod --base-href /admin/",
       "build": "npm run build-client && npm run build-backoffice"
    },
    "author": "",
