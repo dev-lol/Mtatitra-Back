@@ -11,6 +11,7 @@ export class CustomServer {
     app = express()
     static io
     constructor() {
+        const path = require('path')
         createConnection(ormconfig)
             .then(async _ => {
                 var cors = require("cors")
@@ -19,6 +20,18 @@ export class CustomServer {
                 this.app.use(bodyParser.json())
                 this.app.use("/api", compression())
                 this.app.use("/api", router)
+                const client = express()
+                const admin = express()
+                admin.use('/', express.static(path.join(__dirname, '../../Mtatitra-backoffice/dist/Mtatitra')))
+                admin.get('*', (req, res, next) => {
+                    res.sendFile(path.join(__dirname, '../../Mtatitra-backoffice/dist/Mtatitra/index.html'))
+                })
+                client.use('/', express.static(path.join(__dirname, '../../Mtatitra-Front/dist/Mtatitra')))
+                client.get('*', (req, res, next) => {
+                    res.sendFile(path.join(__dirname, '../../Mtatitra-Front/dist/Mtatitra/index.html'))
+                })
+                this.app.use("/admin", admin)
+                this.app.use("/", client)
                 const http = createServer(this.app)
                 http.listen(process.env.PORT || 3000)
                 console.log("Mtatitra is ONLINE ")
