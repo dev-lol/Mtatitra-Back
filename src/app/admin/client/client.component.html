@@ -1,0 +1,40 @@
+<div class="container-fluid">
+  <img [src]="img" alt="img" id="img_title">
+  <br>
+  <fa-icon [icon]="faSearch" style="padding-right: 30px;"></fa-icon>
+  <mat-form-field style="float: left;margin-left: 10px;">
+      <input (keyup)="filterClient($event.target.value)" matInput placeholder="rechercher" autocomplete="off" style="padding-left: 20px;">
+  </mat-form-field>
+  <mat-paginator [pageSizeOptions]="[10,20,30]" showFirstLastButtons style="float: right;">
+  </mat-paginator>
+  <br>
+  <mat-table [dataSource]="clientDatasource" style="clear: both;">
+    <ng-container matColumnDef="idCli">
+      <mat-header-cell *matHeaderCellDef>id</mat-header-cell>
+      <mat-cell *matCellDef="let element">{{element.idCli}}</mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="nomCli">
+      <mat-header-cell *matHeaderCellDef>Nom</mat-header-cell>
+      <mat-cell *matCellDef="let element">{{element.nomCli}}</mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="prenomCli">
+      <mat-header-cell *matHeaderCellDef>Prénoms</mat-header-cell>
+      <mat-cell *matCellDef="let element">{{element.prenomCli}}</mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="numTelCli">
+      <mat-header-cell *matHeaderCellDef>Telephone</mat-header-cell>
+      <mat-cell *matCellDef="let element">{{element.numTelCli}}</mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="adresseCli">
+      <mat-header-cell *matHeaderCellDef>Adresse</mat-header-cell>
+      <mat-cell *matCellDef="let element">{{element.adresseCli}}</mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="emailCli">
+      <mat-header-cell *matHeaderCellDef>Email</mat-header-cell>
+      <mat-cell *matCellDef="let element">{{element.emailCli}}</mat-cell>
+    </ng-container>
+    <mat-header-row *matHeaderRowDef="columnClients"></mat-header-row>
+    <mat-row *matRowDef="let row;columns: columnClients;"></mat-row>
+  </mat-table>
+  <label class="label" *ngIf="clients.length == 0">Aucun client inscrit</label>
+</div>

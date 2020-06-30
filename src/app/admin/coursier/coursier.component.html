@@ -1,0 +1,209 @@
+<img [src]="img" alt="img" id="img_title">
+<mat-tab-group>
+
+  <mat-tab label="Liste des coursiers">
+    <div class="pt-3">
+      <mat-form-field style="float: left;margin-left: 10px;">
+        <input (keyup)="filterCoursier($event.target.value)" matInput placeholder="rechercher" autocomplete="off"
+          style="padding-left: 20px;">
+        <mat-icon matSuffix>
+          search
+        </mat-icon>
+      </mat-form-field>
+      <mat-paginator [pageSizeOptions]="[10,20,30]" showFirstLastButtons style="float: right;">
+      </mat-paginator>
+      <br>
+      <mat-table [dataSource]="coursierDatasource" style="clear: both;">
+        <ng-container matColumnDef="idCou">
+          <mat-header-cell *matHeaderCellDef>id</mat-header-cell>
+          <mat-cell *matCellDef="let element">{{element.idCou}}</mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="nomCou">
+          <mat-header-cell *matHeaderCellDef>Nom</mat-header-cell>
+          <mat-cell *matCellDef="let element">{{element.nomCou}}</mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="prenomCou">
+          <mat-header-cell *matHeaderCellDef>Prénoms</mat-header-cell>
+          <mat-cell *matCellDef="let element">{{element.prenomCou}}</mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="numTelCou">
+          <mat-header-cell *matHeaderCellDef>Telephone</mat-header-cell>
+          <mat-cell *matCellDef="let element">{{element.numTelCou}}</mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="usernameCou">
+          <mat-header-cell *matHeaderCellDef>Nom d'utilisateur</mat-header-cell>
+          <mat-cell *matCellDef="let element">{{element.usernameCou}}</mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="typeCoursier">
+          <mat-header-cell *matHeaderCellDef>Type Coursier</mat-header-cell>
+          <mat-cell *matCellDef="let element">{{element["idTypeCouTypeCoursier"].typeCou}}</mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="edit">
+          <mat-header-cell *matHeaderCellDef></mat-header-cell>
+          <mat-cell *matCellDef="let element; let i = index">
+            <span>
+              <fa-icon [icon]="faEdit" class="edit" (click)="editCoursier(i)"></fa-icon>
+            </span>
+          </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="suppr">
+          <mat-header-cell *matHeaderCellDef></mat-header-cell>
+          <mat-cell *matCellDef="let element">
+            <span>
+              <fa-icon [icon]="faMinusCircle" class="suppr" (click)="deleteCoursier(element.idCou)"></fa-icon>
+            </span>
+          </mat-cell>
+        </ng-container>
+        <mat-header-row *matHeaderRowDef="columnCoursiers"></mat-header-row>
+        <mat-row *matRowDef="let row;columns: columnCoursiers;"></mat-row>
+      </mat-table>
+      <label class="label" *ngIf="coursiers.length == 0">Aucun coursier ajouté</label>
+
+    </div>
+  </mat-tab>
+
+
+
+  <mat-tab label="Ajouter un coursier">
+    <br>
+    <form (ngSubmit)="addCoursier()" [formGroup]="coursierForm" #form="ngForm">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-10 offset-md-1 col-xs-12">
+            <div class="input-group mb-3">
+              <div class="input-group-prepend">
+                <span class="input-group-text" id="nom">
+                  <fa-icon [icon]="faUser"></fa-icon>
+                </span>
+              </div>
+              <input type="text" placeholder="Nom" class="form-control" aria-label="nom" aria-describedby="nom"
+                name="nom" required formControlName="nomCou" autocomplete="off">
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-10 offset-md-1 col-xs-12">
+            <div class="input-group mb-3">
+              <div class="input-group-prepend">
+                <span class="input-group-text" id="prenoms">
+                  <fa-icon [icon]="faUser"></fa-icon>
+                </span>
+              </div>
+              <input type="text" placeholder="Prénoms" class="form-control" aria-label="prenoms"
+                aria-describedby="prenoms" name="prenoms" required formControlName="prenomCou" autocomplete="off">
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-10 offset-md-1 col-xs-12">
+            <div class="input-group mb-3">
+              <div class="input-group-prepend">
+                <span class="input-group-text" id="telephone">
+                  <fa-icon [icon]="faPhone"></fa-icon>
+                </span>
+              </div>
+              <input type="text" placeholder="Telephone" class="form-control" aria-label="telephone"
+                aria-describedby="telephone" name="telephone" required formControlName="numTelCou" autocomplete="off">
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-10 offset-md-1 col-xs-12">
+            <div class="input-group mb-3">
+              <div class="input-group-prepend">
+                <span class="input-group-text" id="username">
+                  <fa-icon [icon]="faCar"></fa-icon>
+                </span>
+              </div>
+              <select class="form-control" formControlName="idTypeCou">
+                <option [ngValue]="null" disabled>Type Coursier</option>
+                <option *ngFor="let type of typeCoursier; let index = index" [value]="type.idTypeCou">{{type.typeCou}}
+                </option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-10 offset-md-1 col-xs-12">
+            <div class="input-group mb-3">
+              <div class="input-group-prepend">
+                <span class="input-group-text" id="username">
+                  <fa-icon [icon]="faUserAlt"></fa-icon>
+                </span>
+              </div>
+              <input type="text" placeholder="Nom d'utilisateur" class="form-control" aria-label="username"
+                aria-describedby="username" name="username" required formControlName="usernameCou" autocomplete="off">
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-10 offset-md-1 col-xs-12">
+            <div class="input-group mb-3">
+              <div class="input-group-prepend">
+                <span class="input-group-text" id="password">
+                  <fa-icon [icon]="faEyeSlash"></fa-icon>
+                </span>
+              </div>
+              <input type="password" placeholder="Mot de passe" class="form-control" aria-label="password"
+                aria-describedby="password" name="password" required formControlName="passCou">
+            </div>
+          </div>
+        </div>
+        <!-- <div class="row">
+								<div class="col-md-10 offset-md-1 col-xs-12">
+										<div class="input-group mb-3">
+											<div class="input-group-prepend">
+												<span class="input-group-text" id="confpassword">
+													  <fa-icon [icon]="faEyeDropper"></fa-icon>
+												</span>
+											  </div>
+                        <input type="password" placeholder="confirmer le mot de passe" class="form-control"
+                        aria-label="password" aria-describedby="confpassword" name="confpassword" required [(ngModel)]="passConfirm">
+											</div>
+								</div>
+              </div> -->
+        <div class="row">
+          <div class="col-md-10 offset-md-1 col-xs-12">
+            <button mat-raised-button color="accent" type="submit" [disabled]="coursierForm.invalid">
+              Ajouter
+            </button>
+          </div>
+        </div>
+      </div>
+    </form>
+
+  </mat-tab>
+</mat-tab-group>
+
+
+<!-- // changer -->
+<button type="button" id="btn_open" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#flip"
+  style="display: none;">
+  Confirmer
+</button>
+
+<!-- The modal -->
+<div class="modal fade" id="flip" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header" style="border: none;text-align: center;">
+        <h4 class="modal-title" id="modalLabel" style="text-align: center;">Confirmation</h4>
+        <button type="button" id="close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" style="border: none;">
+        <p style="text-align: center;">
+          Voulez vous supprimer ?
+        </p>
+      </div>
+      <div class="modal-footer" style="border: none;">
+        <div class="btn-group" role="group">
+          <button type="button" class="btn btn-primary" style="margin-right: 20px;border-radius: 5px;"
+            (click)="confirmDelete()">Oui</button>
+          <button type="button" class="btn btn-dark" data-dismiss="modal" style="border-radius: 5px;">Non</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
