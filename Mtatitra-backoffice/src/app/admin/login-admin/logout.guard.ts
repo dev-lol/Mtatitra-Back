@@ -8,7 +8,6 @@ import { LoginService } from './login.service';
 @Injectable({
   providedIn: 'root'
 })
-@Injectable()
 export class LogoutGuard implements CanActivate {
   public auth = false;
  

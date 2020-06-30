@@ -5,7 +5,9 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { finalize, catchError } from "rxjs/operators"
 import { throwError } from 'rxjs';
 
-@Injectable()
+@Injectable({
+    providedIn: 'root'
+})
 
 export class AuthInterceptor implements HttpInterceptor {
 

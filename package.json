@@ -44,5 +44,6 @@
   },
   "devDependencies": {
     "typeorm-fixtures-cli": "^1.6.0"
-  }
+  },
+  "cacheDirectories": ["Mtatitra-backoffice/node_modules", "Mtatitra-Front/node_modules", "node_modules"]
 }
