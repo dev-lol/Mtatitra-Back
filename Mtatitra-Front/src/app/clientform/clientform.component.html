@@ -1,0 +1,196 @@
+<app-navbar></app-navbar>
+
+<div class="container">
+  <ngx-spinner [zIndex]=1 name="liv" bdColor="white" size="medium" color="rgb(239, 18, 51,0.8)"
+    type="ball-triangle-path">
+  </ngx-spinner>
+  <mat-horizontal-stepper [linear]="isLinear" #stepper>
+    <mat-step [stepControl]="produitForm">
+      <ng-template matStepLabel>PRODUITS À LIVRER</ng-template>
+      <form [formGroup]='produitForm' (ngSubmit)='submitForm(produitForm.value)'>
+        <div formArrayName="produits" *ngFor="let item of formData.controls; let i = index; let c = count">
+          <div [formGroupName]="i">
+            <div class="row">
+              <div class="col-xs-6 col-sm-6 col-ls-6 col-md-6 col-lg-6">
+                <h2>Produit n° {{i+1}}</h2>
+              </div>
+              <div class="col-xs-6 col-sm-6 col-ls-6 col-md-6 col-lg-6">
+                <a class="cancel" align="right" href="">
+                  <mat-icon title="Supprimer la ligne" *ngIf="c > 1" (click)="deleteItemLine($event, i)">cancel
+                  </mat-icon>
+                </a>
+              </div>
+            </div>
+            <div class="row" align="center">
+              <div class="col-xs-12 col-sm-12 col-xl-12 col-md-12 col-lg-12">
+                <mat-form-field class="produit" data-aos="fade-up" data-aos-duration="1000">
+                  <mat-label>Longueur du produit</mat-label>
+                  <input matInput type="number" formControlName="longueurPro" class="example-right-align">
+                  <span matPrefix>&nbsp;</span>
+                  <span matSuffix> cm</span>
+                  <mat-hint>Unités en centimetre</mat-hint>
+                </mat-form-field>
+                <mat-form-field class="produit" data-aos="fade-up" data-aos-duration="1000">
+                  <mat-label>Largeur du produit</mat-label>
+                  <input matInput type="number" formControlName="largeurPro" class="example-right-align">
+                  <span matPrefix>&nbsp;</span>
+                  <span matSuffix> cm</span>
+                  <mat-hint>Unités en centimetre</mat-hint>
+                </mat-form-field>
+                <mat-form-field class="produit" data-aos="fade-up" data-aos-duration="1000">
+                  <mat-label>Hauteur du produit</mat-label>
+                  <input matInput type="number" formControlName="hauteurPro" class="example-right-align">
+                  <span matPrefix>&nbsp;</span>
+                  <span matSuffix> cm</span>
+                  <mat-hint>Unités en centimetre</mat-hint>
+                </mat-form-field>
+                <mat-form-field class="produit" data-aos="fade-up" data-aos-duration="1000">
+                  <mat-label>Poids</mat-label>
+                  <input matInput type="number" formControlName="poidsPro" class="example-right-align">
+                  <span matPrefix>&nbsp;</span>
+                  <span matSuffix> Kg</span>
+                  <mat-hint>Le poids de votre produit en Kilogramme</mat-hint>
+                </mat-form-field>
+              </div>
+            </div>
+            <div class="row" align="center">
+              <div class="col-xs-12 col-sm-12 col-xl-12 col-md-12 col-lg-12">
+                <mat-form-field class="produittextarea" data-aos="fade-up" data-aos-duration="1000">
+                  <mat-label>Prix</mat-label>
+                  <input matInput type="number" class="example-right-align" data-aos="fade-up"
+                    formControlName="prixPro">
+                  <span matPrefix>Ar&nbsp;</span>
+                  <span matSuffix>.00</span>
+                  <mat-hint>Le prix du produits à l'arrivé</mat-hint>
+                </mat-form-field>
+                <mat-form-field class="produittextarea" data-aos="fade-up" data-aos-duration="1000">
+                  <mat-label>Type produit</mat-label>
+                  <mat-select formControlName="typePro">
+                    <mat-option *ngFor="let type of typeproduit" [value]="type['idTypePro']"> {{type["typePro"]}}
+                    </mat-option>
+                  </mat-select>
+                  <mat-hint></mat-hint>
+                </mat-form-field>
+                <mat-form-field class="produittextarea" data-aos="fade-up" data-aos-duration="1000">
+                  <mat-label>Votre consigne concernant le produit</mat-label>
+                  <textarea matInput formControlName="consignePro"></textarea>
+                </mat-form-field>
+              </div>
+            </div>
+            <div class="row" align="" class="checkbox">
+              <div class="col-xs-12 col-sm-12 col-xl-12 col-md-12 col-lg-12">
+                <mat-checkbox formControlName="fragilePro">Le produit est fragile</mat-checkbox>
+              </div>
+            </div>
+          </div>
+          <hr>
+        </div>
+        <div class="row addproduct1" align="center">
+          <div class="col-xs-12 col-sm-12 col-ls-12 col-md-12 col-lg-12 ">
+            <mat-icon class="addproduct" (click)="addItem($event)">add</mat-icon>
+          </div>
+        </div>
+      </form>
+      <div class="btnnext" align="right">
+        <button mat-button matStepperNext>Suivant</button>
+      </div>
+    </mat-step>
+    <mat-step [stepControl]="detailsForm">
+      <form [formGroup]="detailsForm">
+        <ng-template matStepLabel>DETAILS</ng-template>
+        <div class="row" align="center">
+          <div class="col-xs-12 col-sm-12 col-lx-12 col-md-12 col-lg-12">
+            <mat-form-field class="produit">
+              <mat-label>Type vehicule</mat-label>
+              <mat-select (selectionChange)="handleChange($event)" [(value)]="selectedTypeCouriser" formControlName="typeCoursier">
+                <mat-option *ngFor="let type of typecoursier" [value]="type['idTypeCou']"> {{type["typeCou"]}}
+                </mat-option>
+              </mat-select>
+              <mat-hint></mat-hint>
+            </mat-form-field>
+            <mat-form-field class="produit">
+              <mat-label>Telephone</mat-label>
+              <span matPrefix>+261 &nbsp;</span>
+              <input type="tel" matInput placeholder="xxxxxxx" formControlName="numRecepLiv">
+              <mat-icon matSuffix>mode_edit</mat-icon>
+            </mat-form-field>
+            <mat-form-field class="produit">
+              <mat-label>Lieu de départ</mat-label>
+              <input matInput placeholder="Ex. Analankely" formControlName="departLiv">
+            </mat-form-field>
+            <mat-form-field class="produit">
+              <mat-label>Lieu de destination</mat-label>
+              <input matInput placeholder="Ex. Behoririka" formControlName="destinationLiv">
+            </mat-form-field>
+            <mat-form-field class="produit">
+              <input matInput [matDatepicker]="picker2" placeholder="Choisir la date de la livraison"
+                formControlName="dateLiv">
+              <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+              <mat-datepicker #picker2></mat-datepicker>
+            </mat-form-field>
+            <mat-form-field class="produit">
+              <mat-label>Nom de la zone</mat-label>
+              <mat-select [(value)]="selectedZone" (selectionChange)="handleChange($event)" formControlName="zoneLiv">
+                <mat-option *ngFor="let type of zone" [value]="type['idZon']"> {{type["nomZon"]}} </mat-option>
+              </mat-select>
+              <mat-hint></mat-hint>
+            </mat-form-field>
+            <mat-form-field appearance="fill" class="produit">
+              <mat-label>Somme de la reception</mat-label>
+              <input matInput [disabled]="true" type="number" d class="example-right-align"
+                formControlName="sommeRecepLiv">
+              <span matPrefix>Ar&nbsp;</span>
+              <span matSuffix>.00</span>
+            </mat-form-field>
+            <mat-form-field appearance="fill" class="produit">
+              <mat-label>Tarif Zone</mat-label>
+              <input matInput [disabled]="true" formControlName="tarif" type="number" class="example-right-align">
+              <span matPrefix>Ar&nbsp;</span>
+              <span matSuffix>.00</span>
+            </mat-form-field>
+            <mat-form-field class="produittextarea">
+              <mat-label>Heure limite de la livraison</mat-label>
+              <mat-select [(ngModel)]="selectedValue" name="livaison">
+                <mat-option *ngFor="let limite of limite" [value]="limite.value">
+                  {{limite.viewValue}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+            <mat-form-field class="produittextarea">
+              <mat-label>Description sur la livraison</mat-label>
+              <textarea matInput formControlName="descriptionLiv"></textarea>
+            </mat-form-field>
+
+          </div>
+        </div>
+        <div class="row" align="center">
+          <div class="col-xs-12 col-sm-12 col-lx-12 col-md-12 col-lg-12 btnnextprev">
+            <button mat-button matStepperPrevious>Precedent</button>
+            <button mat-button matStepperNext class="next">Suivant</button>
+          </div>
+        </div>
+      </form>
+    </mat-step>
+    <mat-step>
+      <ng-template matStepLabel>LIVRER</ng-template>
+      <div class="row" align="center">
+        <div class="col-xs-12 col-sm-12 col-lx-12 col-md-12 col-lg-12">
+          <h3>Veuillez vérifier votre livraison avant de l'envoyer</h3>
+        </div>
+      </div>
+      <br>
+      <div class="row" align="justify">
+        <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Ullam ipsa accusamus aspernatur rem eius quod fuga
+          enim aliquam quo, iusto rerum in obcaecati vero harum iure doloremque sit. Magnam, culpa!</p>
+        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Nulla architecto suscipit numquam facilis temporibus
+          nesciunt quasi praesentium quas minus esse alias sint ut quod, aperiam excepturi ea quidem iusto eum.</p>
+      </div>
+      <div class="row" align="center">
+        <div class="col-xs-12 col-sm-12 col-lx-12 col-md-12 col-lg-12 btnnextprev">
+          <button mat-button matStepperPrevious>Precedent</button>
+          <button mat-button (click)="submitAll($event,stepper)" class="next">Envoyer</button>
+        </div>
+      </div>
+    </mat-step>
+  </mat-horizontal-stepper>
+</div>
