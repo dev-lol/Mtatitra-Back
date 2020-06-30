@@ -21,7 +21,7 @@ export class LogoutGuard implements CanActivate {
   ): Observable<boolean> | Promise<boolean> | boolean {
    
      if (this.loginService.isLoggedIn === true) {
-      this.router.navigate(['/admin/dashboard']); 
+      this.router.navigate(['/dashboard']); 
     }  
     return true
   }

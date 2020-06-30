@@ -40,43 +40,43 @@ export class AdminComponent implements OnInit {
 
   slideDashboard() {
     this.display.show = 'dashboard';
-    this.router.navigate(['/admin/dashboard']);
+    this.router.navigate(['/dashboard']);
   }
 
   slideClient() {
     this.display.show = 'client';
-    this.router.navigate(['/admin/client']);
+    this.router.navigate(['/client']);
   }
 
   slideCoursier() {
     this.display.show = 'coursier';
-    this.router.navigate(['/admin/coursier']);
+    this.router.navigate(['/coursier']);
   }
 
   slideProduit() {
     this.display.show = 'produit';
-    this.router.navigate(['/admin/produit']);
+    this.router.navigate(['/produit']);
   }
 
   slideLivraison() {
     this.display.show = 'livraison';
-    this.router.navigate(['/admin/livraison']);
+    this.router.navigate(['/livraison']);
   }
 
   slideType() {
     this.display.show = 'type';
-    this.router.navigate(['/admin/type']);
+    this.router.navigate(['/type']);
   }
 
 
   slideZone() {
     this.display.show = 'zone';
-    this.router.navigate(['/admin/zone']);
+    this.router.navigate(['/zone']);
   }
 
   slideTarif() {
     this.display.show = 'tarif';
-    this.router.navigate(['/admin/tarif']);
+    this.router.navigate(['/tarif']);
   }
 
 }
