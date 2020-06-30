@@ -33,7 +33,7 @@ export default class LivraisonController extends Controller {
         router.get("/", async (req: Request, res: Response, next: NextFunction) => {
             if (req.query.coursier && req.query.date) {
                 let liv = []
-                const date = new Date(req.query.date)
+                const date = new Date(req.query.date as string)
                 switch (req.query.coursier) {
                     case 'all':
                         liv = await getRepository(Livraison)
