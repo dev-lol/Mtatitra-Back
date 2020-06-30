@@ -26,32 +26,32 @@ export class HeaderComponent implements OnInit {
 
     slideDashboard() {
         this.displaySrv.show = 'dashboard';
-        this.router.navigate(['/admin/dashboard']);
+        this.router.navigate(['/dashboard']);
     }
 
     slideClient() {
         this.displaySrv.show = 'client';
-        this.router.navigate(['/admin/client']);
+        this.router.navigate(['/client']);
     }
 
     slideCoursier() {
         this.displaySrv.show = 'coursier';
-        this.router.navigate(['/admin/coursier']);
+        this.router.navigate(['/coursier']);
     }
 
     slideProduit() {
         this.displaySrv.show = 'produit';
-        this.router.navigate(['/admin/produit']);
+        this.router.navigate(['/produit']);
     }
 
     slideLivraison() {
         this.displaySrv.show = 'livraison';
-        this.router.navigate(['/admin/livraison']);
+        this.router.navigate(['/livraison']);
     }
 
     slideZone() {
         this.displaySrv.show = 'zone';
-        this.router.navigate(['/admin/zone']);
+        this.router.navigate(['/zone']);
     }
 
     logOut() {

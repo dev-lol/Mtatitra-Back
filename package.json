@@ -6,15 +6,14 @@
   "scripts": {
     "start": "npx ts-node ./src/index.ts",
     "preinstall": "npm install -g @angular/cli",
-    "install-all": "yarn install-client && yarn install-backoffice",
-    "install-client": "(yarn --cwd ./Mtatitra-Front install)",
-    "install-backoffice": "(yarn --cwd ./Mtatitra-backoffice install)",
-    "heroku-postbuild": "((npx ts-node ./src/postbuild.ts && yarn install-all) && ls ./Mtatitra-backoffice ) && yarn build",
+    "install-all": "npm run install-client && npm run install-backoffice",
+    "install-client": "(cd ./Mtatitra-Front && npm install)",
+    "install-backoffice": "(cd ./Mtatitra-backoffice && npm install)",
+    "heroku-postbuild": "(npx ts-node ./src/postbuild.ts && npm run install-all) && npm run build",
     "dev": "npx ts-node-dev --inspect=4321 --poll --clear ./src/index.ts",
     "build-client": "cd Mtatitra-Front && ng build --prod",
     "build-backoffice": "cd Mtatitra-backoffice && ng build --prod --base-href /admin/",
-    "build": "yarn build-client && yarn build-backoffice"
-
+    "build": "npm run build-client && npm run build-backoffice"
   },
   "author": "",
   "license": "ISC",

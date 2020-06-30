@@ -102,12 +102,3 @@ export interface Livraison {
     produits: Array<any>
     sommeRecepLiv: number
 }
-
-
-@Component({
-    selector: 'dialog-content-example-dialog',
-    templateUrl: 'dialog-content-example-dialog.html',
-})
-export class DialogContentExampleDialog {
-}
-

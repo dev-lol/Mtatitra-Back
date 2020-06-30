@@ -17,15 +17,14 @@ import { TarifComponent } from './admin/tarif/tarif.component';
 
 
 const routes: Routes = [
-    //  { path: '', redirectTo: '/acceuil', pathMatch: 'full' },
     {
-        path: 'admin/login',
+        path: 'login',
         component: LoginAdminComponent,
         canActivate: [LogoutGuard]
     },
     {
 
-        path: 'admin',
+        path: '',
         canActivate: [AdminGuard],
         component: AdminComponent,
         children: [

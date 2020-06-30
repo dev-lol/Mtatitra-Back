@@ -22,7 +22,7 @@ export class LoginService {
         return this.http.post<any>(`${this.endpoint}/login`, admin)
             .subscribe((res: any) => {
                 localStorage.setItem('token', res.token)
-                this.router.navigate(['admin/dashboard']);
+                this.router.navigate(['/dashboard']);
             }, (error) => {
                 //this.handleLoginError(error)
             })
@@ -39,7 +39,7 @@ export class LoginService {
     logout() {
         let removeToken = localStorage.removeItem('token');
         if (removeToken == null) {
-            this.router.navigate(['admin/login']);
+            this.router.navigate(['login']);
         }
     }
 

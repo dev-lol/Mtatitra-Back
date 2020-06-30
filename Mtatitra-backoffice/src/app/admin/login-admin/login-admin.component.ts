@@ -45,7 +45,7 @@ export class LoginAdminComponent implements OnInit {
 
     newAdmin() {
 
-        this.route.navigate(['/admin/dashboard']);
+        this.route.navigate(['/dashboard']);
     }
 
     toggleReinit() {
