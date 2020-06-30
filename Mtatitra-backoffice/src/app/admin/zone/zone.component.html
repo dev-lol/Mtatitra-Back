@@ -1,0 +1,107 @@
+<img [src]="img" alt="img" id="img_title">
+
+<br>
+<mat-tab-group>
+  <mat-tab label="Liste des zones">
+    <mat-table [dataSource]="zones">
+      <ng-container matColumnDef="idZon">
+        <mat-header-cell *matHeaderCellDef>id</mat-header-cell>
+        <mat-cell *matCellDef="let element">{{element.idZon}}</mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="nomZon">
+        <mat-header-cell *matHeaderCellDef>Designation</mat-header-cell>
+        <mat-cell *matCellDef="let element">{{element.nomZon}}</mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="detailsZon">
+        <mat-header-cell *matHeaderCellDef>Details</mat-header-cell>
+        <mat-cell *matCellDef="let element">{{element.detailsZon}}</mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="edit">
+        <mat-header-cell *matHeaderCellDef></mat-header-cell>
+        <mat-cell *matCellDef="let element; let i = index">
+          <span>
+            <fa-icon [icon]="faEdit" class="edit" (click)="editZone(i)"></fa-icon>
+          </span>
+        </mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="suppr">
+        <mat-header-cell *matHeaderCellDef></mat-header-cell>
+        <mat-cell *matCellDef="let element">
+          <span>
+            <fa-icon [icon]="faMinusCircle" class="suppr" (click)="deleteZone(element.idZon)"></fa-icon>
+          </span>
+        </mat-cell>
+      </ng-container>
+      <mat-header-row *matHeaderRowDef="columnZone"></mat-header-row>
+      <mat-row *matRowDef="let row;columns: columnZone;"></mat-row>
+    </mat-table>
+    <label class="label" *ngIf="zones.length == 0">Aucun type ajouté</label>
+  </mat-tab>
+  <mat-tab label="Ajouter zone">
+    <form (ngSubmit)="addZone()" class="mt-5" [formGroup]="zoneForm" #form="ngForm" #form="ngForm">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-10 offset-md-1 col-xs-12">
+            <div class="input-group mb-3">
+              <div class="input-group-prepend">
+                <span class="input-group-text" id="nomZon">
+                  <fa-icon [icon]="faLocation"></fa-icon>
+                </span>
+              </div>
+              <input type="text" placeholder="Zone" class="form-control" aria-label="nomZon" aria-describedby="nomZon"
+                name="nomZon" required formControlName="nomZon" autocomplete="off">
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-10 offset-md-1 col-xs-12">
+            <div class="form-group">
+              <label for="">Details </label>
+              <textarea class="form-control" id="" rows="2" formControlName="detailsZon"></textarea>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-10 offset-md-1 col-xs-12">
+            <button mat-raised-button color="accent" type="submit" [disabled]="zoneForm.invalid">
+              Ajouter
+            </button>
+          </div>
+        </div>
+      </div>
+    </form>
+  </mat-tab>
+</mat-tab-group>
+
+<!-- // changer -->
+<button type="button" id="btn_open" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#flip"
+  style="display: none;">
+  Confirmer
+</button>
+
+<!-- The modal -->
+<div class="modal fade" id="flip" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header" style="border: none;text-align: center;">
+        <h4 class="modal-title" id="modalLabel" style="text-align: center;">Confirmation</h4>
+        <button type="button" id="close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" style="border: none;">
+        <p style="text-align: center;">
+          Voulez vous supprimer ?
+        </p>
+      </div>
+      <div class="modal-footer" style="border: none;">
+        <div class="btn-group" role="group">
+          <button type="button" class="btn btn-primary" style="margin-right: 20px;border-radius: 5px;"
+            (click)="confirmDelete()">Oui</button>
+          <button type="button" class="btn btn-dark" data-dismiss="modal" style="border-radius: 5px;">Non</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

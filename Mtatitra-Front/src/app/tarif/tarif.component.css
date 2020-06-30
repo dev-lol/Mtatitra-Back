@@ -1,0 +1,38 @@
+.card-pricing.popular {
+    z-index: 1;
+    border: 1px solid #4e4c4d;
+}
+
+.card-pricing.popular:hover {
+    border: 3px solid #ef1233;
+}
+
+.card-pricing .list-unstyled li {
+    padding: 0.5rem 0;
+    color: #6c757d;
+}
+
+.price {
+    color: #ef1233;
+}
+
+.dollar {
+    color: #ef1233;
+}
+
+.type {
+    color: #ef1233;
+}
+
+.headtitle {
+    background-color: #ef1233;
+}
+
+.btn-danger {
+    background-color: #ef1233;
+    color: #ffffff;
+}
+
+.details-zone {
+    color: grey;
+}

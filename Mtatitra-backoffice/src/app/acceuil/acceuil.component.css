@@ -1,0 +1,318 @@
+nav {
+    padding-top: 2%;
+    padding-bottom: 1%;
+}
+
+.logo {
+    margin-left: 20%;
+}
+
+ul li a {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 16px;
+    color: #212121;
+}
+
+.main {
+    background-color: #ffffff;
+    min-height: 100vh;
+    background-size: cover;
+    background-position: center;
+    padding-top: 20%;
+}
+
+.container {
+    width: 90%;
+}
+
+.connexion {
+    border-radius: 30px;
+    color: #ffffff;
+}
+
+.connexion:hover {
+    background-color: #212121;
+}
+
+.connexion a:hover {
+    color: #ffffffff;
+}
+
+.navmenu {
+    margin-right: 30px;
+}
+
+
+/*card*/
+
+.pricing8 {
+    font-family: "Montserrat", sans-serif;
+    color: #8d97ad;
+    font-weight: 300;
+}
+
+.pricing8 h1,
+.pricing8 h2,
+.pricing8 h3,
+.pricing8 h4,
+.pricing8 h5,
+.pricing8 h6 {
+    color: #3e4555;
+}
+
+.pricing8 h5 {
+    line-height: 22px;
+    font-size: 18px;
+}
+
+.pricing8 .subtitle {
+    color: #8d97ad;
+    line-height: 24px;
+}
+
+.pricing8 .display-5 {
+    font-size: 3rem;
+}
+
+.pricing8 .font-14 {
+    font-size: 14px;
+}
+
+.pricing8 .pricing-box sup {
+    top: -20px;
+    font-size: 16px;
+}
+
+.pricing8 .btn-info-gradiant {
+    background: #188ef4;
+    background: -webkit-linear-gradient(legacy-direction(to right), #188ef4 0%, #316ce8 100%);
+    background: -webkit-gradient(linear, left top, right top, from(#188ef4), to(#316ce8));
+    background: -webkit-linear-gradient(left, #188ef4 0%, #316ce8 100%);
+    background: -o-linear-gradient(left, #188ef4 0%, #316ce8 100%);
+    background: linear-gradient(to right, #188ef4 0%, #316ce8 100%);
+}
+
+.pricing8 .btn-info-gradiant:hover {
+    background: #316ce8;
+    background: -webkit-linear-gradient(legacy-direction(to right), #316ce8 0%, #188ef4 100%);
+    background: -webkit-gradient(linear, left top, right top, from(#316ce8), to(#188ef4));
+    background: -webkit-linear-gradient(left, #316ce8 0%, #188ef4 100%);
+    background: -o-linear-gradient(left, #316ce8 0%, #188ef4 100%);
+    background: linear-gradient(to right, #316ce8 0%, #188ef4 100%);
+}
+
+.pricing8 .btn-danger-gradiant {
+    background: #ff4d7e;
+    background: -webkit-linear-gradient(legacy-direction(to right), #ff4d7e 0%, #ff6a5b 100%);
+    background: -webkit-gradient(linear, left top, right top, from(#ff4d7e), to(#ff6a5b));
+    background: -webkit-linear-gradient(left, #ff4d7e 0%, #ff6a5b 100%);
+    background: -o-linear-gradient(left, #ff4d7e 0%, #ff6a5b 100%);
+    background: linear-gradient(to right, #ff4d7e 0%, #ff6a5b 100%);
+}
+
+.pricing8 .btn-danger-gradiant:hover {
+    background: #ff6a5b;
+    background: -webkit-linear-gradient(legacy-direction(to right), #ff6a5b 0%, #ff4d7e 100%);
+    background: -webkit-gradient(linear, left top, right top, from(#ff6a5b), to(#ff4d7e));
+    background: -webkit-linear-gradient(left, #ff6a5b 0%, #ff4d7e 100%);
+    background: -o-linear-gradient(left, #ff6a5b 0%, #ff4d7e 100%);
+    background: linear-gradient(to right, #ff6a5b 0%, #ff4d7e 100%);
+}
+
+
+/*end card*/
+
+.pricing7 {
+    font-family: "Montserrat", sans-serif;
+    color: #8d97ad;
+    font-weight: 300;
+}
+
+.pricing7 h1,
+.pricing7 h2,
+.pricing7 h3,
+.pricing7 h4,
+.pricing7 h5,
+.pricing7 h6 {
+    color: #3e4555;
+}
+
+.pricing7 .font-weight-medium {
+    font-weight: 500;
+}
+
+.pricing7 .subtitle {
+    color: #8d97ad;
+    line-height: 24px;
+}
+
+.pricing7 h5 {
+    line-height: 22px;
+    font-size: 18px;
+}
+
+.pricing7 .pricing-box sup {
+    top: -20px;
+    font-size: 16px;
+}
+
+.pricing7 .pricing-box .btn {
+    border-top-left-radius: 0px;
+    border-top-right-radius: 0px;
+}
+
+.pricing7 .text-info {
+    color: #188ef4 !important;
+}
+
+.pricing7 .display-6 {
+    font-size: 36px;
+}
+
+.pricing7 .display-5 {
+    font-size: 3rem;
+}
+
+.pricing7 .btn-info-gradiant {
+    background: #188ef4;
+    background: -webkit-linear-gradient(legacy-direction(to right), #188ef4 0%, #316ce8 100%);
+    background: -webkit-gradient(linear, left top, right top, from(#188ef4), to(#316ce8));
+    background: -webkit-linear-gradient(left, #188ef4 0%, #316ce8 100%);
+    background: -o-linear-gradient(left, #188ef4 0%, #316ce8 100%);
+    background: linear-gradient(to right, #188ef4 0%, #316ce8 100%);
+}
+
+.pricing7 .btn-info-gradiant:hover {
+    background: #316ce8;
+    background: -webkit-linear-gradient(legacy-direction(to right), #316ce8 0%, #188ef4 100%);
+    background: -webkit-gradient(linear, left top, right top, from(#316ce8), to(#188ef4));
+    background: -webkit-linear-gradient(left, #316ce8 0%, #188ef4 100%);
+    background: -o-linear-gradient(left, #316ce8 0%, #188ef4 100%);
+    background: linear-gradient(to right, #316ce8 0%, #188ef4 100%);
+}
+
+.pricing7 .btn-md {
+    padding: 15px 45px;
+    font-size: 16px;
+}
+
+
+/*Card2*/
+
+
+/*footer*/
+
+.full {
+    width: 100%;
+}
+
+.gap {
+    height: 30px;
+    width: 100%;
+    clear: both;
+    display: block;
+}
+
+.footer {
+    background: #002147;
+    height: auto;
+    padding-bottom: 30px;
+    position: relative;
+    width: 100%;
+    border-bottom: 1px solid #CCCCCC;
+    border-top: 1px solid #DDDDDD;
+}
+
+.footer p {
+    margin: 0;
+}
+
+.footer img {
+    max-width: 100%;
+}
+
+.footer h3 {
+    color: white;
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 27px;
+    padding: 40px 0 0px;
+    text-transform: uppercase;
+    margin-bottom: 15px;
+}
+
+.footer h4 {
+    color: white;
+    font-size: 2em;
+    font-weight: 600;
+    line-height: 38px;
+    padding: 40px 0 10px;
+    font-family: cursive;
+    font-weight: lighter
+}
+
+.footer ul {
+    font-size: 13px;
+    list-style-type: none;
+    margin-left: 0;
+    padding-left: 0;
+    margin-top: 0px;
+    color: #7F8C8D;
+    padding: 0 0 8px 0;
+}
+
+.email {
+    border-bottom: 3px solid #fff;
+}
+
+.footer ul li a {
+    padding: 0 0 12px 0;
+    display: block;
+}
+
+.footer a {
+    color: white;
+    font-weight: lighter;
+}
+
+.footer p {
+    color: white;
+    font-weight: lighter;
+}
+
+.footer a:hover {
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.supportLi h4 {
+    font-size: 20px;
+    font-weight: lighter;
+    line-height: normal;
+    margin-bottom: 0 !important;
+    padding-bottom: 0;
+}
+
+.bg-gray {
+    background-image: -moz-linear-gradient(center bottom, #BBBBBB 0%, #F0F0F0 100%);
+    box-shadow: 0 1px 0 #B4B3B3;
+}
+
+.footer a {
+    color: #78828D
+}
+
+.footer-bottom {
+    margin-top: 2em;
+    border-top: 1px solid #DDDDDD;
+    padding-top: 20px;
+    padding-bottom: 10px;
+}
+
+.footer-bottom p.pull-left {
+    padding-top: 6px;
+    font-size: 0.75em
+}
+
+
+/*end footer*/
