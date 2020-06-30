@@ -1,6 +1,0 @@
-[submodule "Mtatitra-Front"]
-	path = Mtatitra-Front
-	url = https://github.com/dev-lol/Mtatitra-Front.git
-[submodule "Mtatitra-backoffice"]
-	path = Mtatitra-backoffice
-	url = https://github.com/dev-lol/Mtatitra-backoffice.git
