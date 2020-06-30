@@ -8,7 +8,6 @@ import { LoginService } from './login.service';
 @Injectable({
   providedIn: 'root'
 })
-@Injectable()
 export class AdminGuard implements CanActivate {
   public auth = false;
  
