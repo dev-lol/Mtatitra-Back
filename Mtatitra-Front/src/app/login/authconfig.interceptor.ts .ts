@@ -5,7 +5,9 @@ import { catchError } from 'rxjs/operators';
 import { throwError } from 'rxjs';
 import { Router } from '@angular/router';
 
-@Injectable()
+@Injectable({
+    providedIn: 'root'
+})
 
 export class AuthInterceptor implements HttpInterceptor {
 

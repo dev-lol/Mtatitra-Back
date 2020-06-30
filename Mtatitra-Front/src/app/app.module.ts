@@ -15,7 +15,7 @@ import { MailconfirmationComponent } from './mailconfirmation/mailconfirmation.c
 import { ProfileclientComponent } from './profileclient/profileclient.component';
 import { SocketService } from './socket/socket.service';
 import { LoginService } from './login/login.service';
-import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS, HttpClient } from '@angular/common/http';
 import { AuthInterceptor } from './login/authconfig.interceptor.ts ';
 import { NotfoundComponent } from './notfound/notfound.component';
 import { NgxSpinnerModule } from "ngx-spinner";
@@ -23,7 +23,13 @@ import { EditComponent } from './edit/edit.component';
 import { ListComponent } from './list/list.component';
 import { DetailsComponent } from './list/details/details.component';
 import { ProduitComponent } from './list/produit/produit.component';
-
+import { EditService } from './edit/edit.service';
+import { ListService } from './list/list.service';
+import { ClientformService } from './clientform/clientform.service';
+import { ProfileclientService } from './profileclient/profileclient.service';
+import { MailconfirmationService } from './mailconfirmation/mailconfirmation.service';
+import { RouterModule } from '@angular/router';
+import { TarifService } from './tarif/tarif.service';
 
 
 
@@ -41,10 +47,11 @@ import { ProduitComponent } from './list/produit/produit.component';
         DetailsComponent,
         ProduitComponent
     ],
-    entryComponents:[DetailsComponent,ProduitComponent],
+    entryComponents: [DetailsComponent, ProduitComponent],
     imports: [
         BrowserModule,
         AppRoutingModule,
+        HttpClientModule,
         StickyNavModule,
         AngularFontAwesomeModule,
         EditorModule,
@@ -78,14 +85,22 @@ import { ProduitComponent } from './list/produit/produit.component';
         FormsModule,
         MatNativeDateModule,
         MatTabsModule,
-        HttpClientModule,
         NgxSpinnerModule,
+        RouterModule
     ],
     providers: [
         FormBuilder,
         DatePipe,
         MatDatepicker,
         SocketService,
+        LoginService,
+        EditService,
+        ListService,
+        ClientformService,
+        ProfileclientService,
+        MailconfirmationService,
+        TarifService,
+        HttpClient,
         {
             provide: HTTP_INTERCEPTORS,
             useClass: AuthInterceptor,

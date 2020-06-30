@@ -9,12 +9,14 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { EditorModule } from '@tinymce/tinymce-angular';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
-import { MatSliderModule, MatStepperModule, MatIconModule, MatFormFieldModule, MatInputModule,
-  MatTabsModule, MatTableModule, MatSortModule, MatPaginatorModule, MatDialogModule,
-  MatCheckboxModule, MatButtonModule, MatButtonToggleModule, MatRadioModule, MatOptionModule,
-  MatSelectModule, MatTooltipModule, MatDatepickerModule, MatProgressSpinnerModule, MatDividerModule,
-  MatProgressBarModule, MatExpansionModule, MatCardModule, DateAdapter, MatNativeDateModule,
-  MatDatepicker, MatListModule, MatGridListModule, MatToolbarModule } from '@angular/material';
+import {
+    MatSliderModule, MatStepperModule, MatIconModule, MatFormFieldModule, MatInputModule,
+    MatTabsModule, MatTableModule, MatSortModule, MatPaginatorModule, MatDialogModule,
+    MatCheckboxModule, MatButtonModule, MatButtonToggleModule, MatRadioModule, MatOptionModule,
+    MatSelectModule, MatTooltipModule, MatDatepickerModule, MatProgressSpinnerModule, MatDividerModule,
+    MatProgressBarModule, MatExpansionModule, MatCardModule, DateAdapter, MatNativeDateModule,
+    MatDatepicker, MatListModule, MatGridListModule, MatToolbarModule
+} from '@angular/material';
 
 
 import { FormBuilder, ReactiveFormsModule, ControlContainer, FormsModule } from '@angular/forms';
@@ -45,94 +47,104 @@ import { DetailZoneComponent } from './admin/zone/detail-zone/detail-zone.compon
 import { DetailCoursierComponent } from './admin/coursier/detail-coursier/detail-coursier.component';
 import { LoginAdminComponent } from './admin/login-admin/login-admin.component';
 import { AuthInterceptor } from './admin/login-admin/authconfig.interceptor.ts ';
-import {NgxSpinnerComponent, NgxSpinnerModule} from 'ngx-spinner'
+import { NgxSpinnerComponent, NgxSpinnerModule } from 'ngx-spinner'
 import { TarifComponent } from './admin/tarif/tarif.component';
 import { DetailTarifComponent } from './admin/tarif/detail-tarif/detail-tarif.component';
+import { GetService } from './admin/services/get.service';
+import { PostService } from './admin/services/post.service';
+import { PutService } from './admin/services/put.service';
+import { DeleteService } from './admin/services/delete.service';
+import { LoginService } from './admin/login-admin/login.service';
 
 @NgModule({
-  entryComponents: [
-    // Ici Aussi pour MatDialog
-    DetailTypeComponent,
-    DetailZoneComponent,
-    DetailTarifComponent,
-    DetailCoursierComponent
-  ],
-  declarations: [
-    AppComponent,
-    routingComponents,
-    SocketComponent,
-    AdminComponent,
-    ClientComponent,
-    CoursierComponent,
-    ProduitComponent,
-    LivraisonComponent,
-    DashboardComponent,
-    ZoneComponent,
-    HeaderComponent,
-    TypeComponent,
-    DetailTypeComponent,
-    DetailZoneComponent,
-    DetailCoursierComponent,
-    DetailTarifComponent,
-    LoginAdminComponent,
-    TarifComponent
-  ],
-  imports: [
-BrowserModule,
-    AppRoutingModule,
-    StickyNavModule,
-    AngularFontAwesomeModule,
-   FontAwesomeModule,
-    EditorModule,
-    BrowserAnimationsModule,
-    MatStepperModule,
-    MatSliderModule,
-    MatIconModule ,
-    MatFormFieldModule,
-    MatInputModule,
-    MatIconModule,
-    MatTabsModule,
-    MatTableModule,
-    MatSortModule,
-    MatPaginatorModule,
-    MatDialogModule,
-    MatCheckboxModule,
-    MatButtonModule,
-    MatButtonToggleModule,
-    MatRadioModule,
-    MatOptionModule,
-    MatSelectModule,
-    MatTooltipModule,
-    MatDatepickerModule,
-    MatButtonModule,
-    MatProgressSpinnerModule,
-    MatDividerModule,
-    MatProgressBarModule,
-    MatCardModule,
-    MatExpansionModule,
-    ReactiveFormsModule,
-    FormsModule,
-    MatNativeDateModule,
-    MatTabsModule,
-    HttpClientModule,
-    MatListModule,
-    MatGridListModule,
-    MatToolbarModule,
-    NgxSpinnerModule,
-    ChartsModule
-  ],
-  providers: [
-    FormBuilder,
-    DatePipe,
-    MatDatepicker,
-    SocketService,
-    DisplayService,
-    {
-        provide: HTTP_INTERCEPTORS,
-        useClass: AuthInterceptor,
-        multi: true
-    }
-  ],
-  bootstrap: [AppComponent]
+    entryComponents: [
+        // Ici Aussi pour MatDialog
+        DetailTypeComponent,
+        DetailZoneComponent,
+        DetailTarifComponent,
+        DetailCoursierComponent
+    ],
+    declarations: [
+        AppComponent,
+        routingComponents,
+        SocketComponent,
+        AdminComponent,
+        ClientComponent,
+        CoursierComponent,
+        ProduitComponent,
+        LivraisonComponent,
+        DashboardComponent,
+        ZoneComponent,
+        HeaderComponent,
+        TypeComponent,
+        DetailTypeComponent,
+        DetailZoneComponent,
+        DetailCoursierComponent,
+        DetailTarifComponent,
+        LoginAdminComponent,
+        TarifComponent
+    ],
+    imports: [
+        BrowserModule,
+        AppRoutingModule,
+        StickyNavModule,
+        AngularFontAwesomeModule,
+        FontAwesomeModule,
+        EditorModule,
+        BrowserAnimationsModule,
+        MatStepperModule,
+        MatSliderModule,
+        MatIconModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatIconModule,
+        MatTabsModule,
+        MatTableModule,
+        MatSortModule,
+        MatPaginatorModule,
+        MatDialogModule,
+        MatCheckboxModule,
+        MatButtonModule,
+        MatButtonToggleModule,
+        MatRadioModule,
+        MatOptionModule,
+        MatSelectModule,
+        MatTooltipModule,
+        MatDatepickerModule,
+        MatButtonModule,
+        MatProgressSpinnerModule,
+        MatDividerModule,
+        MatProgressBarModule,
+        MatCardModule,
+        MatExpansionModule,
+        ReactiveFormsModule,
+        FormsModule,
+        MatNativeDateModule,
+        MatTabsModule,
+        HttpClientModule,
+        MatListModule,
+        MatGridListModule,
+        MatToolbarModule,
+        NgxSpinnerModule,
+        ChartsModule
+    ],
+    providers: [
+        FormBuilder,
+        DatePipe,
+        MatDatepicker,
+        SocketService,
+        DisplayService,
+        GetService,
+        PostService,
+        PutService,
+        DeleteService,
+        LoginService,
+        {
+            provide: HTTP_INTERCEPTORS,
+            useClass: AuthInterceptor,
+            multi: true
+        }
+    ],
+    bootstrap: [AppComponent]
 })
 export class AppModule { }
