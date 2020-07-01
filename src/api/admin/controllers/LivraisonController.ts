@@ -15,19 +15,21 @@ export default class LivraisonController extends Controller {
         await this.livStatByDate(router)
     }
 
-    async livStatByDate(router : Router) : Promise<void>{
-        router.get("/livraison/stat",async(req:Request,res:Response,next : NextFunction)=>{
-            let a = await  getRepository(Livraison)
-                .createQueryBuilder("livraison")
-                .select("livraison.dateLiv,count(livraison.dateLiv)")
-                
-                .groupBy("livraison.dateLiv")
-                .getRawMany()
-                
-            
-            res.json(a)
+    async livStatByDate(router: Router): Promise<void> {
+        router.get("/stat", async (req: Request, res: Response, next: NextFunction) => {
+            try {
+
+                let a = await getRepository(Livraison)
+                    .createQueryBuilder("livraison")
+                    .select("livraison.dateLiv,count(livraison.dateLiv)")
+                    .groupBy("livraison.dateLiv")
+                    .getRawMany()
+                this.sendResponse(res, 200, a)
+            } catch (error) {
+                this.sendResponse(res, 404, { message: "404 not found" })
+            }
         })
-    } 
+    }
 
     async getLivraison(router: Router): Promise<void> {
         router.get("/", async (req: Request, res: Response, next: NextFunction) => {
