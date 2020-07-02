@@ -6,7 +6,6 @@ import {
     ManyToOne,
     OneToMany,
     PrimaryGeneratedColumn,
-    CreateDateColumn,
 } from "typeorm";
 import { Client } from "./Client";
 import { Coursier } from "./Coursier";
@@ -51,6 +50,7 @@ export class Livraison {
     @ManyToOne(() => Client, (client) => client.livraisons, {
         onDelete: "SET NULL",
         onUpdate: "CASCADE",
+        nullable: false
     })
     @JoinColumn([{ name: "id_cli_Client", referencedColumnName: "idCli" }])
     idCliClient: Client;
@@ -65,6 +65,7 @@ export class Livraison {
     @ManyToOne(() => DateLimite, (coursier) => coursier.livraisons, {
         onDelete: "SET NULL",
         onUpdate: "CASCADE",
+        nullable: false
     })
     @JoinColumn([{ name: "id_limite_dat", referencedColumnName: "idLimiteDat" }])
     idLimiteDat: DateLimite;
@@ -87,6 +88,7 @@ export class Livraison {
     @ManyToOne(() => Zone, (zone) => zone.livraisons2, {
         onDelete: "SET NULL",
         onUpdate: "CASCADE",
+        nullable: false
     })
     @JoinColumn([{ name: "id_zon_arrivee", referencedColumnName: "idZon" }])
     idZonArrivee: Zone;

@@ -18,14 +18,20 @@ export default class LivraisonController extends Controller {
     async livStatByDate(router: Router): Promise<void> {
         router.get("/stat", async (req: Request, res: Response, next: NextFunction) => {
             try {
-
+                if (!req.query.start || !req.query.end)
+                    return this.sendResponse(res, 400, { message: "start or end not provided" })
+                const startDate: Date = new Date(req.query.start as string)
+                const endDate: Date = new Date(req.query.end as string)
                 let a = await getRepository(Livraison)
                     .createQueryBuilder("livraison")
                     .select("livraison.dateLiv,count(livraison.dateLiv)")
+                    .where("livraison.dateLiv >= :startDate", { startDate: startDate })
+                    .andWhere("livraison.dateLiv <= :endDate", { endDate: endDate })
                     .groupBy("livraison.dateLiv")
                     .getRawMany()
                 this.sendResponse(res, 200, a)
             } catch (error) {
+                console.log(error)
                 this.sendResponse(res, 404, { message: "404 not found" })
             }
         })
