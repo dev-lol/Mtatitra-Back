@@ -11,7 +11,7 @@ export default class ClientController extends Controller {
 
     async addGet(router: Router): Promise<void> {
         
-       //await this.allClient(router)
+       await this.allClient(router)
        await this.statByDate(router)
     }
 
@@ -33,12 +33,14 @@ export default class ClientController extends Controller {
                 const endDate : Date = new Date(req.query.end)
             let a = await  getRepository(Livraison)
                 .createQueryBuilder("livraison")
-                 .leftJoinAndSelect("livraison.idCliClient", "client")
-               // .select("livraison.dateLiv,count(livraison.dateLiv)")
+                .leftJoinAndSelect("livraison.idCliClient", "client")
+                .select("client.idCli, client.nomCli, client.prenomCli, count(client.idCli) as total")
                 .where("livraison.dateLiv >= :startDate",{startDate : startDate})
                 .andWhere("livraison.dateLiv <= :endDate",{endDate : endDate})
-                
-                .getMany()
+                .orderBy("total","DESC")
+                .limit(10)
+                .groupBy("client.idCli")
+                .getRawMany()
                 
             
             res.json(a)
