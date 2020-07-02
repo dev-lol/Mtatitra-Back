@@ -11,7 +11,7 @@ export default class ClientController extends Controller {
 
     async addGet(router: Router): Promise<void> {
 
-        //await this.allClient(router)
+        await this.allClient(router)
         await this.statByDate(router)
     }
 
@@ -29,20 +29,22 @@ export default class ClientController extends Controller {
     statByDate = async (router: Router): Promise<void> => {
         router.get("/stat", async (req: Request, res: Response, next: NextFunction) => {
             try {
+                if (!req.query.start || !req.query.end) {
+                    return this.sendResponse(res, 400, { message: "Start date or End Date not provided" })
+                }
                 const startDate: Date = new Date(req.query.start as string)
                 const endDate: Date = new Date(req.query.end as string)
                 const limit: number = Number(req.query.limitclae)
-                if (!startDate || !endDate) {
-                    return this.sendResponse(res, 400, { message: "Start date or End Date not provided" })
-                }
                 let a = await getRepository(Livraison)
                     .createQueryBuilder("livraison")
                     .leftJoinAndSelect("livraison.idCliClient", "client")
-                    .select("livraison.dateLiv,count(livraison.dateLiv)")
+                    .select(`client.idCli as "idCli", client.nomCli as "nomCli" , client.prenomCli as "prenomCli", count(client.idCli) as total`)
                     .where("livraison.dateLiv >= :startDate", { startDate: startDate })
                     .andWhere("livraison.dateLiv <= :endDate", { endDate: endDate })
+                    .orderBy("total", "DESC")
                     .limit(req.query.limit ? limit : 10)
-                    .getMany()
+                    .groupBy("client.idCli")
+                    .getRawMany()
                 this.sendResponse(res, 200, a)
             } catch (error) {
                 this.sendResponse(res, 404, { message: "not found" })
