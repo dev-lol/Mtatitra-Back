@@ -30,7 +30,10 @@ export default class LivraisonController extends Controller {
                 const planifie = await getRepository(Livraison)
                     .createQueryBuilder("livraison")
                     .leftJoinAndSelect("livraison.produits", "produits")
-                    .leftJoinAndSelect("livraison.idEtaEtats","etats")
+                    .leftJoinAndSelect("livraison.idEtaEtats", "etats")
+                    .leftJoinAndSelect("livraison.idLimiteDat", "limiteDate")
+                    .leftJoinAndSelect("livraison.idTypeCouTypeCoursier", "typeCoursier")
+                    .leftJoinAndSelect("livraison.idZonArrivee", "zoneArrivee")
                     .select()
                     .where("livraison.dateLiv > CURRENT_DATE")
                     .andWhere("livraison.idCliClient = :idCli", { idCli: res.locals.id })
@@ -42,7 +45,10 @@ export default class LivraisonController extends Controller {
                 const en_cours = await getRepository(Livraison)
                     .createQueryBuilder("livraison")
                     .leftJoinAndSelect("livraison.produits", "produits")
-                    .leftJoinAndSelect("livraison.idEtaEtats","etats")
+                    .leftJoinAndSelect("livraison.idEtaEtats", "etats")
+                    .leftJoinAndSelect("livraison.idLimiteDat", "limiteDate")
+                    .leftJoinAndSelect("livraison.idTypeCouTypeCoursier", "typeCoursier")
+                    .leftJoinAndSelect("livraison.idZonArrivee", "zoneArrivee")
                     .select()
                     .where("livraison.idEtaEtats is not null")
                     .andWhere("livraison.idEtaEtats <> :id", { id: last.idEta })
@@ -52,7 +58,10 @@ export default class LivraisonController extends Controller {
                 const historique = await getRepository(Livraison)
                     .createQueryBuilder("livraison")
                     .leftJoinAndSelect("livraison.produits", "produits")
-                    .leftJoinAndSelect("livraison.idEtaEtats","etats")
+                    .leftJoinAndSelect("livraison.idEtaEtats", "etats")
+                    .leftJoinAndSelect("livraison.idLimiteDat", "limiteDate")
+                    .leftJoinAndSelect("livraison.idTypeCouTypeCoursier", "typeCoursier")
+                    .leftJoinAndSelect("livraison.idZonArrivee", "zoneArrivee")
                     .select()
                     .where("livraison.dateLiv < CURRENT_DATE")
                     .orWhere("livraison.idEtaEtats = :id", { id: last.idEta })
@@ -88,7 +97,7 @@ export default class LivraisonController extends Controller {
                 livraison.produits = produits;
                 livraison.idZonArrivee = { ... new Zone(), idZon: req.body.livraison.zoneLiv }
                 livraison.idCliClient = { ... new Client(), idCli: res.locals.id }
-                livraison.idLimiteDat = { ... new DateLimite(), idLimiteDat: req.body.livraison.dateLimite }
+                livraison.idLimiteDat = { ... new DateLimite(), idLimiteDat: req.body.livraison.idLimiteDat }
                 livraison.expressLiv = new Date(req.body.dateLiv).toDateString() == new Date().toDateString()
                 livraison.idTypeCouTypeCoursier = { ... new TypeCoursier(), idTypeCou: req.body.livraison.typeCoursier }
                 await getRepository(Livraison).save(livraison)
