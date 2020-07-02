@@ -72,16 +72,8 @@ this.addAllRoutes(this.mainRouter)
     async addPut(router: Router): Promise<void> {
         router.put("/:idType",async (req: Request, res: Response, next: NextFunction) => {
             try {
-<<<<<<< HEAD
                 let type: TypeCoursier = await getRepository(TypeCoursier).findOneOrFail(Number(req.params.idType))
                 type = getRepository(TypeCoursier).merge(type, req.body as Object)
-=======
-                let type: TypeCoursier = await this.typeCoursierRepository.findOneOrFail(Number(req.params.idType))
-
-              
-                type = this.typeCoursierRepository.merge(type, req.body as Object)
-                console.log(type)
->>>>>>> b0121d8d616708c4853a7e91c0e093ce2608ef03
                 type.estSupprime = false
                 await getRepository(TypeCoursier).save(type)
                 this.sendResponse(res,200, {message: "Type changed"})

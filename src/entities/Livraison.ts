@@ -46,11 +46,7 @@ export class Livraison {
     sommeRecepLiv: number;
 
     @Column("character varying", { name: "description_liv", nullable: true })
-<<<<<<< HEAD
     descriptionLiv: string | null;
-=======
-    descriptionLiv: number | null;
->>>>>>> b0121d8d616708c4853a7e91c0e093ce2608ef03
 
     @ManyToOne(() => Client, (client) => client.livraisons, {
         onDelete: "SET NULL",

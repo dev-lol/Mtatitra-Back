@@ -18,11 +18,15 @@ export default class LivraisonController extends Controller {
     }
 
     async livStatByDate(router : Router) : Promise<void>{
-        router.get("/livraison/stat",async(req:Request,res:Response,next : NextFunction)=>{
+       
+        router.get("/stat",async(req:Request,res:Response,next : NextFunction)=>{
+            const startDate : Date = new Date(req.query.start)
+            const endDate : Date = new Date(req.query.end)
             let a = await  getRepository(Livraison)
                 .createQueryBuilder("livraison")
                 .select("livraison.dateLiv,count(livraison.dateLiv)")
-                
+                .where("livraison.dateLiv >= :startDate",{startDate : startDate})
+                .andWhere("livraison.dateLiv <= :endDate",{endDate : endDate})
                 .groupBy("livraison.dateLiv")
                 .getRawMany()
                 
