@@ -21,9 +21,9 @@ export default class DateLimiteController extends Controller {
 
                 let dateLimites: DateLimite[] = await this.fetchDateLimitesFromDatabase()
 
-                this.sendResponse(res, 200, { data: dateLimites })
+                this.sendResponse(res, 200, dateLimites)
             } catch (err) {
-
+                this.sendResponse(res, 404, { message: "not found" })
             }
         })
 
