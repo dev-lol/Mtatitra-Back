@@ -1,7 +1,7 @@
 import { Router, Response, Request, NextFunction, ErrorRequestHandler } from "express";
 import { Controller } from "../../Controller"
 import { DateLimite } from "../../../entities/DateLimite"
-import { Repository, Connection, createConnection, getConnection } from "typeorm";
+import { Repository, getRepository } from "typeorm";
 import { ormconfig } from "../../../config";
 import { runInThisContext } from "vm";
 export default class DateLimiteController extends Controller {
@@ -23,6 +23,7 @@ export default class DateLimiteController extends Controller {
                 let dateLimites: DateLimite[] = await this.fetchDateLimitesFromDatabase()
                 this.sendResponse(res, 200, dateLimites)
             } catch (err) {
+                console.log(err)
                 this.sendResponse(res, 404, { message: "not found" })
             }
         })
@@ -30,7 +31,7 @@ export default class DateLimiteController extends Controller {
     }
 
     private async fetchDateLimitesFromDatabase(): Promise<DateLimite[]> {
-        return await this.dateLimiteRepository.find({ where: { estSupprime: false } })
+        return await getRepository(DateLimite).find({ where: { estSupprime: false } })
     }
     async addPost(router: Router): Promise<void> {
         await this.postDateLimite(router)
