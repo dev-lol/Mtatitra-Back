@@ -4,6 +4,8 @@ import { Client } from "../../../entities/Client"
 import { getRepository, Connection, createConnection, getConnection } from "typeorm";
 import jwt from 'jsonwebtoken';
 import Password from '../../../utils/Password';
+import ErrorValidator from "../../ErrorValidator";
+import { body } from "express-validator";
 export default class ClientController extends Controller {
     constructor() {
         super()
@@ -29,38 +31,47 @@ export default class ClientController extends Controller {
     }
 
     async postClient(router: Router) {
-        router.post("/login", async (req: Request, res: Response, next: NextFunction) => {
-            try {
+        router.post("/login", [
+            body('username').isEmail().withMessage("email invalide"),
+            body(['password']).notEmpty().withMessage('donnee incomplete'),
+        ], ErrorValidator,
+            async (req: Request, res: Response, next: NextFunction) => {
+                try {
 
-                let client = await getRepository(Client).findOneOrFail({ where: { emailCli: req.body.username } })
-                if (client.confirmationCli) {
-                    return this.sendResponse(res, 401, { message: "Compte non confirmee" })
-                }
-                var bcrypt = require("bcrypt")
-                bcrypt.compare(req.body.password, client.passCli, (err, isSame) => {
-                    if (!err && isSame) {
-                        this.sendResponse(res, 200, {
-                            token: jwt.sign({ username: client.emailCli, id: client.idCli }, process.env.CLIENT_PASS_PHRASE, { expiresIn: "30d" })
-                        })
-                    } else {
-                        this.sendResponse(res, 401, {
-                            message: "Invalid credentials"
-                        })
+                    let client = await getRepository(Client).findOneOrFail({ where: { emailCli: req.body.username } })
+                    if (client.confirmationCli) {
+                        return this.sendResponse(res, 401, { message: "Compte non confirmee" })
                     }
-                })
+                    var bcrypt = require("bcrypt")
+                    bcrypt.compare(req.body.password, client.passCli, (err, isSame) => {
+                        if (!err && isSame) {
+                            this.sendResponse(res, 200, {
+                                token: jwt.sign({ username: client.emailCli, id: client.idCli }, process.env.CLIENT_PASS_PHRASE, { expiresIn: "30d" })
+                            })
+                        } else {
+                            this.sendResponse(res, 401, {
+                                message: "Invalid credentials"
+                            })
+                        }
+                    })
 
-            } catch (error) {
-                this.sendResponse(res, 401, {
-                    message: "Invalid credentials"
-                })
-            }
-        })
+                } catch (error) {
+                    this.sendResponse(res, 401, {
+                        message: "Invalid credentials"
+                    })
+                }
+            })
     }
     async addPut(router: Router): Promise<void> {
-        router.put("/profile", async (req: Request, res: Response, next: NextFunction) => {
+        router.put("/profile", [
+            body('emailCli').isEmail().withMessage("email invalide"),
+            body(['nomCli', 'prenomCli', 'numTelCli', 'adresseCli', 'emailCli']).notEmpty().withMessage('donnee incomplete'),
+            body('passCli').isLength({ min: 6 })
+                .withMessage('mot de passe trop court')
+                .matches(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/)
+                .withMessage("mot de passe doit contenir au moins un nombre et une lettre")
+        ], ErrorValidator, async (req: Request, res: Response, next: NextFunction) => {
             try {
-
-
                 var clientToModify: Client = await getRepository(Client).findOneOrFail(res.locals.id)
                 var clientFromRequest: Client = getRepository(Client).create(req.body as Object)
                 delete clientFromRequest["passCli"]
@@ -68,7 +79,12 @@ export default class ClientController extends Controller {
                 if (req.body.oldPassword) {
                     const isSame = await Password.compare(req.body.oldPassword, clientToModify.passCli)
                     if (isSame) {
-                        clientToModify.passCli = await Password.hash(req.body.newPassword)
+                        if (/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/.test(req.body.newPassword))
+                            clientToModify.passCli = await Password.hash(req.body.newPassword)
+                        else
+                            return this.sendResponse(res, 400, { message: "mot de passe doit contenir au moins un nombre et une lettre" })
+                    } else {
+                        return this.sendResponse(res, 400, { message: "password not same" })
                     }
                 }
                 await getRepository(Client).save(clientToModify)
