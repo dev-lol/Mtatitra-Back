@@ -13,6 +13,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { LogoutGuard } from './admin/login-admin/logout.guard';
 
 import { TarifComponent } from './admin/tarif/tarif.component';
+import { DatelimitComponent } from './admin/datelimit/datelimit.component';
 
 
 
@@ -61,6 +62,10 @@ const routes: Routes = [
             {
                 path: 'tarif',
                 component: TarifComponent
+              },
+              {
+                path: 'date',
+                component: DatelimitComponent
               }
         ]
     },

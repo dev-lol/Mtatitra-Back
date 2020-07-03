@@ -111,6 +111,15 @@
             </p>
             <fa-icon class="arrow" [icon]="faArrowAltCircleRight" *ngIf="display.show === 'produit'" style="float: right;"></fa-icon>
           </mat-list-item>
+
+          <mat-list-item class="btn btn-default item" (click)="slideDate()">
+            <!-- <mat-icon matListIcon></mat-icon> -->
+            <fa-icon matListIcon class="icon" [icon]="faClock"></fa-icon>
+            <p matLine class="menu">
+              Dates
+            </p>
+            <fa-icon class="arrow" [icon]="faArrowAltCircleRight" *ngIf="display.show === 'produit'" style="float: right;"></fa-icon>
+          </mat-list-item>
           
         </mat-list>
       </div>
