@@ -1,7 +1,7 @@
 import { Router, Response, Request, NextFunction, ErrorRequestHandler } from "express";
 import { Controller } from "../../Controller"
 import { DateLimite } from "../../../entities/DateLimite"
-import { Repository, Connection, createConnection, getConnection } from "typeorm";
+import { Repository, Connection, createConnection, getConnection, getRepository } from "typeorm";
 import { ormconfig } from "../../../config";
 
 export default class DateLimiteController extends Controller {
@@ -18,14 +18,17 @@ export default class DateLimiteController extends Controller {
 
     private async getAllDateLimite(router: Router): Promise<void> {
         router.get("/", async (req: Request, res: Response, next: NextFunction) => {
-            try {
+             try {
+                
 
-                let dateLimites: DateLimite[] = await this.fetchDateLimitesFromDatabase()
+                let dateLimites: DateLimite[] = await getRepository(DateLimite).find({where : {estSupprime : false}})
 
                 this.sendResponse(res, 200, { data: dateLimites })
             } catch (err) {
+                next(err)
+            } 
 
-            }
+            
         })
 
     }
@@ -39,7 +42,9 @@ export default class DateLimiteController extends Controller {
 
     async postDateLimite(router: Router) {
         router.post("/", async (req: Request, res: Response, next: NextFunction) => {
-            let dateLimiteToSave: DateLimite = await this.createDateLimiteFromRequest(req)
+
+          
+             let dateLimiteToSave: DateLimite = await this.createDateLimiteFromRequest(req)
 
 
             let dateLimiteSaved: DateLimite = await this.saveDateLimiteToDatabase(dateLimiteToSave)
@@ -49,7 +54,7 @@ export default class DateLimiteController extends Controller {
             } else {
                 this.sendResponse(res, 400, { message: "KO" })
             }
-
+ 
         })
     }
 
@@ -89,14 +94,16 @@ export default class DateLimiteController extends Controller {
 
     async addDelete(router: Router): Promise<void> {
         router.delete("/:idDate", async (req: Request, res: Response, next: NextFunction) => {
-            try {
-                let date: DateLimite = await this.dateLimiteRepository.findOneOrFail(Number(req.params.idDate))
+             try {
+                let date: DateLimite = await getRepository(DateLimite).findOne(Number(req.params.idDate))
                 date.estSupprime = true
                 await this.dateLimiteRepository.save(date)
                 this.sendResponse(res, 203, { message: "Date deleted" })
             } catch (error) {
+             
                 this.sendResponse(res, 404, { message: "Date not found" })
             }
+ 
 
         })
     }
