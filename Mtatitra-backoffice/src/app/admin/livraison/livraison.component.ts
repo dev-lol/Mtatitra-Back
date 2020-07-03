@@ -4,6 +4,10 @@ import { Subscription } from 'rxjs';
 import { Component, OnInit } from '@angular/core';
 import { ChartOptions, ChartType, ChartDataSets } from 'chart.js';
 import { Label, Color } from 'ng2-charts';
+import { DateAdapter, MAT_DATE_FORMATS } from '@angular/material/core';    // changer
+import { AppDateAdapter, APP_DATE_FORMATS } from './../format-datepicker';    // changer
+import { faEye } from '@fortawesome/free-solid-svg-icons'; // changer 2
+
 
 interface Produit {
     idPro: number;
@@ -13,7 +17,6 @@ interface Produit {
     typePro: string;
 }
 
-// changer
 interface Livraison {
     idLiv: number;
     departLiv: string;
@@ -34,27 +37,33 @@ interface Coursier {
 @Component({
     selector: 'app-livraison',
     templateUrl: './livraison.component.html',
-    styleUrls: ['./livraison.component.css']
+    styleUrls: ['./livraison.component.css'],
+    providers: [
+        { provide: DateAdapter, useClass: AppDateAdapter },
+        { provide: MAT_DATE_FORMATS, useValue: APP_DATE_FORMATS }
+    ]
 })
 export class LivraisonComponent implements OnInit {
     img = '../../../assets/images/livrai.png';
 
-
-    // changer
+    faEye = faEye; // changer 2
     livraisons: Livraison[] = [];
 
-    currentIdCoursier = 0;
+    coursiers: Coursier[] = [];
 
-    // changer
+    currentIdCoursier = 0;
+    livraisonSub: Subscription;
+    coursiersSub: Subscription;
+
     selectedValue: any = 'all';
-    dateValue: any = new Date().toISOString();
+    dateValue: any = new Date();
 
     // changer
     showGraph = false;
     imgGraph = '../../../assets/images/graph.jpg';
     // Line chart
-    lineData: number[] = [12, 23, 33, 40, 10, 38]; // OnInit
-    lineLabel: string[] = ['02-01-2020', '03-01-2020', '04-01-2020', '05-01-2020', '06-01-2020', '07-01-2020']; // OnInit
+    lineData: number[] = []; // OnInit
+    lineLabel: string[] = []; // OnInit
     lineChartOptions: ChartOptions = {
         responsive: true,
     };
@@ -75,33 +84,40 @@ export class LivraisonComponent implements OnInit {
     ];
     graphSub: Subscription;
     graph: any[];
-    // fin changer
+
+
+    // changer
+    today = new Date();
+    startDate: Date = new Date(this.today.getFullYear(), this.today.getMonth() - 1, 1);;
+    endDate: Date = new Date(this.today.getFullYear(), this.today.getMonth(), 0);
 
     constructor(public getSrv: GetService, public putSrv: PutService) { }
 
     ngOnInit() {
-        const date = new Date(this.dateValue).toDateString();
-            // changer
-            this.graphSub = this.getSrv.graphSubject.subscribe(
-                (result: any) => {
-                    this.graph = result;
-                    this.loadGraph(this.graph);
-                }
-            );
-        this.getSrv.livSubject.subscribe(
+        this.graphSub = this.getSrv.graphSubject.subscribe(
             (result: any) => {
-                this.livraisons = result;
-                console.log(result)
+                this.graph = result;
+                this.loadGraph(this.graph);
             }
         );
-        this.getSrv.getAllLivraison(this.selectedValue, date)
 
+        this.livraisonSub = this.getSrv.livSubject.subscribe(
+            (result: any) => {
+                this.livraisons = result;
+            }
+        );
+
+        this.coursiersSub = this.getSrv.coursierSubject.subscribe(
+            (result: any) => {
+                this.coursiers = result;
+            }
+        );
         this.getSrv.getCoursiers();
-        this.getDataGraph();  // changer
+        this.getDataGraph();
+        this.getAllLivraisons();
     }
 
     getAllLivraisons() {
-
         this.getSrv.getAllLivraison();
     }
 
@@ -113,45 +129,48 @@ export class LivraisonComponent implements OnInit {
     assigne(idLiv: number) {
         this.putSrv.assigneCoursierLivraison(idLiv, this.currentIdCoursier);
     }
-    // changer
+
+    changeDate() {
+        this.changeSelection();
+    }
+
     changeSelection() {
-        if (this.selectedValue && this.dateValue) {
-            const date = new Date(this.dateValue).toDateString();
-            this.getSrv.getAllLivraison(this.selectedValue, date);
+        let date = null;
+        if (this.dateValue) {
+            date = new Date(this.dateValue).toDateString()
         }
+        this.getSrv.getAllLivraison(this.selectedValue, date);
     }
 
-    // changer
     getDataGraph() {
-        this.updateLineGraph();
-        this.getSrv.getGraphLivraison();
+        this.getSrv.getGraphByDate(this.startDate, this.endDate);
     }
-
-    // changer
     loadGraph(data: any) {
         this.lineData = [];
         this.lineLabel = [];
-        data.forEach(nbLivraison => {
-            this.lineData.push(nbLivraison);
-        });
-
-        data.forEach(dateLivraison => {
-            this.lineLabel.push(dateLivraison);
+        data.forEach(item => {
+            this.lineData.push(item.count)
+            this.lineLabel.push(item.date_liv.substring(0,10))
         });
         this.updateLineGraph();
     }
 
-    // changer
+
     updateLineGraph() {
         this.lineChartData[0] = Object.assign({}, this.lineChartData[0], { data: this.lineData });
         this.lineChartLabels = [];
         this.lineChartLabels = this.lineLabel;
     }
 
-    // changer
     toggleGraph() {
         this.showGraph = !this.showGraph;
     }
 
+    // changer
+    changeDateGraph() {
+        const dateStart = this.startDate.toISOString();
+        const dateEnd = this.endDate.toISOString();
+        this.getSrv.getGraphByDate(dateStart, dateEnd);
+    }
 
 }

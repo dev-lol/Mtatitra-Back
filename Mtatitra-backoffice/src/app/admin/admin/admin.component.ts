@@ -2,7 +2,8 @@ import { DisplayService } from './../services/display.service';
 import { Component, OnInit } from '@angular/core';
 import { faStar, faChartBar, faUserGraduate, faUniversity, faBlog, faCube, faBars, faCreditCard,
   faArrowAltCircleRight, faHome, faUser, faCarAlt, faCartArrowDown, faStream, faGlobe,
-  faStreetView } from '@fortawesome/free-solid-svg-icons';
+  faStreetView, 
+  faClock} from '@fortawesome/free-solid-svg-icons';
 import { Router } from '@angular/router';
 
 @Component({
@@ -29,7 +30,7 @@ export class AdminComponent implements OnInit {
   faStream = faStream;
   faGlobe = faGlobe;
   faStreetView = faStreetView;
-
+  faClock = faClock
 
   show = '';
 
@@ -77,6 +78,11 @@ export class AdminComponent implements OnInit {
   slideTarif() {
     this.display.show = 'tarif';
     this.router.navigate(['/tarif']);
+  }
+
+  slideDate(){
+    this.display.show = "date",
+    this.router.navigate(["/date"])
   }
 
 }

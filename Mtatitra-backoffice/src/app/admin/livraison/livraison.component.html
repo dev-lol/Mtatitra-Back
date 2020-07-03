@@ -1,7 +1,7 @@
 <img [src]="img" alt="img" id="img_title">
 
 
-<div class="header container">
+<div *ngIf="!showGraph" class="header container">
   <div class="row">
     <div class="col-5">
       <mat-form-field style="width: 100%;">
@@ -29,8 +29,7 @@
     </div>
     <div class="col-2" style="text-align: center;">
       <div>
-        <img [src]="imgGraph" id="img_graph" alt="graph" *ngIf="!showGraph" (click)="toggleGraph()">
-        <p class="btn btn-primary" (click)="toggleGraph()" *ngIf="showGraph">Liste</p>
+        <p class="btn btn-success" (click)="toggleGraph()" *ngIf="!showGraph">Graph</p>
       </div>
     </div>
   </div>
@@ -151,6 +150,36 @@
 </div>
 
 <div class="stat_graph" *ngIf="showGraph">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-5 col-offset-1 offset-xs-1 col-xs-10">
+        <mat-form-field class="datePicker">
+          <input matInput placeholder="date de debut" [matDatepicker]="dateStart"
+          name="startDate"  required readonly [(ngModel)]="startDate" (dateChange)="changeDateGraph()">
+          <mat-datepicker-toggle [for]="dateStart" matSuffix></mat-datepicker-toggle>
+          <mat-datepicker #dateStart [startAt]="today">
+          </mat-datepicker>
+        </mat-form-field>
+      </div>
+
+      <div class="col-md-5 offset-xs-1 col-xs-10">
+        <mat-form-field class="datePicker">
+          <input matInput placeholder="date de fin" [matDatepicker]="dateEnd"
+          name="dateEnd" required readonly [(ngModel)]="endDate" (dateChange)="changeDateGraph()" [min]="startDate">
+          <mat-datepicker-toggle [for]="dateEnd" matSuffix></mat-datepicker-toggle>
+          <mat-datepicker #dateEnd>
+          </mat-datepicker>
+        </mat-form-field>
+      </div>
+
+      <div class="col-md-2 offset-xs-1 col-xs-10" style="text-align: center;">
+        <div class="btn btn-dark" style="float: right;" (click)="toggleGraph()" *ngIf="showGraph">
+          <fa-icon [icon]="faEye"></fa-icon>
+          liste
+        </div>
+      </div>
+    </div>
+  </div>
   <mat-card class="dashboard_card">
     <mat-card-header>
       <mat-card-title>Graph</mat-card-title>

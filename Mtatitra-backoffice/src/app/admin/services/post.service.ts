@@ -12,10 +12,10 @@ export class PostService {
 
     constructor(private http: HttpClient, private getSrv: GetService) { }
 
-    addTarif(tarif: any) {
+    addTarif(value: object) {
         // tslint:disable-next-line: object-literal-key-quotes
         const headers: any = new HttpHeaders({ 'Content-Type': 'application/json' });
-        this.http.post(`${this.endpoint}/tarifs`, tarif, headers).subscribe(
+        this.http.post(`${this.endpoint}/tarifs`, value, headers).subscribe(
             (data: any) => {
                 console.log(data);
                 // Get service
@@ -23,6 +23,18 @@ export class PostService {
             }, (error) => {
                 console.log(error);
             });
+    }
+
+    addLimitDat(value: string) {
+        const headers: any = new HttpHeaders({ 'Content-Type': 'application/json' });
+        let data = {
+            limiteDat: value
+        }
+        this.http.post(`${this.endpoint}/datelimite`, data, headers).subscribe(
+            (data: any) => {
+                this.getSrv.getLimitDate()
+            }, (error) => console.log(error)
+        )
     }
 
     addTypeCoursier(str: string) {

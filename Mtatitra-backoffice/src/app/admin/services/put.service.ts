@@ -76,16 +76,24 @@ export class PutService {
             });
     }
 
-          editTarif(idTar: number , tarif: object) {
-            console.log(tarif);
-            // tslint:disable-next-line: object-literal-key-quotes
-            const headers: any = new HttpHeaders({'Content-Type': 'application/json'});
-            this.http.put(`${this.endpoint}/tarifs/${idTar}`, tarif, headers).subscribe(
-              (data: any) => {
-                  console.log(data);
-                  this.getSrv.getTarif();
-              }, (error) => {
-                  console.log(error);
-              });
-          }
+    editTarif(idTar: number, tarif: object) {
+        console.log(tarif);
+        // tslint:disable-next-line: object-literal-key-quotes
+        const headers: any = new HttpHeaders({ 'Content-Type': 'application/json' });
+        this.http.put(`${this.endpoint}/tarifs/${idTar}`, tarif, headers).subscribe(
+            (data: any) => {
+                console.log(data);
+                this.getSrv.getTarif();
+            }, (error) => {
+                console.log(error);
+            });
+    }
+    editLimitDate(id: number, limitDate: object) {
+        const headers: any = new HttpHeaders({ 'Content-Type': 'application/json' });
+        this.http.put(`${this.endpoint}/datelimite/${id}`, limitDate, headers).subscribe(
+            (data: any) => {
+                this.getSrv.getLimitDate()
+            }, (error) => console.log(error)
+        )
+    }
 }

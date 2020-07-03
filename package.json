@@ -29,6 +29,7 @@
     "compression": "^1.7.4",
     "cors": "^2.8.5",
     "express": "^4.17.1",
+    "express-validator": "^6.6.0",
     "hasha": "^5.1.0",
     "jsonwebtoken": "^8.5.1",
     "moment": "^2.24.0",
@@ -45,5 +46,9 @@
   "devDependencies": {
     "typeorm-fixtures-cli": "^1.6.0"
   },
-  "cacheDirectories": ["Mtatitra-backoffice/node_modules", "Mtatitra-Front/node_modules", "node_modules"]
+  "cacheDirectories": [
+    "Mtatitra-backoffice/node_modules",
+    "Mtatitra-Front/node_modules",
+    "node_modules"
+  ]
 }
