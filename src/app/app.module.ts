@@ -51,6 +51,7 @@ import { NgxSpinnerComponent, NgxSpinnerModule } from 'ngx-spinner'
 import { TarifComponent } from './admin/tarif/tarif.component';
 import { DatelimitComponent } from './admin/datelimit/datelimit.component';
 import { DetailDateComponent } from './admin/datelimit/detail-date/detail-date.component';
+import { DetailTarifComponent } from './admin/tarif/detail-tarif/detail-tarif.component';
 
 @NgModule({
     entryComponents: [
@@ -58,7 +59,8 @@ import { DetailDateComponent } from './admin/datelimit/detail-date/detail-date.c
         DetailTypeComponent,
         DetailZoneComponent,
         DetailCoursierComponent,
-        DetailDateComponent
+        DetailDateComponent,
+        DetailTarifComponent
     ],
     declarations: [
         AppComponent,
@@ -76,6 +78,7 @@ import { DetailDateComponent } from './admin/datelimit/detail-date/detail-date.c
         DetailTypeComponent,
         DetailZoneComponent,
         DetailCoursierComponent,
+        DetailTarifComponent,
         LoginAdminComponent,
         TarifComponent,
         DatelimitComponent,
