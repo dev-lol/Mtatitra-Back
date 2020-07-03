@@ -128,7 +128,7 @@ export class ClientComponent implements OnInit {
     }
 
     // changer
-    changeTop(event) {
+    changeTop() {
         const dateStart = this.startDate.toISOString();
         const dateEnd = this.startDate.toISOString();
         this.getSrv.getGraphTopLivraison(dateStart, dateEnd, Number(this.top));
