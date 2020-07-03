@@ -11,8 +11,8 @@ import { forkJoin } from 'rxjs';
 import { ClientformService } from './clientform.service';
 
 interface Limite {
-    value: string;
-    viewValue: string;
+    idLimiteDat: number;
+    limiteDat: string;
 }
 
 @Component({
@@ -22,16 +22,12 @@ interface Limite {
 })
 export class ClientformComponent implements OnInit {
 
-    selectedValue: string;
 
     selectedTypeCouriser
 
     selectedZone
 
-    limite: Limite[] = [
-        { value: 'limite-0', viewValue: 'Avant-midi 12h' },
-        { value: 'limite-1', viewValue: 'Avant 16h 30' }
-    ];
+    limite: Limite[] = [];
 
     endpoint: string = environment.API_ENDPOINT
     isLinear = false;
@@ -61,12 +57,15 @@ export class ClientformComponent implements OnInit {
             [
                 this.http.get<any>(`${this.endpoint}/typecoursier`),
                 this.http.get<any>(`${this.endpoint}/typeproduit`),
-                this.http.get<any>(`${this.endpoint}/zone`)
+                this.http.get<any>(`${this.endpoint}/zone`),
+                this.http.get<any>(`${this.endpoint}/datelimite`),
             ]
         ).subscribe((resultats: any) => {
             this.typecoursier = resultats[0]
             this.typeproduit = resultats[1]
             this.zone = resultats[2]
+            this.limite = resultats[3]
+            console.log(this.limite)
             this.spinner.hide('liv')
         })
         this.detailsForm = this.formBuilder.group({
@@ -78,7 +77,8 @@ export class ClientformComponent implements OnInit {
             destinationLiv: '',
             departLiv: '',
             zoneLiv: '',
-            tarif: ''
+            tarif: '',
+            idLimiteDat: '',
         })
         this.produitForm = this.formBuilder.group({
             produits: this.formBuilder.array([this.createItem()])

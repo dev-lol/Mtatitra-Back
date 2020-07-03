@@ -151,9 +151,9 @@
             </mat-form-field>
             <mat-form-field class="produittextarea">
               <mat-label>Heure limite de la livraison</mat-label>
-              <mat-select [(ngModel)]="selectedValue" name="livaison">
-                <mat-option *ngFor="let limite of limite" [value]="limite.value">
-                  {{limite.viewValue}}
+              <mat-select formControlName="idLimiteDat" required>
+                <mat-option *ngFor="let lim of limite; let i = index" [value]="lim.idLimiteDat">
+                  {{lim.limiteDat}}
                 </mat-option>
               </mat-select>
             </mat-form-field>

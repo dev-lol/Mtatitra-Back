@@ -1,13 +1,13 @@
 <h2 mat-dialog-title>DETAILS DU LIVRAISONS</h2>
 <mat-dialog-content class="mat-typography">
-
-    <p class="h6"><span class="title">Date de livraison :</span><span class="part"> {{data.element.dateLiv}}</span></p>
-    <p class="h6"><span class="title">Depart :</span><span class="part"> {{data.element.departLiv}}</span></p>
-    <p class="h6"><span class="title">Destination :</span><span class="part"> {{data.element.destinationLiv}}</span></p>
-    <p class="h6"><span class="title">Descrption :</span><span class="part"> {{data.element.descriptionLiv}}</span></p>
-    <p class="h6"><span class="title">Experess :</span><span class="part"> {{data.element.expressLiv}}</span></p>
-    <p class="h6"><span class="title">Télephone du ecepteur :</span><span class="part"> {{data.element.numRecepLiv}}</span></p>
+  <p class="h6"><span class="title">Vehicule:</span><span class="part">
+      {{data.element.idTypeCouTypeCoursier.typeCou}}</span></p>
+  <p class="h6"><span class="title">Description :</span><span class="part"> {{data.element.descriptionLiv}}</span></p>
+  <p class="h6"><span class="title">Heure limite :</span><span class="part">
+      {{data.element.idLimiteDat.limiteDat}}</span></p>
+  <p class="h6"><span class="title">Télephone du recepteur :</span><span class="part">
+      {{data.element.numRecepLiv}}</span></p>
 </mat-dialog-content>
 <mat-dialog-actions align="end">
-    <button mat-button mat-dialog-close>Fermer</button>
+  <button mat-button mat-dialog-close>Fermer</button>
 </mat-dialog-actions>
