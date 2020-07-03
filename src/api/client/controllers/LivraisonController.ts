@@ -13,6 +13,8 @@ import { Zone } from "../../../entities/Zone";
 import { DateLimite } from "../../../entities/DateLimite";
 import { TypeCoursier } from "../../../entities/TypeCoursier";
 import { Etats } from '../../../entities/Etats';
+import ErrorValidator from "../../ErrorValidator";
+import { body } from 'express-validator';
 export default class LivraisonController extends Controller {
     constructor() {
         super()
@@ -84,29 +86,44 @@ export default class LivraisonController extends Controller {
 
     }
     async setLivraison(router: Router): Promise<void> {
-        router.post("/", async (req: Request, res: Response, next: NextFunction) => {
-            try {
-                console.log(req.body.livraison)
-                let produits: Produit[] = []
-                for (const p of req.body.produits) {
-                    const produit: Produit = getRepository(Produit).create(p as object)
-                    produit.idTypeProTypeProduit = { ...new TypeProduit(), idTypePro: p["typePro"] }
-                    produits.push(produit)
+        router.post("/", [
+            body('produits').isArray().notEmpty().withMessage("pas de produits"),
+            body(['produits.*.largeurPro', 'produits.*.longueurPro', 'produits.*.hauteurPro', 'produits.*.consignePro', 'produits.*.poidsPro', 'produits.*.fragilePro'])
+                .notEmpty()
+                .withMessage("donne incomplete"),
+            body(['produits.*.largeurPro', 'produits.*.longueurPro', 'produits.*.hauteurPro', 'produits.*.poidsPro'])
+                .isNumeric()
+                .withMessage('non numeric'),
+            body('produits.*.fragilePro').isBoolean().withMessage("non boolean"),
+            body('livraison').isJSON().notEmpty().withMessage("pas de details"),
+            body(['livraison.zoneLiv', 'livraison.idLimiteDat',
+                'livraison.typeCoursier']).isInt().withMessage("donne invalide"),
+            body(['livraison.departLiv', 'livraison.destinationLiv', 'livraison.numRecepLiv', 'livraison.dateLiv', 'livraison.zoneLiv', 'livraison.idLimiteDat',
+                'livraison.typeCoursier']).notEmpty().withMessage("donne incomplete")
+        ], ErrorValidator,
+            async (req: Request, res: Response, next: NextFunction) => {
+                try {
+                    console.log(req.body.livraison)
+                    let produits: Produit[] = []
+                    for (const p of req.body.produits) {
+                        const produit: Produit = getRepository(Produit).create(p as object)
+                        produit.idTypeProTypeProduit = { ...new TypeProduit(), idTypePro: p["typePro"] }
+                        produits.push(produit)
+                    }
+                    const livraison: Livraison = getRepository(Livraison).create(req.body.livraison as object)
+                    livraison.produits = produits;
+                    livraison.idZonArrivee = { ... new Zone(), idZon: req.body.livraison.zoneLiv }
+                    livraison.idCliClient = { ... new Client(), idCli: res.locals.id }
+                    livraison.idLimiteDat = { ... new DateLimite(), idLimiteDat: req.body.livraison.idLimiteDat }
+                    livraison.expressLiv = new Date(req.body.dateLiv).toDateString() == new Date().toDateString()
+                    livraison.idTypeCouTypeCoursier = { ... new TypeCoursier(), idTypeCou: req.body.livraison.typeCoursier }
+                    await getRepository(Livraison).save(livraison)
+                    this.sendResponse(res, 200, { message: "livraison inseré" })
+                } catch (err) {
+                    console.log(err)
+                    this.sendResponse(res, 404, { message: err })
                 }
-                const livraison: Livraison = getRepository(Livraison).create(req.body.livraison as object)
-                livraison.produits = produits;
-                livraison.idZonArrivee = { ... new Zone(), idZon: req.body.livraison.zoneLiv }
-                livraison.idCliClient = { ... new Client(), idCli: res.locals.id }
-                livraison.idLimiteDat = { ... new DateLimite(), idLimiteDat: req.body.livraison.idLimiteDat }
-                livraison.expressLiv = new Date(req.body.dateLiv).toDateString() == new Date().toDateString()
-                livraison.idTypeCouTypeCoursier = { ... new TypeCoursier(), idTypeCou: req.body.livraison.typeCoursier }
-                await getRepository(Livraison).save(livraison)
-                this.sendResponse(res, 200, { message: "livraison inseré" })
-            } catch (err) {
-                console.log(err)
-                this.sendResponse(res, 404, { message: err })
-            }
-        })
+            })
     }
     async addDelete(router: Router) { }
     async addPut(router: Router) { }
