@@ -34,7 +34,7 @@ export default class ClientController extends Controller {
                 }
                 const startDate: Date = new Date(req.query.start as string)
                 const endDate: Date = new Date(req.query.end as string)
-                const limit: number = Number(req.query.limitclae)
+                const limit: number = Number(req.query.limit)
                 let a = await getRepository(Livraison)
                     .createQueryBuilder("livraison")
                     .leftJoinAndSelect("livraison.idCliClient", "client")
