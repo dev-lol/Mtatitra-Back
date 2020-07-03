@@ -46,7 +46,7 @@ export default class CoursierController extends Controller {
                 .andWhere("livraison.dateLiv <= :endDate",{endDate : endDate})
                 .orderBy("total","DESC")
                 .limit(req.query.limit ? limit : 10)
-                .groupBy("coursier.idCouriser")
+                .groupBy("coursier.idCoursier")
                 .getRawMany() 
                 
                 this.sendResponse(res, 200, a)
