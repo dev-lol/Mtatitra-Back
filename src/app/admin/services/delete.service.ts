@@ -63,6 +63,15 @@ export class DeleteService {
             });
     }
 
+    deleteLimiteDat(id: number) {
+        this.http.delete(`${this.endpoint}/datelimite/${id}`).subscribe(
+            (data: any) => {
+                this.getSrv.getLimitDate()
+            }, (error) => console.log(error)
+
+        )
+    }
+
     deleteCoursier(id: number) {
         // tslint:disable-next-line: object-literal-key-quotes
         this.http.delete(`${this.endpoint}/coursier/${id}`).subscribe(

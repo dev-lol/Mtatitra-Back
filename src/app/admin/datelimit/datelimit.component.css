@@ -1,0 +1,30 @@
+.label {
+    font-weight: lighter;
+    font-style: italic;
+    margin-left: 40%;
+  }
+  
+  #img_title {
+    height: 60px;
+    margin-left: 30%;
+  }
+  
+  .edit {
+    color: rgba(8, 122, 8, 0.801);
+    border: 1px solid whitesmoke;
+    cursor: pointer;
+  }
+  
+  .suppr {
+    color: rgba(199, 12, 12, 0.733);
+    cursor: pointer;
+  }
+  
+  .oui {
+    color: red;
+  }
+  
+  .non {
+    color: green;
+  }
+  

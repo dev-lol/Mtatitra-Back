@@ -49,20 +49,16 @@ import { LoginAdminComponent } from './admin/login-admin/login-admin.component';
 import { AuthInterceptor } from './admin/login-admin/authconfig.interceptor.ts ';
 import { NgxSpinnerComponent, NgxSpinnerModule } from 'ngx-spinner'
 import { TarifComponent } from './admin/tarif/tarif.component';
-import { DetailTarifComponent } from './admin/tarif/detail-tarif/detail-tarif.component';
-import { GetService } from './admin/services/get.service';
-import { PostService } from './admin/services/post.service';
-import { PutService } from './admin/services/put.service';
-import { DeleteService } from './admin/services/delete.service';
-import { LoginService } from './admin/login-admin/login.service';
+import { DatelimitComponent } from './admin/datelimit/datelimit.component';
+import { DetailDateComponent } from './admin/datelimit/detail-date/detail-date.component';
 
 @NgModule({
     entryComponents: [
         // Ici Aussi pour MatDialog
         DetailTypeComponent,
         DetailZoneComponent,
-        DetailTarifComponent,
-        DetailCoursierComponent
+        DetailCoursierComponent,
+        DetailDateComponent
     ],
     declarations: [
         AppComponent,
@@ -80,9 +76,10 @@ import { LoginService } from './admin/login-admin/login.service';
         DetailTypeComponent,
         DetailZoneComponent,
         DetailCoursierComponent,
-        DetailTarifComponent,
         LoginAdminComponent,
-        TarifComponent
+        TarifComponent,
+        DatelimitComponent,
+        DetailDateComponent
     ],
     imports: [
         BrowserModule,
@@ -134,11 +131,6 @@ import { LoginService } from './admin/login-admin/login.service';
         MatDatepicker,
         SocketService,
         DisplayService,
-        GetService,
-        PostService,
-        PutService,
-        DeleteService,
-        LoginService,
         {
             provide: HTTP_INTERCEPTORS,
             useClass: AuthInterceptor,
