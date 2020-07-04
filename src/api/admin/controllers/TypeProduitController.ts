@@ -4,6 +4,8 @@ import { TypeProduit } from "../../../entities/TypeProduit"
 import { getRepository, Connection, createConnection, getConnection } from "typeorm";
 import { ormconfig } from "../../../config";
 import { runInThisContext } from "vm";
+import { Livraison } from "../../../entities/Livraison";
+import { Produit } from "../../../entities/Produit";
 export default class TypeProduitController extends Controller {
     constructor() {
         super()
@@ -11,6 +13,7 @@ this.addAllRoutes(this.mainRouter)
     }
     async addGet(router: Router): Promise<void> {
         await this.getAllTypeProduit(router)
+        await this.statByType(router)
     }
 
 
@@ -26,6 +29,33 @@ this.addAllRoutes(this.mainRouter)
             }
         })
 
+    }
+
+    private async statByType(router :Router) : Promise<void>{
+        router.get("/stat",async(req:Request,res:Response,next:NextFunction)=>{
+            try{
+                const startDate: Date = new Date(req.query.start as string)
+                const endDate: Date = new Date(req.query.end as string)
+                const limit: number = Number(req.query.limit)
+                
+                
+                let a =await  getRepository(Produit)
+                    .createQueryBuilder("produit")
+                    .leftJoinAndSelect("produit.idTypeProTypeProduit","type")
+                    .leftJoinAndSelect("produit.idLivLivraison","livraison")
+                    .select(`type.idTypePro as "idTypePro" ,count(type.idTypePro) as total `)
+                    .where("livraison.dateLiv > :date1",{date1  : startDate})
+                    .andWhere("livraison.dateLiv <:date2",{date2 : endDate})
+                    .groupBy("type.idTypePro")
+                    .limit(req.query.limit ? limit : 10)
+                    .getRawMany()
+                
+                   this.sendResponse(res,200,a)
+                    
+            }catch(err){
+                
+            }
+        })
     }
 
     private async fetchTypeProduitsFromDatabase(): Promise<TypeProduit[]> {

@@ -17,9 +17,10 @@ export default class DateLimiteController extends Controller {
 
     private async getAllDateLimite(router: Router): Promise<void> {
         router.get("/", async (req: Request, res: Response, next: NextFunction) => {
-            try {
+             try {
+                
 
-                let dateLimites: DateLimite[] = await this.fetchDateLimitesFromDatabase()
+                let dateLimites: DateLimite[] = await getRepository(DateLimite).find({where : {estSupprime : false}})
 
                 this.sendResponse(res, 200, dateLimites)
             } catch (err) {
@@ -38,7 +39,9 @@ export default class DateLimiteController extends Controller {
 
     async postDateLimite(router: Router) {
         router.post("/", async (req: Request, res: Response, next: NextFunction) => {
-            let dateLimiteToSave: DateLimite = await this.createDateLimiteFromRequest(req)
+
+          
+             let dateLimiteToSave: DateLimite = await this.createDateLimiteFromRequest(req)
 
 
             let dateLimiteSaved: DateLimite = await this.saveDateLimiteToDatabase(dateLimiteToSave)
@@ -48,7 +51,7 @@ export default class DateLimiteController extends Controller {
             } else {
                 this.sendResponse(res, 400, { message: "KO" })
             }
-
+ 
         })
     }
 
@@ -94,8 +97,10 @@ export default class DateLimiteController extends Controller {
                 await getRepository(DateLimite).save(date)
                 this.sendResponse(res, 203, { message: "Date deleted" })
             } catch (error) {
+             
                 this.sendResponse(res, 404, { message: "Date not found" })
             }
+ 
 
         })
     }
