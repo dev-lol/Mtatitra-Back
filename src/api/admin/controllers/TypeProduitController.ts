@@ -35,8 +35,7 @@ export default class TypeProduitController extends Controller {
 
     private async statByType(router: Router): Promise<void> {
         router.get("/stat", [
-            sanitizeQuery(['start', 'end']).toDate(),
-            query(['start', 'end']).notEmpty().isISO8601().toDate().withMessage("invalid start or end"),
+            query(['start', 'end']).notEmpty().toDate().isISO8601().toDate().withMessage("invalid start or end"),
             query(['limit']).optional(true).isInt().withMessage("limit error")
         ],
             ErrorValidator,
