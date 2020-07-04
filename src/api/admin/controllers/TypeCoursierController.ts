@@ -4,14 +4,18 @@ import { TypeCoursier } from "../../../entities/TypeCoursier"
 import { getRepository } from "typeorm";
 import { ormconfig } from "../../../config";
 import { runInThisContext } from "vm";
+import { Livraison } from "../../../entities/Livraison";
+import ErrorValidator from "../../ErrorValidator";
+import { query, sanitizeQuery } from "express-validator";
 export default class TypeCoursierController extends Controller {
     constructor() {
         super()
-this.addAllRoutes(this.mainRouter)
+        this.addAllRoutes(this.mainRouter)
     }
 
     async addGet(router: Router): Promise<void> {
         await this.getAllTypeCoursier(router)
+        await this.statByCoursier(router)
     }
 
 
@@ -29,8 +33,39 @@ this.addAllRoutes(this.mainRouter)
 
     }
 
+    private async statByCoursier(router: Router): Promise<void> {
+        router.get("/stat", [
+            query(['start', 'end']).notEmpty().toDate().isISO8601().toDate().withMessage("invalid start or end"),
+            query(['limit']).optional(true).isInt().withMessage("limit error")
+        ], ErrorValidator,
+            async (req: Request, res: Response, next: NextFunction) => {
+                try {
+                    const startDate: Date = new Date(req.query.start as string)
+                    const endDate: Date = new Date(req.query.end as string)
+                    const limit: number = Number(req.query.limit)
+                    let a = await getRepository(Livraison)
+                        .createQueryBuilder("livraison")
+                        .leftJoinAndSelect("livraison.idTypeCouTypeCoursier", "typeCoursier")
+                        .select(`typeCoursier.typeCou as "typeCou"`)
+                        .addSelect(`typeCoursier.idTypeCou as "idTypeCou"`)
+                        .addSelect(`count(typeCoursier.idTypeCou) as total`)
+                        .where("livraison.dateLiv >= :startDate", { startDate: startDate })
+                        .andWhere("livraison.dateLiv <= :endDate", { endDate: endDate })
+                        .orderBy("total", "DESC")
+                        .limit(req.query.limit ? limit : 10)
+                        .groupBy("typeCoursier.idTypeCou")
+                        .getRawMany()
+
+                    this.sendResponse(res, 200, a)
+                } catch (err) {
+                    console.log(err)
+                    this.sendResponse(res, 404, { message: "not found" })
+                }
+            })
+    }
+
     private async fetchTypeCoursiersFromDatabase(): Promise<TypeCoursier[]> {
-        return await getRepository(TypeCoursier).find({where: {estSupprime: false}})
+        return await getRepository(TypeCoursier).find({ where: { estSupprime: false } })
     }
     async addPost(router: Router): Promise<void> {
         await this.postTypeCoursier(router)
@@ -44,9 +79,9 @@ this.addAllRoutes(this.mainRouter)
             let typeCoursierSaved: TypeCoursier = await this.saveTypeCoursierToDatabase(typeCoursierToSave)
 
             if (await this.isTypeCoursierSaved(typeCoursierSaved)) {
-                this.sendResponse(res,200,{message: "OK"})
+                this.sendResponse(res, 200, { message: "OK" })
             } else {
-                this.sendResponse(res,400,{message: "KO"})
+                this.sendResponse(res, 400, { message: "KO" })
             }
 
         })
@@ -70,18 +105,18 @@ this.addAllRoutes(this.mainRouter)
 
 
     async addPut(router: Router): Promise<void> {
-        router.put("/:idType",async (req: Request, res: Response, next: NextFunction) => {
+        router.put("/:idType", async (req: Request, res: Response, next: NextFunction) => {
             try {
                 let type: TypeCoursier = await getRepository(TypeCoursier).findOneOrFail(Number(req.params.idType))
                 type = getRepository(TypeCoursier).merge(type, req.body as Object)
                 type.estSupprime = false
                 await getRepository(TypeCoursier).save(type)
-                this.sendResponse(res,200, {message: "Type changed"})
+                this.sendResponse(res, 200, { message: "Type changed" })
             } catch (error) {
                 console.log(error)
-                this.sendResponse(res,404, {message: "Type not found"})   
+                this.sendResponse(res, 404, { message: "Type not found" })
             }
-                
+
         })
     }
 
@@ -91,11 +126,11 @@ this.addAllRoutes(this.mainRouter)
                 let type: TypeCoursier = await getRepository(TypeCoursier).findOneOrFail(Number(req.params.idType))
                 type.estSupprime = true
                 await getRepository(TypeCoursier).save(type)
-                this.sendResponse(res,203, {message: "Type deleted"})
+                this.sendResponse(res, 203, { message: "Type deleted" })
             } catch (error) {
-                this.sendResponse(res,404, {message: "Type not found"})   
+                this.sendResponse(res, 404, { message: "Type not found" })
             }
-                
+
         })
     }
 }

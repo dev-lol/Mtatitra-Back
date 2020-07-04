@@ -1,9 +1,12 @@
 import { Router, Response, Request, NextFunction, ErrorRequestHandler } from "express";
 import { Controller } from "../../Controller"
 import { Zone } from "../../../entities/Zone"
-import { getRepository} from "typeorm";
+import { getRepository } from "typeorm";
 import { ormconfig } from "../../../config";
 import { runInThisContext } from "vm";
+import { Livraison } from "../../../entities/Livraison";
+import ErrorValidator from "../../ErrorValidator";
+import { query, sanitizeQuery, check } from "express-validator";
 export default class ZoneController extends Controller {
     constructor() {
         super()
@@ -11,6 +14,7 @@ export default class ZoneController extends Controller {
     }
     async addGet(router: Router): Promise<void> {
         await this.getAllZone(router)
+        await this.statByZone(router)
     }
 
 
@@ -27,6 +31,36 @@ export default class ZoneController extends Controller {
         })
 
     }
+
+
+    private async statByZone(router: Router): Promise<void> {
+        router.get("/stat", [
+            query(['start', 'end']).notEmpty().toDate().isISO8601().toDate().withMessage("invalid start or end")
+        ], ErrorValidator,
+            async (req: Request, res: Response, next: NextFunction) => {
+                try {
+                    const startDate: Date = new Date(req.query.start as string)
+                    const endDate: Date = new Date(req.query.end as string)
+                    let a = await getRepository(Zone)
+                        .createQueryBuilder("zone")
+                        .leftJoinAndSelect("zone.livraisons2", "livraison")
+                        .select(`zone.nomZon as "nomZon"`)
+                        .addSelect(`zone.idZon as "idZon"`)
+                        .addSelect(`count(livraison) as total`)
+                        .groupBy("zone.idZon")
+                        .orderBy("total", "DESC")
+                        .addOrderBy("zone.idZon", "ASC")
+                        .limit(6)
+                        .getRawMany()
+                    this.sendResponse(res, 200, a)
+                } catch (err) {
+                    console.log(err)
+                    this.sendResponse(res, 404, { message: "not found" })
+
+                }
+            })
+    }
+
 
     private async fetchZonesFromDatabase(): Promise<Zone[]> {
         return await getRepository(Zone).find({ where: { estSupprime: false } })

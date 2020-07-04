@@ -5,6 +5,7 @@ import { getRepository } from "typeorm";
 import { ormconfig } from "../../../config";
 import { TypeCoursier } from "../../../entities/TypeCoursier";
 import Password from '../../../utils/Password';
+import { Livraison } from "../../../entities/Livraison";
 export default class CoursierController extends Controller {
     constructor() {
         super()
@@ -13,6 +14,7 @@ export default class CoursierController extends Controller {
 
     async addGet(router: Router): Promise<void> {
         await this.getAllCoursier(router)
+        await this.statByDate(router)
     }
 
 
@@ -28,6 +30,30 @@ export default class CoursierController extends Controller {
             }
         })
 
+    }
+
+    private async statByDate(router :Router) : Promise<void>{
+        router.get("/stat",async(req:Request,res:Response,next:NextFunction)=>{
+            try{
+                const startDate: Date = new Date(req.query.start as string)
+                const endDate: Date = new Date(req.query.end as string)
+                const limit: number = Number(req.query.limit)
+                let a = await  getRepository(Livraison)
+                .createQueryBuilder("livraison")
+                .leftJoinAndSelect("livraison.idCouCoursier", "coursier")
+                .select(`coursier.nomCou as 'nomCou' ,coursier.prenomCou as 'prenomCour', coursier.idCou as 'idCou' , count(coursier.idCou) as total`)
+                .where("livraison.dateLiv >= :startDate",{startDate : startDate})
+                .andWhere("livraison.dateLiv <= :endDate",{endDate : endDate})
+                .orderBy("total","DESC")
+                .limit(req.query.limit ? limit : 10)
+                .groupBy("coursier.idCou")
+                .getRawMany() 
+                
+                this.sendResponse(res, 200, a)
+            }catch(err){
+
+            }
+        })
     }
 
     private async fetchCoursiersFromDatabase(): Promise<Coursier[]> {
