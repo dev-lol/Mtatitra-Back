@@ -4,6 +4,8 @@ import { Admin } from "../../../entities/Admin"
 import { Connection, createConnection, getConnection, getRepository } from "typeorm";
 import { ormconfig } from "../../../config";
 import jwt from 'jsonwebtoken';
+import ErrorValidator from "../../ErrorValidator";
+import { body } from 'express-validator';
 export default class AdminController extends Controller {
     constructor() {
         super()
@@ -20,7 +22,9 @@ export default class AdminController extends Controller {
 
 
     async postAdmin(router: Router) {
-        router.post("/login", async (req: Request, res: Response, next: NextFunction) => {
+        router.post("/login", [
+            body(['password', 'username']).notEmpty().withMessage('donnee incomplete'),
+        ], ErrorValidator, async (req: Request, res: Response, next: NextFunction) => {
             let admin = await getRepository(Admin).findOneOrFail({ where: { emailAdm: req.body.username } })
             var bcrypt = require("bcrypt")
             bcrypt.compare(req.body.password, admin.passAdm, (err, isSame) => {
