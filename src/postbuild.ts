@@ -125,7 +125,7 @@ import { Lieu } from './entities/Lieu';
         for (let i = 0; i < 100; i++) {
             let l = new Lieu()
             l.nomLie = "Lieu " + i
-            l.idZonZone = await zoneRepository.createQueryBuilder("zone").select().where(`Random() > 0.5`).getOne()
+            l.idZonZone = await zoneRepository.createQueryBuilder("zone").where(`Random() > 0.5`).getOne()
             lieu.push(l)
         }
         await lieuRepository.save(lieu)
@@ -182,16 +182,16 @@ import { Lieu } from './entities/Lieu';
     if (await livraisonRepository.count() < 1) {
         let liv: Livraison = new Livraison()
         liv.dateLiv = new Date()
-        liv.departLiv = "Androndra"
+
         liv.descriptionLiv = "Entana kely"
-        liv.destinationLiv = "Itaosy"
+
         liv.expressLiv = true
         liv.idCliClient = await clientRepository.findOne()
         liv.idCouCoursier = await coursierRepository.findOne()
         liv.idEtaEtats = await etatRepository.findOne({ where: { ordreEta: 2 } })
         liv.idLimiteDat = await limiteDatRepository.findOne()
-        liv.idZonArrivee = await zoneRepository.findOne()
-        liv.idZonDepart = await zoneRepository.findOne()
+        liv.idLieArrivee = await lieuRepository.createQueryBuilder("lieu").where(`Random() > 0.5`).getOne()
+        liv.idLieDepart = await lieuRepository.createQueryBuilder("lieu").where(`Random() < 0.5`).getOne()
         liv.numRecepLiv = "0333333333"
         liv.sommeRecepLiv = 30000
         liv.produits = await produitRepository.find({ where: { idPro: Between(0, 5) } })
@@ -200,16 +200,16 @@ import { Lieu } from './entities/Lieu';
 
         liv = new Livraison()
         liv.dateLiv = new Date()
-        liv.departLiv = "Androndra"
+
         liv.descriptionLiv = "Entana kely"
-        liv.destinationLiv = "Itaosy"
+
         liv.expressLiv = true
         liv.idCliClient = await clientRepository.findOne()
         liv.idCouCoursier = await coursierRepository.findOne()
         liv.idEtaEtats = await etatRepository.findOne({ where: { ordreEta: 1 } })
         liv.idLimiteDat = await limiteDatRepository.findOne()
-        liv.idZonArrivee = await zoneRepository.findOne()
-        liv.idZonDepart = await zoneRepository.findOne()
+        liv.idLieArrivee = await lieuRepository.createQueryBuilder("lieu").where(`Random() > 0.5`).getOne()
+        liv.idLieDepart = await lieuRepository.createQueryBuilder("lieu").where(`Random() < 0.5`).getOne()
         liv.numRecepLiv = "0333333333"
         liv.sommeRecepLiv = 30000
         liv.produits = await produitRepository.find({ where: { idPro: Between(6, 10) } })
@@ -218,15 +218,15 @@ import { Lieu } from './entities/Lieu';
 
         liv = new Livraison()
         liv.dateLiv = new Date()
-        liv.departLiv = "Androndra"
+
         liv.descriptionLiv = "Entana kely"
-        liv.destinationLiv = "Itaosy"
+
         liv.expressLiv = true
         liv.idCliClient = await clientRepository.findOne()
         liv.idCouCoursier = await coursierRepository.findOne()
         liv.idLimiteDat = await limiteDatRepository.findOne()
-        liv.idZonArrivee = await zoneRepository.findOne()
-        liv.idZonDepart = await zoneRepository.findOne()
+        liv.idLieArrivee = await lieuRepository.createQueryBuilder("lieu").where(`Random() > 0.5`).getOne()
+        liv.idLieDepart = await lieuRepository.createQueryBuilder("lieu").where(`Random() < 0.5`).getOne()
         liv.numRecepLiv = "0333333333"
         liv.sommeRecepLiv = 30000
         liv.produits = await produitRepository.find({ where: { idPro: Between(11, 15) } })
@@ -238,16 +238,16 @@ import { Lieu } from './entities/Lieu';
 
         liv = new Livraison()
         liv.dateLiv = dem
-        liv.departLiv = "Androndra"
+
         liv.descriptionLiv = "Entana kely"
-        liv.destinationLiv = "Itaosy"
+
         liv.expressLiv = true
         liv.idCliClient = await clientRepository.findOne()
         liv.idCouCoursier = await coursierRepository.findOne()
         liv.idEtaEtats = await etatRepository.findOne({ where: { ordreEta: 2 } })
         liv.idLimiteDat = await limiteDatRepository.findOne()
-        liv.idZonArrivee = await zoneRepository.findOne()
-        liv.idZonDepart = await zoneRepository.findOne()
+        liv.idLieArrivee = await lieuRepository.createQueryBuilder("lieu").where(`Random() > 0.5`).getOne()
+        liv.idLieDepart = await lieuRepository.createQueryBuilder("lieu").where(`Random() < 0.5`).getOne()
         liv.numRecepLiv = "0333333333"
         liv.sommeRecepLiv = 30000
         liv.produits = await produitRepository.find({ where: { idPro: Between(16, 20) } })
@@ -256,16 +256,16 @@ import { Lieu } from './entities/Lieu';
 
         liv = new Livraison()
         liv.dateLiv = dem
-        liv.departLiv = "Androndra"
+
         liv.descriptionLiv = "Entana kely"
-        liv.destinationLiv = "Itaosy"
+
         liv.expressLiv = true
         liv.idCliClient = await clientRepository.findOne()
         liv.idCouCoursier = await coursierRepository.findOne()
         liv.idEtaEtats = await etatRepository.findOne({ where: { ordreEta: 1 } })
         liv.idLimiteDat = await limiteDatRepository.findOne()
-        liv.idZonArrivee = await zoneRepository.findOne()
-        liv.idZonDepart = await zoneRepository.findOne()
+        liv.idLieArrivee = await lieuRepository.createQueryBuilder("lieu").where(`Random() > 0.5`).getOne()
+        liv.idLieDepart = await lieuRepository.createQueryBuilder("lieu").where(`Random() < 0.5`).getOne()
         liv.numRecepLiv = "0333333333"
         liv.sommeRecepLiv = 30000
         liv.produits = await produitRepository.find({ where: { idPro: Between(21, 25) } })
@@ -274,20 +274,20 @@ import { Lieu } from './entities/Lieu';
 
         liv = new Livraison()
         liv.dateLiv = dem
-        liv.departLiv = "Androndra"
+
         liv.descriptionLiv = "Entana kely"
-        liv.destinationLiv = "Itaosy"
+
         liv.expressLiv = true
         liv.idCliClient = await clientRepository.findOne()
         liv.idCouCoursier = await coursierRepository.findOne()
         liv.idLimiteDat = await limiteDatRepository.findOne()
-        liv.idZonArrivee = await zoneRepository.findOne()
-        liv.idZonDepart = await zoneRepository.findOne()
+        liv.idLieArrivee = await lieuRepository.createQueryBuilder("lieu").where(`Random() > 0.5`).getOne()
+        liv.idLieDepart = await lieuRepository.createQueryBuilder("lieu").where(`Random() < 0.5`).getOne()
         liv.numRecepLiv = "0333333333"
         liv.sommeRecepLiv = 30000
         liv.produits = await produitRepository.find({ where: { idPro: Between(26, 30) } })
         liv.idTypeCouTypeCoursier = await typeCoursierRepository.findOne(3)
         await livraisonRepository.save(liv)
     }
-})()
+})().catch(error => console.log(error))
 
