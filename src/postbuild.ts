@@ -52,6 +52,9 @@ import { Lieu } from './entities/Lieu';
         let coursier = coursierRepository.create({
             nomCou: "Moto",
             prenomCou: "man",
+            numTelUrgentCou: "0344444444",
+            adresseCou: "Any eeee",
+            referenceVehiculeCou: "velo 1",
             usernameCou: "coursier_test@coursier.com",
             numTelCou: "0344822017",
             passCou: "$2b$12$NkZMgOfQDiTueABJ8.BCrujsjNlbEDZ2WL8ns1PTtWMX49l3u802G"
@@ -63,12 +66,29 @@ import { Lieu } from './entities/Lieu';
         coursier = coursierRepository.create({
             nomCou: "Velo",
             prenomCou: "man",
+            numTelUrgentCou: "0344444444",
+            adresseCou: "Any eeee",
+            referenceVehiculeCou: "velo 1",
             usernameCou: "coursier_test2@coursier.com",
             numTelCou: "0344822017",
             passCou: "$2b$12$NkZMgOfQDiTueABJ8.BCrujsjNlbEDZ2WL8ns1PTtWMX49l3u802G"
         })
         coursier.idAdmAdmin = adminSaved
         coursier.idTypeCouTypeCoursier = { ... new TypeCoursier(), idTypeCou: 2 }
+        await coursierRepository.save(coursier)
+
+        coursier = coursierRepository.create({
+            nomCou: "Voiture",
+            prenomCou: "man",
+            numTelUrgentCou: "0344444444",
+            adresseCou: "Any eeee",
+            referenceVehiculeCou: "velo 1",
+            usernameCou: "coursier_test3@coursier.com",
+            numTelCou: "0344822017",
+            passCou: "$2b$12$NkZMgOfQDiTueABJ8.BCrujsjNlbEDZ2WL8ns1PTtWMX49l3u802G"
+        })
+        coursier.idAdmAdmin = adminSaved
+        coursier.idTypeCouTypeCoursier = { ... new TypeCoursier(), idTypeCou: 3 }
         await coursierRepository.save(coursier)
     }
     let clientRepository = connection.getRepository(Client)
@@ -122,7 +142,7 @@ import { Lieu } from './entities/Lieu';
 
     if (await lieuRepository.count() < 1) {
         const lieu = []
-        for (let i = 0; i < 100; i++) {
+        for (let i = 0; i < 50; i++) {
             let l = new Lieu()
             l.nomLie = "Lieu " + i
             l.idZonZone = await zoneRepository.createQueryBuilder("zone").where(`Random() > 0.5`).getOne()
