@@ -15,11 +15,6 @@ export class Zone {
     @Column("boolean", { name: "est_supprime" })
     estSupprime: boolean
 
-    @OneToMany(() => Livraison, (livraison) => livraison.idZonDepart)
-    livraisons: Livraison[];
-
-    @OneToMany(() => Livraison, (livraison) => livraison.idZonArrivee)
-    livraisons2: Livraison[];
 
     @OneToMany(() => Lieu, (lieu) => lieu.idZonZone)
     lieu: Lieu[];

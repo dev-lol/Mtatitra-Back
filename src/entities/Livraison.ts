@@ -14,6 +14,7 @@ import { Zone } from "./Zone";
 import { Produit } from "./Produit";
 import { DateLimite } from './DateLimite';
 import { TypeCoursier } from './TypeCoursier';
+import { Lieu } from './Lieu';
 
 @Index("Livraison_pk", ["idLiv"], { unique: true })
 @Entity("Livraison", { schema: "public" })
@@ -21,19 +22,11 @@ export class Livraison {
     @PrimaryGeneratedColumn({ type: "integer", name: "id_liv" })
     idLiv: number;
 
-    @Column("character varying", { name: "depart_liv" })
-    departLiv: string;
-
-    @Column("character varying", { name: "destination_liv" })
-    destinationLiv: string;
-
     @Column("character varying", { name: "num_recep_liv", length: 10 })
     numRecepLiv: string;
 
     @Column("date", { name: "date_liv" })
     dateLiv: Date;
-
-
 
     @Column("boolean", { name: "express_liv" })
     expressLiv: Boolean;
@@ -78,20 +71,20 @@ export class Livraison {
     @JoinColumn([{ name: "id_eta_Etats", referencedColumnName: "idEta" }])
     idEtaEtats: Etats;
 
-    @ManyToOne(() => Zone, (zone) => zone.livraisons, {
+    @ManyToOne(() => Lieu, (lieu) => lieu.livraisons, {
         onDelete: "SET NULL",
         onUpdate: "CASCADE",
     })
-    @JoinColumn([{ name: "id_zon_depart", referencedColumnName: "idZon" }])
-    idZonDepart: Zone;
+    @JoinColumn([{ name: "id_lie_depart", referencedColumnName: "idLie" }])
+    idLieDepart: Lieu;
 
-    @ManyToOne(() => Zone, (zone) => zone.livraisons2, {
+    @ManyToOne(() => Lieu, (lieu) => lieu.livraisons2, {
         onDelete: "SET NULL",
         onUpdate: "CASCADE",
         nullable: false
     })
-    @JoinColumn([{ name: "id_zon_arrivee", referencedColumnName: "idZon" }])
-    idZonArrivee: Zone;
+    @JoinColumn([{ name: "id_lie_arrivee", referencedColumnName: "idLie" }])
+    idLieArrivee: Lieu;
 
     @OneToMany(() => Produit, (produit) => produit.idLivLivraison, { cascade: true })
     produits: Produit[];
