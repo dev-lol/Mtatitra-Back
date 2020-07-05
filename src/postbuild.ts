@@ -148,11 +148,16 @@ import { Tarif } from './entities/Tarif';
         let tarifs = []
         for (let type of typeCoursier) {
             for (let zone of zones) {
-                let tarif = new Tarif()
-                tarif.idTypeCouTypeCoursier = type
-                tarif.idZonZone = zone
-                tarif.tarifTar = Math.floor(Math.random() * (10 - 3) - 3) * 1000
-                tarifs.push(tarif)
+                for (let zone2 of zones) {
+                    if (zone.idZon >= zone2.idZon)
+                        continue
+                    let tarif = new Tarif()
+                    tarif.idTypeCouTypeCoursier = type
+                    tarif.idZonDepart = zone
+                    tarif.idZonArrivee = zone2
+                    tarif.tarifTar = Math.floor(Math.random() * (10 - 3) + 3) * 1000
+                    tarifs.push(tarif)
+                }
             }
         }
         await tarifRepository.save(tarifs)
