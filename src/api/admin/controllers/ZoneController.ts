@@ -2,9 +2,6 @@ import { Router, Response, Request, NextFunction, ErrorRequestHandler } from "ex
 import { Controller } from "../../Controller"
 import { Zone } from "../../../entities/Zone"
 import { getRepository } from "typeorm";
-import { ormconfig } from "../../../config";
-import { runInThisContext } from "vm";
-import { Livraison } from "../../../entities/Livraison";
 import ErrorValidator from "../../ErrorValidator";
 import { query, sanitizeQuery, check } from "express-validator";
 import { Lieu } from '../../../entities/Lieu';
@@ -27,7 +24,7 @@ export default class ZoneController extends Controller {
 
                 this.sendResponse(res, 200, zones)
             } catch (err) {
-
+                this.sendResponse(res, 404, { message: "not found" })
             }
         })
 
