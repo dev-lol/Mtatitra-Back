@@ -50,6 +50,8 @@ export default class ZoneController extends Controller {
                         .groupBy("zone.idZon")
                         .orderBy("total", "DESC")
                         .addOrderBy("zone.idZon", "ASC")
+                        .where("livraison.dateLiv >= :startDate", { startDate: startDate })
+                        .andWhere("livraison.dateLiv <= :endDate", { endDate: endDate })
                         .limit(6)
                         .getRawMany()
                     this.sendResponse(res, 200, a)

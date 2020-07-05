@@ -23,3 +23,9 @@ row {
   color: rgba(199, 12, 12, 0.733);
   cursor: pointer;
 }
+
+.float {
+  position: absolute;
+  top: 100px;
+  right: 50px;
+}

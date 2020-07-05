@@ -40,29 +40,31 @@
   </div>
 </div>
 <br>
-<br>
-<mat-table [dataSource]="tarifs">
+<mat-paginator [pageSizeOptions]="[10,20,30]" showFirstLastButtons style="float: right;">
+</mat-paginator>
+<br><br><br>
+<mat-table [dataSource]="dataSource" matSort>
   <ng-container matColumnDef="idTar">
-    <mat-header-cell *matHeaderCellDef>id</mat-header-cell>
+    <mat-header-cell *matHeaderCellDef mat-sort-header>id</mat-header-cell>
     <mat-cell *matCellDef="let element">{{element.idTar}}</mat-cell>
   </ng-container>
   <ng-container matColumnDef="nomZon">
-    <mat-header-cell *matHeaderCellDef>Zone</mat-header-cell>
+    <mat-header-cell *matHeaderCellDef mat-sort-header>Zone</mat-header-cell>
     <mat-cell *matCellDef="let element">{{element.idZonZone.nomZon}}</mat-cell>
   </ng-container>
   <ng-container matColumnDef="typeCou">
-    <mat-header-cell *matHeaderCellDef>Type Coursier</mat-header-cell>
+    <mat-header-cell *matHeaderCellDef mat-sort-header>Type Coursier</mat-header-cell>
     <mat-cell *matCellDef="let element">{{element.idTypeCouTypeCoursier.typeCou}}</mat-cell>
   </ng-container>
   <ng-container matColumnDef="tarifTar">
-    <mat-header-cell *matHeaderCellDef>Montant(Ariary)</mat-header-cell>
+    <mat-header-cell *matHeaderCellDef mat-sort-header>Montant(Ariary)</mat-header-cell>
     <mat-cell *matCellDef="let element">{{element.tarifTar}}</mat-cell>
   </ng-container>
   <ng-container matColumnDef="edit">
     <mat-header-cell *matHeaderCellDef></mat-header-cell>
     <mat-cell *matCellDef="let element; let i = index">
       <span>
-        <fa-icon [icon]="faEdit" class="edit" (click)="editTarif(i)"></fa-icon>
+        <fa-icon [icon]="faEdit" class="edit" (click)="editTarif(element)"></fa-icon>
       </span>
     </mat-cell>
   </ng-container>
@@ -70,7 +72,7 @@
     <mat-header-cell *matHeaderCellDef></mat-header-cell>
     <mat-cell *matCellDef="let element">
       <span>
-        <fa-icon [icon]="faMinusCircle" class="suppr" (click)="deleteTarif(element.idTar)"></fa-icon>
+        <fa-icon [icon]="faMinusCircle" class="suppr" (click)="deleteTarif(element)"></fa-icon>
       </span>
     </mat-cell>
   </ng-container>
