@@ -1,6 +1,6 @@
 import { DetailTarifComponent } from './detail-tarif/detail-tarif.component';
 import { DeleteService } from './../services/delete.service';
-import { MatDialog, MatTableDataSource, MatPaginator } from '@angular/material';
+import { MatDialog, MatTableDataSource, MatPaginator, MatSort } from '@angular/material';
 import { GetService } from './../services/get.service';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { PostService } from './../../admin/services/post.service';
@@ -42,21 +42,22 @@ interface Zone {
 export class TarifComponent implements OnInit {
     img = '../../../assets/images/tarif.png';
 
+    @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
+    @ViewChild(MatSort, { static: false }) sort: MatSort;
     tarifAdded = 0;
     tarifSub: Subscription;
 
     columnTarif: string[] = ['idTar', 'tarifTar', 'nomZon', 'typeCou', 'edit', 'suppr'];
     tarifs: Tarif[] = [];
+    zones: Zone[] = []
+    coursiers: TypeCoursier[] = []
     dataSource = new MatTableDataSource(this.tarifs)
-    coursiers: TypeCoursier[] = [];
-
-    zones: Zone[] = [];
 
     faPlusCircle = faPlusCircle;
     faEdit = faEdit;
     faMinusCircle = faMinusCircle;
 
-    currentId = 0;
+    currentTarif: Tarif = null;
     currentIdZone = 0;
     currentIdTypeCoursier = 0;
     zoneSub: Subscription;
@@ -67,6 +68,17 @@ export class TarifComponent implements OnInit {
 
     ngOnInit() {
         this.initTarif();
+    }
+    ngAfterViewInit() {
+        this.dataSource.paginator = this.paginator
+        this.dataSource.sortingDataAccessor = (item, property) => {
+            switch (property) {
+                case 'nomZon': return item.idZonZone.nomZon;
+                case 'typeCou': return item.idTypeCouTypeCoursier.typeCou
+                default: return item[property];
+            }
+        }
+        this.dataSource.sort = this.sort
     }
 
     initTarif() {
@@ -106,25 +118,25 @@ export class TarifComponent implements OnInit {
         this.currentIdTypeCoursier = 0;
     }
 
-    deleteTarif(id: number) {
-        this.currentId = id;
+    deleteTarif(tarif: Tarif) {
+        this.currentTarif = tarif;
         open();
     }
 
     confirmDelete() {
-        this.deleteSrv.deleteTarif(this.currentId);
-        this.currentId = 0;
+        this.deleteSrv.deleteTarif(this.currentTarif.idTar);
+        this.currentTarif = null;
         close();
     }
 
-    editTarif(index: number) {
-        const id = this.tarifs[index].idTar;
-        const tarif = this.tarifs[index].tarifTar;
-        const zone = this.tarifs[index].idZonZone;
-        const typeCoursier = this.tarifs[index].idTypeCouTypeCoursier;
+    editTarif(tarif: Tarif) {
+        const id = tarif.idTar;
+        const tar = tarif.tarifTar;
+        const zone = tarif.idZonZone;
+        const typeCoursier = tarif.idTypeCouTypeCoursier;
         const typeCoursiers = this.coursiers
         const zones = this.zones
-        const dialogRef = this.dialog.open(DetailTarifComponent, { data: { id, tarif, zone, typeCoursier, zones, typeCoursiers } });
+        const dialogRef = this.dialog.open(DetailTarifComponent, { data: { id, tar, zone, typeCoursier, zones, typeCoursiers } });
         dialogRef.afterClosed().subscribe(
             result => {
                 // this.getSrv.getAllTypeLivraison();

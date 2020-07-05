@@ -13,9 +13,12 @@
         </div>
       </div>
     </form>
-
     <br>
-    <mat-table [dataSource]="coursiers">
+    <br>
+    <mat-paginator #typeCoursier [pageSizeOptions]="[10,20,30]" showFirstLastButtons style="float: right;">
+    </mat-paginator>
+    <br>
+    <mat-table [dataSource]="coursierDataSource">
       <ng-container matColumnDef="idCou">
         <mat-header-cell *matHeaderCellDef>id</mat-header-cell>
         <mat-cell *matCellDef="let element">{{element.idTypeCou}}</mat-cell>
@@ -45,9 +48,6 @@
     </mat-table>
     <label class="label" *ngIf="coursiers.length == 0">Aucun type ajouté</label>
   </mat-tab>
-
-
-
   <mat-tab label="Produit">
     <br>
     <form (ngSubmit)="addTypeProduit()" #form="ngForm">
@@ -59,8 +59,11 @@
         </div>
       </div>
     </form>
+    <br><br>
+    <mat-paginator #typeProduit [pageSizeOptions]="[10,20,30]" showFirstLastButtons style="float: right;">
+    </mat-paginator>
     <br>
-    <mat-table [dataSource]="produits">
+    <mat-table [dataSource]="produitDataSource">
       <ng-container matColumnDef="idProd">
         <mat-header-cell *matHeaderCellDef>id</mat-header-cell>
         <mat-cell *matCellDef="let element">{{element.idTypePro}}</mat-cell>
@@ -73,7 +76,7 @@
         <mat-header-cell *matHeaderCellDef></mat-header-cell>
         <mat-cell *matCellDef="let element; let i = index">
           <span>
-            <fa-icon [icon]="faEdit" class="edit" (click)="editTypeProduit(i)"></fa-icon>
+            <fa-icon [icon]="faEdit" class="edit" (click)="editTypeProduit(element)"></fa-icon>
           </span>
         </mat-cell>
       </ng-container>
@@ -81,7 +84,7 @@
         <mat-header-cell *matHeaderCellDef></mat-header-cell>
         <mat-cell *matCellDef="let element">
           <span>
-            <fa-icon [icon]="faMinusCircle" class="suppr" (click)="deleteTypeProduit(element.idTypePro)"></fa-icon>
+            <fa-icon [icon]="faMinusCircle" class="suppr" (click)="deleteTypeProduit(element)"></fa-icon>
           </span>
         </mat-cell>
       </ng-container>
