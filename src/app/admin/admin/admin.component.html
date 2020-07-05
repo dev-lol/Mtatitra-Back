@@ -1,139 +1,147 @@
-<app-header></app-header>
-<div class="container-fluid conteneur">
-  <div class="row body">
-    <div class="col-2 aside scrollbar">
-      <div>
-        <mat-list>
-          <mat-card class="menu_card">
-            <mat-card-header>
-              <div mat-card-avatar class="card_image">
-              </div>
-              <mat-card-title style="font-size: 15px;">
-                Livraison
-              </mat-card-title>
-              <mat-card-subtitle style="color: black;font-size: 10px;">&nbsp;&nbsp;
-                <fa-icon [icon]="faStar"></fa-icon>
-                &nbsp;
-                <fa-icon [icon]="faStar"></fa-icon>
-                &nbsp;
-                <fa-icon [icon]="faStar"></fa-icon>
-              </mat-card-subtitle>
-            </mat-card-header>
-          </mat-card>
+<div id="wrapper" class="d-flex flex-column">
+  <app-header></app-header>
+  <div class="container-fluid conteneur">
+    <div class="row body h-100">
+      <div class="col-2 aside">
+        <div>
+          <mat-list>
+            <mat-card class="menu_card">
+              <mat-card-header>
+                <div mat-card-avatar class="card_image">
+                </div>
+                <mat-card-title style="font-size: 15px;">
+                  Livraison
+                </mat-card-title>
+                <mat-card-subtitle style="color: black;font-size: 10px;">&nbsp;&nbsp;
+                  <fa-icon [icon]="faStar"></fa-icon>
+                  &nbsp;
+                  <fa-icon [icon]="faStar"></fa-icon>
+                  &nbsp;
+                  <fa-icon [icon]="faStar"></fa-icon>
+                </mat-card-subtitle>
+              </mat-card-header>
+            </mat-card>
 
-          <br>
+            <br>
 
-          <mat-list-item>
-            <p matLine class="section">Navigation</p>
-          </mat-list-item>
+            <mat-list-item>
+              <p matLine class="section">Navigation</p>
+            </mat-list-item>
 
-          <mat-list-item class="btn btn-default item" (click)="slideDashboard()">
-            <!-- <mat-icon matListIcon></mat-icon> -->
-            <fa-icon matListIcon class="icon" [icon]="faHome"></fa-icon>
-            <p matLine class="menu">
-              Dashboard
-            </p>
-            <!-- <span class="pic arrow-right" *ngIf="show === 'dashboard'"></span> -->
-            <fa-icon class="arrow" [icon]="faArrowAltCircleRight" *ngIf="display.show === 'dashboard'"
-              style="float: right;"></fa-icon>
-          </mat-list-item>
+            <mat-list-item class="btn btn-default item" (click)="slideDashboard()">
+              <!-- <mat-icon matListIcon></mat-icon> -->
+              <fa-icon matListIcon class="icon" [icon]="faHome"></fa-icon>
+              <p matLine class="menu">
+                Dashboard
+              </p>
+              <!-- <span class="pic arrow-right" *ngIf="show === 'dashboard'"></span> -->
+              <fa-icon class="arrow" [icon]="faArrowAltCircleRight" *ngIf="display.show === 'dashboard'"
+                style="float: right;"></fa-icon>
+            </mat-list-item>
 
-          <mat-list-item class="btn btn-default item" (click)="slideClient()">
-            <!-- <mat-icon matListIcon></mat-icon> -->
-            <fa-icon matListIcon class="icon" [icon]="faUser"></fa-icon>
-            <p matLine class="menu">
-              Clients
-            </p>
-            <!-- <span class="pic arrow-right" *ngIf="show === 'client'"></span> -->
-            <fa-icon class="arrow" [icon]="faArrowAltCircleRight" *ngIf="display.show === 'client'"
-              style="float: right;"></fa-icon>
+            <mat-list-item class="btn btn-default item" (click)="slideClient()">
+              <!-- <mat-icon matListIcon></mat-icon> -->
+              <fa-icon matListIcon class="icon" [icon]="faUser"></fa-icon>
+              <p matLine class="menu">
+                Clients
+              </p>
+              <!-- <span class="pic arrow-right" *ngIf="show === 'client'"></span> -->
+              <fa-icon class="arrow" [icon]="faArrowAltCircleRight" *ngIf="display.show === 'client'"
+                style="float: right;"></fa-icon>
 
-          </mat-list-item>
+            </mat-list-item>
 
-          <mat-list-item class="btn btn-default item" (click)="slideCoursier()">
-            <!-- <mat-icon matListIcon></mat-icon> -->
-            <fa-icon matListIcon class="icon" [icon]="faCarAlt"></fa-icon>
-            <p matLine class="menu">
-              Coursiers
-            </p>
-            <!-- <span class="pic arrow-right" *ngIf="show === 'coursier'"></span> -->
-            <fa-icon class="arrow" [icon]="faArrowAltCircleRight" *ngIf="display.show === 'coursier'"
-              style="float: right;"></fa-icon>
+            <mat-list-item class="btn btn-default item" (click)="slideCoursier()">
+              <!-- <mat-icon matListIcon></mat-icon> -->
+              <fa-icon matListIcon class="icon" [icon]="faCarAlt"></fa-icon>
+              <p matLine class="menu">
+                Coursiers
+              </p>
+              <!-- <span class="pic arrow-right" *ngIf="show === 'coursier'"></span> -->
+              <fa-icon class="arrow" [icon]="faArrowAltCircleRight" *ngIf="display.show === 'coursier'"
+                style="float: right;"></fa-icon>
 
-          </mat-list-item>
+            </mat-list-item>
 
-         
 
-          <mat-list-item class="btn btn-default item" (click)="slideLivraison()">
-            <!-- <mat-icon matListIcon></mat-icon> -->
-            <fa-icon matListIcon class="icon" [icon]="faCartArrowDown"></fa-icon>
-            <p matLine class="menu">
-              Livraisons
-            </p>
-            <!-- <span class="pic arrow-right" *ngIf="show === 'livraison'"></span> -->
-            <fa-icon class="arrow" [icon]="faArrowAltCircleRight" *ngIf="display.show === 'livraison'"
-              style="float: right;"></fa-icon>
-          </mat-list-item>
-        </mat-list>
-      </div>
-      <hr>
-      <div>
-        <mat-list>
-          <!-- <mat-list-item>
+
+            <mat-list-item class="btn btn-default item" (click)="slideLivraison()">
+              <!-- <mat-icon matListIcon></mat-icon> -->
+              <fa-icon matListIcon class="icon" [icon]="faCartArrowDown"></fa-icon>
+              <p matLine class="menu">
+                Livraisons
+              </p>
+              <!-- <span class="pic arrow-right" *ngIf="show === 'livraison'"></span> -->
+              <fa-icon class="arrow" [icon]="faArrowAltCircleRight" *ngIf="display.show === 'livraison'"
+                style="float: right;"></fa-icon>
+            </mat-list-item>
+          </mat-list>
+        </div>
+        <hr>
+        <div>
+          <mat-list>
+            <!-- <mat-list-item>
             <p matLine class="section">Autre</p>
-          </mat-list-item> -->
-          <mat-list-item class="btn btn-default item">
-            <!-- <mat-icon matListIcon></mat-icon> -->
-            <fa-icon matListIcon class="icon" [icon]="faStreetView"></fa-icon>
-            <p matLine class="menu" (click)="slideType()">
-              Types
-            </p>
-            <!-- <span class="pic arrow-right" *ngIf="show === 'zone'"></span> -->
-            <fa-icon class="arrow" [icon]="faArrowAltCircleRight" *ngIf="display.show === 'type'" style="float: right;">
-            </fa-icon>
-          </mat-list-item>
-          <mat-list-item class="btn btn-default item">
-            <!-- <mat-icon matListIcon></mat-icon> -->
-            <fa-icon matListIcon class="icon" [icon]="faGlobe"></fa-icon>
-            <p matLine class="menu" (click)="slideZone()">
-              Zones
-            </p>
-            <!-- <span class="pic arrow-right" *ngIf="show === 'zone'"></span> -->
-            <fa-icon class="arrow" [icon]="faArrowAltCircleRight" *ngIf="display.show === 'zone'" style="float: right;">
-            </fa-icon>
-          </mat-list-item>
+        </mat-list-item> -->
+            <mat-list-item class="btn btn-default item">
+              <!-- <mat-icon matListIcon></mat-icon> -->
+              <fa-icon matListIcon class="icon" [icon]="faStreetView"></fa-icon>
+              <p matLine class="menu" (click)="slideType()">
+                Types
+              </p>
+              <!-- <span class="pic arrow-right" *ngIf="show === 'zone'"></span> -->
+              <fa-icon class="arrow" [icon]="faArrowAltCircleRight" *ngIf="display.show === 'type'"
+                style="float: right;">
+              </fa-icon>
+            </mat-list-item>
+            <mat-list-item class="btn btn-default item">
+              <!-- <mat-icon matListIcon></mat-icon> -->
+              <fa-icon matListIcon class="icon" [icon]="faGlobe"></fa-icon>
+              <p matLine class="menu" (click)="slideZone()">
+                Zones
+              </p>
+              <!-- <span class="pic arrow-right" *ngIf="show === 'zone'"></span> -->
+              <fa-icon class="arrow" [icon]="faArrowAltCircleRight" *ngIf="display.show === 'zone'"
+                style="float: right;">
+              </fa-icon>
+            </mat-list-item>
 
-          <mat-list-item class="btn btn-default item" (click)="slideTarif()">
-            <!-- <mat-icon matListIcon></mat-icon> -->
-            <fa-icon matListIcon class="icon" [icon]="faStream"></fa-icon>
-            <p matLine class="menu">
-              Tarifs
-            </p>
-            <fa-icon class="arrow" [icon]="faArrowAltCircleRight" *ngIf="display.show === 'produit'" style="float: right;"></fa-icon>
-          </mat-list-item>
+            <mat-list-item class="btn btn-default item" (click)="slideTarif()">
+              <!-- <mat-icon matListIcon></mat-icon> -->
+              <fa-icon matListIcon class="icon" [icon]="faStream"></fa-icon>
+              <p matLine class="menu">
+                Tarifs
+              </p>
+              <fa-icon class="arrow" [icon]="faArrowAltCircleRight" *ngIf="display.show === 'produit'"
+                style="float: right;"></fa-icon>
+            </mat-list-item>
 
-          <mat-list-item class="btn btn-default item" (click)="slideDate()">
-            <!-- <mat-icon matListIcon></mat-icon> -->
-            <fa-icon matListIcon class="icon" [icon]="faClock"></fa-icon>
-            <p matLine class="menu">
-              Dates
-            </p>
-            <fa-icon class="arrow" [icon]="faArrowAltCircleRight" *ngIf="display.show === 'produit'" style="float: right;"></fa-icon>
-          </mat-list-item>
-          
-        </mat-list>
+            <mat-list-item class="btn btn-default item" (click)="slideDate()">
+              <!-- <mat-icon matListIcon></mat-icon> -->
+              <fa-icon matListIcon class="icon" [icon]="faClock"></fa-icon>
+              <p matLine class="menu">
+                Dates
+              </p>
+              <fa-icon class="arrow" [icon]="faArrowAltCircleRight" *ngIf="display.show === 'produit'"
+                style="float: right;"></fa-icon>
+            </mat-list-item>
+
+          </mat-list>
+        </div>
       </div>
-    </div>
 
 
-    <div class="col-10 col-xs-12">
-      <div class="route scrollbar">
-        <ngx-spinner [zIndex]=500 [fullScreen]="false" bdColor="white" size="medium" color="rgb(239, 18, 51,0.8)" type="ball-triangle-path">
-        </ngx-spinner>
-        <router-outlet>
-        </router-outlet>
+      <div class="col-10 col-xs-12 h-100">
+        <div class="route h-100 p-5">
+          <ngx-spinner [zIndex]=500 [fullScreen]="false" bdColor="white" size="medium" color="rgb(239, 18, 51,0.8)"
+            type="ball-triangle-path">
+          </ngx-spinner>
+          <router-outlet>
+          </router-outlet>
+        </div>
       </div>
-    </div>
 
+    </div>
   </div>
+
 </div>

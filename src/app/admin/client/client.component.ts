@@ -86,7 +86,10 @@ export class ClientComponent implements OnInit {
         );
         this.getDataGraph()
         this.getClients();
+    }
+    ngAfterViewInit() {
         this.clientDatasource.paginator = this.clientPaginator;
+
     }
 
     getClients() {

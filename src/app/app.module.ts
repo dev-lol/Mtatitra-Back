@@ -36,7 +36,6 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AdminComponent } from "./admin/admin/admin.component";
 import { ClientComponent } from './admin/client/client.component';
 import { CoursierComponent } from './admin/coursier/coursier.component';
-import { ProduitComponent } from "./admin/produit/produit.component";
 import { LivraisonComponent } from './admin/livraison/livraison.component';
 import { DashboardComponent } from './admin/dashboard/dashboard.component';
 import { ZoneComponent } from './admin/zone/zone.component';
@@ -69,7 +68,6 @@ import { DetailTarifComponent } from './admin/tarif/detail-tarif/detail-tarif.co
         AdminComponent,
         ClientComponent,
         CoursierComponent,
-        ProduitComponent,
         LivraisonComponent,
         DashboardComponent,
         ZoneComponent,

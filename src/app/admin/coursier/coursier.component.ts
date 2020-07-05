@@ -10,6 +10,8 @@ import { PostService } from './../../admin/services/post.service';
 import { faPlusCircle, faEdit, faMinusCircle, faSearch } from '@fortawesome/free-solid-svg-icons';
 import { TypeCoursier } from '../type/type.component';
 import { catchError } from 'rxjs/operators';
+import { ChartOptions, ChartType, ChartDataSets } from 'chart.js';
+import { Label, Color } from 'ng2-charts';
 
 // changer
 function open() {
@@ -70,7 +72,7 @@ export class CoursierComponent implements OnInit {
     coursierForm: FormGroup;
 
     // changer
-    currentId = 0;
+    currentCoursier: Coursier = null;
 
     constructor(public postSrv: PostService, private getSrv: GetService,
         private deleteSrv: DeleteService, public dialog: MatDialog, public formBuild: FormBuilder) { }
@@ -79,6 +81,8 @@ export class CoursierComponent implements OnInit {
         this.initCoursier();
         this.initTypeCoursier()
         this.initForm();
+    }
+    ngAfterViewInit() {
         this.coursierDatasource.paginator = this.coursierPaginator;
     }
 
@@ -119,29 +123,29 @@ export class CoursierComponent implements OnInit {
     }
 
     // changer
-    deleteCoursier(id: number) {
-        this.currentId = id;
+    deleteCoursier(coursier: Coursier) {
+        this.currentCoursier = coursier;
         open();
     }
 
     // changer
     confirmDelete() {
-        this.deleteSrv.deleteCoursier(this.currentId);
-        this.currentId = 0;
+        this.deleteSrv.deleteCoursier(this.currentCoursier.idCou);
+        this.currentCoursier = null;
         close();
     }
 
-    editCoursier(index: number) {
-        const id = this.coursiers[index].idCou;
-        const nom = this.coursiers[index].nomCou;
-        const prenom = this.coursiers[index].prenomCou;
-        const tel = this.coursiers[index].numTelCou;
-        const username = this.coursiers[index].usernameCou;
-        const pass = this.coursiers[index].passCou;
-        const type = this.coursiers[index]["idTypeCouTypeCoursier"].idTypeCou
+    editCoursier(coursier: Coursier) {
+        const id = coursier.idCou;
+        const nom = coursier.nomCou;
+        const prenom = coursier.prenomCou;
+        const tel = coursier.numTelCou;
+        const username = coursier.usernameCou;
+        const pass = coursier.passCou;
+        const type = coursier["idTypeCouTypeCoursier"].idTypeCou
         const typeCoursier = this.typeCoursier
 
-        const dialogRef = this.dialog.open(DetailCoursierComponent, { data: { id, nom, prenom, tel, username, pass, type, typeCoursier} });
+        const dialogRef = this.dialog.open(DetailCoursierComponent, { data: { id, nom, prenom, tel, username, pass, type, typeCoursier } });
         dialogRef.afterClosed().subscribe(
             result => {
                 // this.getSrv.getAllTypeProduit();
@@ -153,6 +157,4 @@ export class CoursierComponent implements OnInit {
     filterCoursier(value: string) {
         this.coursierDatasource.filter = value.trim().toLowerCase();
     }
-
-
 }

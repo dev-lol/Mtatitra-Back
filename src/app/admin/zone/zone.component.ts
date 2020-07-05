@@ -1,8 +1,8 @@
 import { DeleteService } from './../services/delete.service';
 import { DetailZoneComponent } from './detail-zone/detail-zone.component';
-import { MatDialog } from '@angular/material';
+import { MatDialog, MatPaginator, MatTableDataSource } from '@angular/material';
 import { GetService } from './../services/get.service';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { PostService } from './../../admin/services/post.service';
 import { Subscription } from 'rxjs';
 import { faPlusCircle, faEdit, faMinusCircle, faMapMarked } from '@fortawesome/free-solid-svg-icons';
@@ -31,10 +31,13 @@ export interface Zone {
 export class ZoneComponent implements OnInit {
     img = '../../../assets/images/zone.png';
 
+    @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
+
     zoneSub: Subscription;
 
     columnZone: string[] = ['idZon', 'nomZon', 'detailsZon', 'edit', 'suppr'];
     zones: Zone[] = []
+    dataSource = new MatTableDataSource(this.zones);
 
     faPlusCircle = faPlusCircle;
     faEdit = faEdit;
@@ -44,7 +47,7 @@ export class ZoneComponent implements OnInit {
     zoneForm: FormGroup
 
     // changer
-    currentId = 0;
+    currentZone: Zone = null;
     constructor(private postSrv: PostService, private getSrv: GetService, public dialog: MatDialog,
         public deleteSrv: DeleteService, private fb: FormBuilder) { }
 
@@ -55,11 +58,15 @@ export class ZoneComponent implements OnInit {
             detailsZon: ['', Validators.required],
         })
     }
+    ngAfterViewInit() {
+        this.dataSource.paginator = this.paginator
+    }
 
     initZone() {
         this.zoneSub = this.getSrv.zoneSubject.subscribe(
             (zones: any[]) => {
                 this.zones = zones;
+                this.dataSource.data = this.zones
             }
         );
         this.getAllZone();
@@ -77,22 +84,22 @@ export class ZoneComponent implements OnInit {
     }
 
     // changer
-    deleteZone(id: number) {
-        this.currentId = id;
+    deleteZone(zone: Zone) {
+        this.currentZone = zone;
         open();
     }
 
     // changer
     confirmDelete() {
-        this.deleteSrv.deleteZone(this.currentId);
-        this.currentId = 0;
+        this.deleteSrv.deleteZone(this.currentZone.idZon);
+        this.currentZone = null;
         close();
     }
 
-    editZone(index: number) {
-        const id = this.zones[index].idZon;
-        const designation = this.zones[index].nomZon;
-        const details = this.zones[index].detailsZon;
+    editZone(zone: Zone) {
+        const id = zone.idZon;
+        const designation = zone.nomZon;
+        const details = zone.detailsZon;
         const dialogRef = this.dialog.open(DetailZoneComponent, { data: { id, designation, details } });
         dialogRef.afterClosed().subscribe(
             result => {

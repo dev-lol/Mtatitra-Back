@@ -3,7 +3,6 @@ import { LoginAdminComponent } from './admin/login-admin/login-admin.component';
 import { TypeComponent } from './admin/type/type.component';
 import { ZoneComponent } from './admin/zone/zone.component';
 import { LivraisonComponent } from "./admin/livraison/livraison.component";
-import { ProduitComponent } from "./admin/produit/produit.component";
 import { CoursierComponent } from './admin/coursier/coursier.component';
 import { ClientComponent } from './admin/client/client.component';
 import { DashboardComponent } from './admin/dashboard/dashboard.component';
@@ -29,7 +28,11 @@ const routes: Routes = [
         canActivate: [AdminGuard],
         component: AdminComponent,
         children: [
-
+            {
+                path: '',
+                redirectTo: '/dashboard',
+                pathMatch: 'full'
+            },
             {
                 path: 'dashboard',
                 component: DashboardComponent,
@@ -42,10 +45,6 @@ const routes: Routes = [
             {
                 path: 'coursier',
                 component: CoursierComponent
-            },
-            {
-                path: 'produit',
-                component: ProduitComponent
             },
             {
                 path: 'livraison',
@@ -62,11 +61,11 @@ const routes: Routes = [
             {
                 path: 'tarif',
                 component: TarifComponent
-              },
-              {
+            },
+            {
                 path: 'date',
                 component: DatelimitComponent
-              }
+            }
         ]
     },
 
@@ -81,5 +80,5 @@ const routes: Routes = [
 export class AppRoutingModule { }
 export const routingComponents = [
     AdminComponent, DashboardComponent,
-    ClientComponent, CoursierComponent, ProduitComponent, LivraisonComponent, ZoneComponent
+    ClientComponent, CoursierComponent, LivraisonComponent, ZoneComponent
 ];
