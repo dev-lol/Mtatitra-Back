@@ -13,6 +13,15 @@ export class Client {
     @Column("character varying", { name: "prenom_cli", nullable: false, length: 30 })
     prenomCli: string;
 
+    @Column("character varying", { name: "page_fb_cli", nullable: true, length: 100 })
+    pageFbCli: string;
+
+    @Column("character varying", { name: "compte_fb_cli", nullable: true, length: 100 })
+    compteFbCli: string;
+
+    @Column("character varying", { name: "site_web_cli", nullable: true, length: 100 })
+    siteWebCli: string;
+
     @Column("character varying", { name: "num_tel_cli", nullable: false, length: 10 })
     numTelCli: string;
 
