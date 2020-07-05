@@ -19,21 +19,25 @@ export default class TarifController extends Controller {
 
     private async getTarif(router: Router): Promise<void> {
         router.get("/", [
-            query(['zoneDepart', 'zoneArrivee', 'typeCoursier']).notEmpty().withMessage("error query"),
-            query('zoneDepart').custom((value, { req }) => value != req.query.zoneArrivee).withMessage("same value"),
-            query('zoneArrivee').custom((value, { req }) => value != req.query.zoneDepart).withMessage("same value")
+            query(['lieuDepart', 'lieuArrivee', 'typeCoursier']).notEmpty().withMessage("error query"),
+            query('lieuDepart').custom((value, { req }) => value != req.query.lieuArrivee).withMessage("same value"),
+            query('lieuArrivee').custom((value, { req }) => value != req.query.lieuDepart).withMessage("same value")
         ], ErrorValidator, async (req: Request, res: Response, next: NextFunction) => {
             try {
-                const dep = req.query.zoneDepart
-                const arr = req.query.zoneArrivee
+                const dep = req.query.lieuDepart
+                const arr = req.query.lieuArrivee
                 const type = req.query.typeCoursier
                 let tarifs = await getRepository(Tarif)
                     .createQueryBuilder("tarif")
+                    .leftJoin("tarif.idZonDepart", "zoneDepart")
+                    .leftJoin("zoneDepart.lieu", "lieuDepart")
+                    .leftJoin("tarif.idZonArrivee", "zoneArrivee")
+                    .leftJoin("zoneArrivee.lieu", "lieuArrivee")
                     .where("tarif.idTypeCouTypeCoursier = :typeCou", { typeCou: type })
-                    .andWhere("tarif.idZonDepart = :idDepart", { idDepart: dep })
-                    .andWhere("tarif.idZonArrivee = :idArrivee", { idArrivee: arr })
-                    .orWhere("tarif.idZonDepart = :idDepart2", { idDepart2: arr })
-                    .andWhere("tarif.idZonArrivee = :idArrivee2", { idArrivee2: dep })
+                    .andWhere("lieuArrivee.idLie = :idDepart", { idDepart: dep })
+                    .andWhere("lieuDepart.idLie = :idArrivee", { idArrivee: arr })
+                    .orWhere("lieuArrivee.idLie = :idDepart2", { idDepart2: arr })
+                    .andWhere("lieuDepart.idLie = :idArrivee2", { idArrivee2: dep })
                     .getOne()
 
                 this.sendResponse(res, 200, tarifs)
