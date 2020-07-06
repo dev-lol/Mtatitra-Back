@@ -3,7 +3,6 @@ import { FormControl, Validators, FormGroup, FormBuilder } from '@angular/forms'
 import { PasswordValidation } from './password-validator';
 import { LoginService } from '../login/login.service';
 import { Router } from '@angular/router';
-import * as AOS from 'aos';
 
 @Component({
   selector: 'app-signup',
@@ -36,8 +35,6 @@ export class SignupComponent implements OnInit {
      }
 
   ngOnInit() {
-    AOS.init();
-
     this.signupForm = this.fb.group({
       nom: [''],
       prenom: [''],

@@ -3,7 +3,6 @@ import { FormControl, Validators, FormGroup, FormBuilder } from '@angular/forms'
 import { PasswordValidation } from './password-validator';
 import { LoginService } from '../login/login.service';
 import { Router } from '@angular/router';
-import * as AOS from 'aos';
 import { EditService } from './edit.service';
 import { ProfileclientService } from '../profileclient/profileclient.service';
 import { NgxSpinnerService } from 'ngx-spinner';
@@ -45,7 +44,6 @@ export class EditComponent implements OnInit {
 
     ngOnInit() {
         this.spinner.show("edit")
-        AOS.init();
         this.editForm = this.fb.group({
             nom: [''],
             prenom: [''],
