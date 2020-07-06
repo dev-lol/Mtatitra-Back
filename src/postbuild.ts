@@ -223,7 +223,7 @@ import { Lieu } from './entities/Lieu';
 
         liv.descriptionLiv = "Entana kely"
 
-        liv.expressLiv = true
+        liv.expressLiv = false
         liv.idCliClient = await clientRepository.findOne()
         liv.idCouCoursier = await coursierRepository.findOne()
         liv.idEtaEtats = await etatRepository.findOne({ where: { ordreEta: 1 } })
@@ -261,7 +261,7 @@ import { Lieu } from './entities/Lieu';
 
         liv.descriptionLiv = "Entana kely"
 
-        liv.expressLiv = true
+        liv.expressLiv = false
         liv.idCliClient = await clientRepository.findOne()
         liv.idCouCoursier = await coursierRepository.findOne()
         liv.idEtaEtats = await etatRepository.findOne({ where: { ordreEta: 2 } })
@@ -297,7 +297,7 @@ import { Lieu } from './entities/Lieu';
 
         liv.descriptionLiv = "Entana kely"
 
-        liv.expressLiv = true
+        liv.expressLiv = false
         liv.idCliClient = await clientRepository.findOne()
         liv.idCouCoursier = await coursierRepository.findOne()
         liv.idLimiteDat = await limiteDatRepository.findOne()
