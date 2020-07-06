@@ -23,7 +23,9 @@ export class ListComponent implements OnInit {
     @ViewChild('enCours', { static: false }) paginatorEnCours: MatPaginator;
     @ViewChild('historique', { static: false }) paginatorHistorique: MatPaginator;
 
-    @ViewChild(MatSort, { static: false }) sort: MatSort;
+    @ViewChild('tableHistorique', { static: false }) sortHistorique: MatSort;
+    @ViewChild('tableEnCours', { static: false }) sortEnCours: MatSort;
+    @ViewChild('tablePlanifie', { static: false }) sortPlanifie: MatSort;
 
     livraison: any = { planifie: [], enCours: [], historique: [] }
 
@@ -48,7 +50,9 @@ export class ListComponent implements OnInit {
         this.dataSourcePlanifie.paginator = this.paginatorPlanifie
         this.dataSourceEnCours.paginator = this.paginatorEnCours
         this.dataSourceHistorique.paginator = this.paginatorHistorique
-        // this.dataSource.sort = this.sort
+        this.dataSourcePlanifie.sort = this.sortPlanifie
+        this.dataSourceEnCours.sort = this.sortEnCours
+        this.dataSourceHistorique.sort = this.sortHistorique
     }
 
     onTabChange(event) {
@@ -81,7 +85,7 @@ export class ListComponent implements OnInit {
         console.log(element)
     }
     openModalProduits(produits) {
-        const dialogRef = this.dialog.open(ProduitComponent, {  width: '70%', height:'50%', data: { produits} });
+        const dialogRef = this.dialog.open(ProduitComponent, { width: '70%', height: '50%', data: { produits } });
         dialogRef.afterClosed().subscribe(
             result => {
                 // this.getSrv.getAllTypeProduit();
