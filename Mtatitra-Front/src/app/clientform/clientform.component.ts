@@ -90,7 +90,7 @@ export class ClientformComponent implements OnInit {
     // FormControleName
     createItem(): FormGroup {
         return this.formBuilder.group({
-            fragilePro: '',
+            fragilePro: false,
             longueurPro: '',
             largeurPro: '',
             hauteurPro: '',
