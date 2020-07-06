@@ -27,3 +27,7 @@
 .non {
   color: green;
 }
+.mat-column-edit,
+.mat-column-suppr {
+  max-width: 50px;
+}

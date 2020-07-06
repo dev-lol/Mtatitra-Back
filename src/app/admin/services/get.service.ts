@@ -62,7 +62,7 @@ export class GetService {
     }
 
     getZone() {
-        this.http.get(`${this.endpoint}/zone`).subscribe(
+        this.http.get(`${this.endpoint}/lieu`).subscribe(
             (result) => {
                 this.zoneSubject.next(result);
             }
