@@ -2,13 +2,13 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, FormArray, Validators } from '@angular/forms';
 import { DatePipe } from '@angular/common';
 import { MatDialog } from '@angular/material';
-import * as AOS from 'aos';
 import { environment } from '../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { forkJoin } from 'rxjs';
 import { ClientformService } from './clientform.service';
+import { TarifService } from '../tarif/tarif.service';
 
 interface Limite {
     idLimiteDat: number;
@@ -25,7 +25,8 @@ export class ClientformComponent implements OnInit {
 
     selectedTypeCouriser
 
-    selectedZone
+    selectedLieuDepart
+    selectedLieuDestination
 
     limite: Limite[] = [];
 
@@ -37,10 +38,11 @@ export class ClientformComponent implements OnInit {
 
     typecoursier: Array<object> = [];
     typeproduit: Array<object> = [];
-    zone: Array<object> = [];
+    lieux: Array<object> = [];
 
 
     constructor(
+        private tarifService: TarifService,
         private clientformService: ClientformService,
         private spinner: NgxSpinnerService,
         private http: HttpClient,
@@ -52,18 +54,17 @@ export class ClientformComponent implements OnInit {
 
     ngOnInit() {
         this.spinner.show('liv')
-        AOS.init();
         forkJoin(
             [
                 this.http.get<any>(`${this.endpoint}/typecoursier`),
                 this.http.get<any>(`${this.endpoint}/typeproduit`),
-                this.http.get<any>(`${this.endpoint}/zone`),
+                this.http.get<any>(`${this.endpoint}/lieu`),
                 this.http.get<any>(`${this.endpoint}/datelimite`),
             ]
         ).subscribe((resultats: any) => {
             this.typecoursier = resultats[0]
             this.typeproduit = resultats[1]
-            this.zone = resultats[2]
+            this.lieux = resultats[2]
             this.limite = resultats[3]
             console.log(this.limite)
             this.spinner.hide('liv')
@@ -74,9 +75,8 @@ export class ClientformComponent implements OnInit {
             dateLiv: '',
             descriptionLiv: '',
             sommeRecepLiv: '',
-            destinationLiv: '',
-            departLiv: '',
-            zoneLiv: '',
+            idLieArrivee: '',
+            idLieDepart: '',
             tarif: '',
             idLimiteDat: '',
         })
@@ -125,9 +125,10 @@ export class ClientformComponent implements OnInit {
     }
 
     handleChange(event) {
-        if (this.selectedTypeCouriser && this.selectedZone) {
-            this.clientformService.getTarif(this.selectedTypeCouriser, this.selectedZone).subscribe((res: any) => {
-                this.detailsForm.controls['tarif'].setValue(res['tarifTar'])
+        if (this.selectedTypeCouriser && this.selectedLieuDepart && this.selectedLieuDestination) {
+            this.tarifService.getTarif(this.selectedLieuDepart, this.selectedLieuDestination,this.selectedTypeCouriser).subscribe((res: any) => {
+                if (res)
+                    this.detailsForm.controls['tarif'].setValue(res['tarifTar'])
             })
         }
     }

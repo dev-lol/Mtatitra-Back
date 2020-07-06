@@ -15,12 +15,12 @@ export class TarifService {
     ) {
 
     }
-    getTarif() {
-        return this.http.get(`${this.endpoint}/tarif`).pipe(
-            map((res: Response) => {
-                return res || {}
-            }),
-            catchError(this.handleError))
+
+    getTarif(idLieDepart, idLieDestination, idTypeCoursier = null) {
+        if (idTypeCoursier)
+            return this.http.get(`${this.endpoint}/tarif?typeCoursier=${idTypeCoursier}&lieuDepart=${idLieDepart}&lieuArrivee=${idLieDestination}`).pipe(catchError(this.handleError))
+        else
+            return this.http.get(`${this.endpoint}/tarif?lieuDepart=${idLieDepart}&lieuArrivee=${idLieDestination}`).pipe(catchError(this.handleError))
     }
 
     handleError(error: HttpErrorResponse) {
@@ -34,4 +34,16 @@ export class TarifService {
         }
         return throwError(msg);
     }
+}
+
+export interface Tarif {
+    idTar: number;
+    tarifTar: number;
+    idTypeCouTypeCoursier: any;
+
+}
+
+export interface Lieu {
+    idLie: number;
+    nomLie: string;
 }

@@ -2,11 +2,9 @@ import { Router, Response, Request, NextFunction, ErrorRequestHandler } from "ex
 import { Controller } from "../../Controller"
 import { Zone } from "../../../entities/Zone"
 import { getRepository } from "typeorm";
-import { ormconfig } from "../../../config";
-import { runInThisContext } from "vm";
-import { Livraison } from "../../../entities/Livraison";
 import ErrorValidator from "../../ErrorValidator";
 import { query, sanitizeQuery, check } from "express-validator";
+import { Lieu } from '../../../entities/Lieu';
 export default class ZoneController extends Controller {
     constructor() {
         super()
@@ -26,7 +24,7 @@ export default class ZoneController extends Controller {
 
                 this.sendResponse(res, 200, zones)
             } catch (err) {
-
+                this.sendResponse(res, 404, { message: "not found" })
             }
         })
 
@@ -41,9 +39,10 @@ export default class ZoneController extends Controller {
                 try {
                     const startDate: Date = new Date(req.query.start as string)
                     const endDate: Date = new Date(req.query.end as string)
-                    let a = await getRepository(Zone)
-                        .createQueryBuilder("zone")
-                        .leftJoinAndSelect("zone.livraisons2", "livraison")
+                    let a = await getRepository(Lieu)
+                        .createQueryBuilder("lieu")
+                        .leftJoin("lieu.livraisons2", "livraison")
+                        .leftJoin("lieu.idZonZone", "zone")
                         .select(`zone.nomZon as "nomZon"`)
                         .addSelect(`zone.idZon as "idZon"`)
                         .addSelect(`count(livraison) as total`)
@@ -52,7 +51,6 @@ export default class ZoneController extends Controller {
                         .addOrderBy("zone.idZon", "ASC")
                         .where("livraison.dateLiv >= :startDate", { startDate: startDate })
                         .andWhere("livraison.dateLiv <= :endDate", { endDate: endDate })
-                        .limit(6)
                         .getRawMany()
                     this.sendResponse(res, 200, a)
                 } catch (err) {

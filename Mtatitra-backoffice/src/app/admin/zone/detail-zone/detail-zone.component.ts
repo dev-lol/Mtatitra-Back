@@ -14,8 +14,9 @@ function close() {
     templateUrl: './detail-zone.component.html',
     styleUrls: ['./detail-zone.component.css']
 })
-export class DetailZoneComponent implements OnInit {
-    zone: Zone = { idZon: 0, detailsZon: '', nomZon: '' };
+export class
+    DetailZoneComponent implements OnInit {
+    zone: Zone = { idZon: 0, nomZon: '', lieu: [] };
     faTimesCircle = faTimesCircle;
     id: number;
     designation: string;
@@ -32,8 +33,7 @@ export class DetailZoneComponent implements OnInit {
     modifier() {
         this.zone.idZon = this.id;
         this.zone.nomZon = this.designation;
-        this.zone.detailsZon = this.details;
-        this.putSrv.editZone(this.id, this.zone);
+        this.putSrv.editZone(this.id, { idZon: this.zone.idZon, nomZon: this.zone.nomZon });
         close();
     }
 

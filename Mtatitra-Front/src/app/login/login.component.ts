@@ -2,8 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { LoginService } from './login.service';
 import { Router } from '@angular/router';
-import { catchError } from 'rxjs/operators';
-import * as AOS from 'aos';
 
 @Component({
     selector: 'app-login',
@@ -24,8 +22,6 @@ export class LoginComponent implements OnInit {
     ) { }
 
     ngOnInit() {
-        AOS.init();
-
         this.signinForm = this.fb.group({
             username: ['client_test@client.com'],
             password: ['1234']

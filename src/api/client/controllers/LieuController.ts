@@ -1,29 +1,25 @@
 import { Router, Response, Request, NextFunction, ErrorRequestHandler } from "express";
 import { Controller } from "../../Controller"
-import { Zone } from "../../../entities/Zone"
+import { Lieu } from "../../../entities/Lieu"
 import { getRepository } from "typeorm";
-import { ormconfig } from "../../../config";
-import { runInThisContext } from "vm";
-export default class ZoneController extends Controller {
+export default class LieuController extends Controller {
     constructor() {
         super()
-this.addAllRoutes(this.mainRouter)
+        this.addAllRoutes(this.mainRouter)
     }
 
 
 
     async addGet(router: Router): Promise<void> {
-        await this.getAllZone(router)
+        await this.getAllLieu(router)
     }
 
 
-    private async getAllZone(router: Router): Promise<void> {
+    private async getAllLieu(router: Router): Promise<void> {
         router.get("/", async (req: Request, res: Response, next: NextFunction) => {
             try {
-
-                let zones: Zone[] = await this.fetchZonesFromDatabase()
-
-                this.sendResponse(res, 200,  zones)
+                let lieu: Lieu[] = await this.fetchLieusFromDatabase()
+                this.sendResponse(res, 200, lieu)
             } catch (err) {
 
             }
@@ -31,8 +27,8 @@ this.addAllRoutes(this.mainRouter)
 
     }
 
-    private async fetchZonesFromDatabase(): Promise<Zone[]> {
-        return await getRepository(Zone).find({ where: { estSupprime: false } })
+    private async fetchLieusFromDatabase(): Promise<Lieu[]> {
+        return await getRepository(Lieu).find()
     }
     async addPost(router: Router): Promise<void> {
     }

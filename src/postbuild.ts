@@ -1,4 +1,4 @@
-import { createConnection } from 'typeorm';
+import { createConnection, Between } from 'typeorm';
 import { ormconfig } from './config';
 import { Admin } from './entities/Admin';
 import { Client } from './entities/Client';
@@ -11,6 +11,7 @@ import { Zone } from './entities/Zone';
 import { Produit } from './entities/Produit';
 import { TypeProduit } from './entities/TypeProduit';
 import { Tarif } from './entities/Tarif';
+import { Lieu } from './entities/Lieu';
 (async () => {
     let connection = await createConnection(ormconfig)
     let adminRepository = connection.getRepository(Admin)
@@ -20,6 +21,7 @@ import { Tarif } from './entities/Tarif';
     let etatRepository = connection.getRepository(Etats)
     let limiteDatRepository = connection.getRepository(DateLimite)
     let zoneRepository = connection.getRepository(Zone)
+    let lieuRepository = connection.getRepository(Lieu)
     let produitRepository = connection.getRepository(Produit)
     let typeProduitRepository = connection.getRepository(TypeProduit)
     let tarifRepository = connection.getRepository(Tarif)
@@ -50,6 +52,9 @@ import { Tarif } from './entities/Tarif';
         let coursier = coursierRepository.create({
             nomCou: "Moto",
             prenomCou: "man",
+            numTelUrgentCou: "0344444444",
+            adresseCou: "Any eeee",
+            referenceVehiculeCou: "velo 1",
             usernameCou: "coursier_test@coursier.com",
             numTelCou: "0344822017",
             passCou: "$2b$12$NkZMgOfQDiTueABJ8.BCrujsjNlbEDZ2WL8ns1PTtWMX49l3u802G"
@@ -61,12 +66,29 @@ import { Tarif } from './entities/Tarif';
         coursier = coursierRepository.create({
             nomCou: "Velo",
             prenomCou: "man",
+            numTelUrgentCou: "0344444444",
+            adresseCou: "Any eeee",
+            referenceVehiculeCou: "velo 1",
             usernameCou: "coursier_test2@coursier.com",
             numTelCou: "0344822017",
             passCou: "$2b$12$NkZMgOfQDiTueABJ8.BCrujsjNlbEDZ2WL8ns1PTtWMX49l3u802G"
         })
         coursier.idAdmAdmin = adminSaved
         coursier.idTypeCouTypeCoursier = { ... new TypeCoursier(), idTypeCou: 2 }
+        await coursierRepository.save(coursier)
+
+        coursier = coursierRepository.create({
+            nomCou: "Voiture",
+            prenomCou: "man",
+            numTelUrgentCou: "0344444444",
+            adresseCou: "Any eeee",
+            referenceVehiculeCou: "velo 1",
+            usernameCou: "coursier_test3@coursier.com",
+            numTelCou: "0344822017",
+            passCou: "$2b$12$NkZMgOfQDiTueABJ8.BCrujsjNlbEDZ2WL8ns1PTtWMX49l3u802G"
+        })
+        coursier.idAdmAdmin = adminSaved
+        coursier.idTypeCouTypeCoursier = { ... new TypeCoursier(), idTypeCou: 3 }
         await coursierRepository.save(coursier)
     }
     let clientRepository = connection.getRepository(Client)
@@ -111,12 +133,22 @@ import { Tarif } from './entities/Tarif';
         const zones = []
         for (let i of [1, 2, 3, 4, 5, 6]) {
             let zone = new Zone()
-            zone.nomZon = "Arondissement " + i
-            zone.detailsZon = "Details kely oe aiza " + i
+            zone.nomZon = "Zone " + i
             zone.estSupprime = false
             zones.push(zone)
         }
         await zoneRepository.save(zones)
+    }
+
+    if (await lieuRepository.count() < 1) {
+        const lieu = []
+        for (let i = 0; i < 50; i++) {
+            let l = new Lieu()
+            l.nomLie = "Lieu " + i
+            l.idZonZone = await zoneRepository.createQueryBuilder("zone").where(`Random() > 0.5`).getOne()
+            lieu.push(l)
+        }
+        await lieuRepository.save(lieu)
     }
 
     if (await typeProduitRepository.count() < 1) {
@@ -124,20 +156,24 @@ import { Tarif } from './entities/Tarif';
         type.typePro = "cosmetiques"
         type.estSupprime = false
         await typeProduitRepository.save(type)
+        type = new TypeProduit()
+        type.typePro = "electronique"
+        type.estSupprime = false
+        await typeProduitRepository.save(type)
     }
 
     if (await produitRepository.count() < 3) {
         const pros: Produit[] = []
-        for (let i = 0; i < 5; i++) {
+        for (let i = 0; i < 30; i++) {
             pros.push(new Produit())
-            pros[i].consignePro = "dasfasd"
+            pros[i].consignePro = "Consigne " + i
             pros[i].fragilePro = (i % 2) ? true : false
-            pros[i].hauteurPro = 10
-            pros[i].largeurPro = 5
-            pros[i].longueurPro = 30
-            pros[i].poidsPro = 2000
-            pros[i].prixPro = 30000
-            pros[i].idTypeProTypeProduit = await typeProduitRepository.findOne()
+            pros[i].hauteurPro = Math.floor(Math.random() * (10 - 3) + 3)
+            pros[i].largeurPro = Math.floor(Math.random() * (10 - 3) + 3)
+            pros[i].longueurPro = Math.floor(Math.random() * (10 - 3) + 3)
+            pros[i].poidsPro = Math.floor(Math.random() * (10 - 3) + 3) * 1000
+            pros[i].prixPro = Math.floor(Math.random() * (10 - 3) + 3) * 1000
+            pros[i].idTypeProTypeProduit = await typeProduitRepository.findOne(Math.floor(Math.random() * 2 + 1))
         }
         await produitRepository.save(pros)
     }
@@ -148,11 +184,16 @@ import { Tarif } from './entities/Tarif';
         let tarifs = []
         for (let type of typeCoursier) {
             for (let zone of zones) {
-                let tarif = new Tarif()
-                tarif.idTypeCouTypeCoursier = type
-                tarif.idZonZone = zone
-                tarif.tarifTar = Math.floor(Math.random() * (10 - 3) - 3) * 1000
-                tarifs.push(tarif)
+                for (let zone2 of zones) {
+                    if (zone.idZon >= zone2.idZon)
+                        continue
+                    let tarif = new Tarif()
+                    tarif.idTypeCouTypeCoursier = type
+                    tarif.idZonDepart = zone
+                    tarif.idZonArrivee = zone2
+                    tarif.tarifTar = Math.floor(Math.random() * (10 - 3) + 3) * 1000
+                    tarifs.push(tarif)
+                }
             }
         }
         await tarifRepository.save(tarifs)
@@ -161,54 +202,54 @@ import { Tarif } from './entities/Tarif';
     if (await livraisonRepository.count() < 1) {
         let liv: Livraison = new Livraison()
         liv.dateLiv = new Date()
-        liv.departLiv = "Androndra"
+
         liv.descriptionLiv = "Entana kely"
-        liv.destinationLiv = "Itaosy"
+
         liv.expressLiv = true
         liv.idCliClient = await clientRepository.findOne()
         liv.idCouCoursier = await coursierRepository.findOne()
         liv.idEtaEtats = await etatRepository.findOne({ where: { ordreEta: 2 } })
         liv.idLimiteDat = await limiteDatRepository.findOne()
-        liv.idZonArrivee = await zoneRepository.findOne()
-        liv.idZonDepart = await zoneRepository.findOne()
+        liv.idLieArrivee = await lieuRepository.createQueryBuilder("lieu").where(`Random() > 0.5`).getOne()
+        liv.idLieDepart = await lieuRepository.createQueryBuilder("lieu").where(`Random() < 0.5`).getOne()
         liv.numRecepLiv = "0333333333"
         liv.sommeRecepLiv = 30000
-        liv.produits = await produitRepository.find()
+        liv.produits = await produitRepository.find({ where: { idPro: Between(0, 5) } })
         liv.idTypeCouTypeCoursier = await typeCoursierRepository.findOne(1)
         await livraisonRepository.save(liv)
 
         liv = new Livraison()
         liv.dateLiv = new Date()
-        liv.departLiv = "Androndra"
+
         liv.descriptionLiv = "Entana kely"
-        liv.destinationLiv = "Itaosy"
-        liv.expressLiv = true
+
+        liv.expressLiv = false
         liv.idCliClient = await clientRepository.findOne()
         liv.idCouCoursier = await coursierRepository.findOne()
         liv.idEtaEtats = await etatRepository.findOne({ where: { ordreEta: 1 } })
         liv.idLimiteDat = await limiteDatRepository.findOne()
-        liv.idZonArrivee = await zoneRepository.findOne()
-        liv.idZonDepart = await zoneRepository.findOne()
+        liv.idLieArrivee = await lieuRepository.createQueryBuilder("lieu").where(`Random() > 0.5`).getOne()
+        liv.idLieDepart = await lieuRepository.createQueryBuilder("lieu").where(`Random() < 0.5`).getOne()
         liv.numRecepLiv = "0333333333"
         liv.sommeRecepLiv = 30000
-        liv.produits = await produitRepository.find()
+        liv.produits = await produitRepository.find({ where: { idPro: Between(6, 10) } })
         liv.idTypeCouTypeCoursier = await typeCoursierRepository.findOne(2)
         await livraisonRepository.save(liv)
 
         liv = new Livraison()
         liv.dateLiv = new Date()
-        liv.departLiv = "Androndra"
+
         liv.descriptionLiv = "Entana kely"
-        liv.destinationLiv = "Itaosy"
+
         liv.expressLiv = true
         liv.idCliClient = await clientRepository.findOne()
         liv.idCouCoursier = await coursierRepository.findOne()
         liv.idLimiteDat = await limiteDatRepository.findOne()
-        liv.idZonArrivee = await zoneRepository.findOne()
-        liv.idZonDepart = await zoneRepository.findOne()
+        liv.idLieArrivee = await lieuRepository.createQueryBuilder("lieu").where(`Random() > 0.5`).getOne()
+        liv.idLieDepart = await lieuRepository.createQueryBuilder("lieu").where(`Random() < 0.5`).getOne()
         liv.numRecepLiv = "0333333333"
         liv.sommeRecepLiv = 30000
-        liv.produits = await produitRepository.find()
+        liv.produits = await produitRepository.find({ where: { idPro: Between(11, 15) } })
         liv.idTypeCouTypeCoursier = await typeCoursierRepository.findOne(3)
         await livraisonRepository.save(liv)
 
@@ -217,56 +258,56 @@ import { Tarif } from './entities/Tarif';
 
         liv = new Livraison()
         liv.dateLiv = dem
-        liv.departLiv = "Androndra"
+
         liv.descriptionLiv = "Entana kely"
-        liv.destinationLiv = "Itaosy"
-        liv.expressLiv = true
+
+        liv.expressLiv = false
         liv.idCliClient = await clientRepository.findOne()
         liv.idCouCoursier = await coursierRepository.findOne()
         liv.idEtaEtats = await etatRepository.findOne({ where: { ordreEta: 2 } })
         liv.idLimiteDat = await limiteDatRepository.findOne()
-        liv.idZonArrivee = await zoneRepository.findOne()
-        liv.idZonDepart = await zoneRepository.findOne()
+        liv.idLieArrivee = await lieuRepository.createQueryBuilder("lieu").where(`Random() > 0.5`).getOne()
+        liv.idLieDepart = await lieuRepository.createQueryBuilder("lieu").where(`Random() < 0.5`).getOne()
         liv.numRecepLiv = "0333333333"
         liv.sommeRecepLiv = 30000
-        liv.produits = await produitRepository.find()
+        liv.produits = await produitRepository.find({ where: { idPro: Between(16, 20) } })
         liv.idTypeCouTypeCoursier = await typeCoursierRepository.findOne(1)
         await livraisonRepository.save(liv)
 
         liv = new Livraison()
         liv.dateLiv = dem
-        liv.departLiv = "Androndra"
+
         liv.descriptionLiv = "Entana kely"
-        liv.destinationLiv = "Itaosy"
+
         liv.expressLiv = true
         liv.idCliClient = await clientRepository.findOne()
         liv.idCouCoursier = await coursierRepository.findOne()
         liv.idEtaEtats = await etatRepository.findOne({ where: { ordreEta: 1 } })
         liv.idLimiteDat = await limiteDatRepository.findOne()
-        liv.idZonArrivee = await zoneRepository.findOne()
-        liv.idZonDepart = await zoneRepository.findOne()
+        liv.idLieArrivee = await lieuRepository.createQueryBuilder("lieu").where(`Random() > 0.5`).getOne()
+        liv.idLieDepart = await lieuRepository.createQueryBuilder("lieu").where(`Random() < 0.5`).getOne()
         liv.numRecepLiv = "0333333333"
         liv.sommeRecepLiv = 30000
-        liv.produits = await produitRepository.find()
+        liv.produits = await produitRepository.find({ where: { idPro: Between(21, 25) } })
         liv.idTypeCouTypeCoursier = await typeCoursierRepository.findOne(2)
         await livraisonRepository.save(liv)
 
         liv = new Livraison()
         liv.dateLiv = dem
-        liv.departLiv = "Androndra"
+
         liv.descriptionLiv = "Entana kely"
-        liv.destinationLiv = "Itaosy"
-        liv.expressLiv = true
+
+        liv.expressLiv = false
         liv.idCliClient = await clientRepository.findOne()
         liv.idCouCoursier = await coursierRepository.findOne()
         liv.idLimiteDat = await limiteDatRepository.findOne()
-        liv.idZonArrivee = await zoneRepository.findOne()
-        liv.idZonDepart = await zoneRepository.findOne()
+        liv.idLieArrivee = await lieuRepository.createQueryBuilder("lieu").where(`Random() > 0.5`).getOne()
+        liv.idLieDepart = await lieuRepository.createQueryBuilder("lieu").where(`Random() < 0.5`).getOne()
         liv.numRecepLiv = "0333333333"
         liv.sommeRecepLiv = 30000
-        liv.produits = await produitRepository.find()
+        liv.produits = await produitRepository.find({ where: { idPro: Between(26, 30) } })
         liv.idTypeCouTypeCoursier = await typeCoursierRepository.findOne(3)
         await livraisonRepository.save(liv)
     }
-})()
+})().catch(error => console.log(error))
 

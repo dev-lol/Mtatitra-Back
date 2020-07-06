@@ -15,9 +15,6 @@ export class ClientformService {
     ) {
     }
 
-    getTarif(idTypeCoursier, idZonZone) {
-        return this.http.get(`${this.endpoint}/tarif/typecoursier/${idTypeCoursier}/zone/${idZonZone}`).pipe(catchError(this.handleError))
-    }
 
     handleError(error: HttpErrorResponse) {
         let msg = '';

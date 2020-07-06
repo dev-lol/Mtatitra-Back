@@ -1,10 +1,11 @@
-import { Router, Response, Request, NextFunction, ErrorRequestHandler } from "express";
+import { Router, Response, Request, NextFunction } from "express";
 import { Controller } from "../../Controller"
 import { Tarif } from "../../../entities/Tarif"
 import { getRepository } from "typeorm";
-import { ormconfig } from "../../../config";
 import { TypeCoursier } from '../../../entities/TypeCoursier';
 import { Zone } from "../../../entities/Zone";
+import ErrorValidator from "../../ErrorValidator";
+import { body, param } from 'express-validator';
 export default class TarifController extends Controller {
     constructor() {
         super()
@@ -33,7 +34,8 @@ export default class TarifController extends Controller {
 
         return await getRepository(Tarif).createQueryBuilder("tarif")
             .leftJoinAndSelect("tarif.idTypeCouTypeCoursier", "typeCoursier")
-            .leftJoinAndSelect("tarif.idZonZone", "zone")
+            .leftJoinAndSelect("tarif.idZonDepart", "zoneDepart")
+            .leftJoinAndSelect("tarif.idZonArrivee", "zoneArrivee")
             .orderBy(`"typeCoursier"."type_cou"`)
             .getMany()
     }
@@ -42,22 +44,37 @@ export default class TarifController extends Controller {
     }
 
     async postTarif(router: Router) {
-        router.post("/", async (req: Request, res: Response, next: NextFunction) => {
-            try {
-                let tarifToSave: Tarif = await getRepository(Tarif).create(req.body as Object)
-                tarifToSave.idTypeCouTypeCoursier = await getRepository(TypeCoursier).findOneOrFail(req.body.idTypeCouTypeCoursier)
-                tarifToSave.idZonZone = await getRepository(Zone).findOneOrFail(req.body.idZonZone)
-                await this.saveTarifToDatabase(tarifToSave)
+        router.post("/", [
+            body(['idZonDepart', 'idZonArrivee', 'idTypeCouTypeCoursier', 'tarifTar',]).notEmpty().withMessage("value invalid"),
+            body(['idZonDepart', 'idZonArrivee']).custom(value => {
+                return getRepository(Zone).findOneOrFail(value)
+            }).withMessage("not found"),
+            body(['idTypeCouTypeCoursier']).custom(value => {
+                return getRepository(TypeCoursier).findOneOrFail(value)
+            }).withMessage("not found"),
+            body('tarifTar').isNumeric().custom(value => {
+                if (value < 0) {
+                    return Promise.reject("value invalid")
+                }
+            })
+        ], ErrorValidator,
+            async (req: Request, res: Response, next: NextFunction) => {
+                try {
+                    let tarifToSave: Tarif = await getRepository(Tarif).create(req.body as Object)
+                    tarifToSave.idTypeCouTypeCoursier = await getRepository(TypeCoursier).findOneOrFail(req.body.idTypeCouTypeCoursier)
+                    tarifToSave.idZonDepart = await getRepository(Zone).findOneOrFail(req.body.idZonDepart)
+                    tarifToSave.idZonArrivee = await getRepository(Zone).findOneOrFail(req.body.idZonArrivee)
+                    await this.saveTarifToDatabase(tarifToSave)
 
-                this.sendResponse(res, 201, { message: "OK" })
-            } catch (error) {
-                if (error.code == 23505)
-                    this.sendResponse(res, 400, { message: "Tarif doit etre unique" })
-                else
-                    this.sendResponse(res, 404, { message: "Not found" })
-            }
+                    this.sendResponse(res, 201, { message: "OK" })
+                } catch (error) {
+                    if (error.code == 23505)
+                        this.sendResponse(res, 400, { message: "Tarif doit etre unique" })
+                    else
+                        this.sendResponse(res, 404, { message: "Not found" })
+                }
 
-        })
+            })
     }
 
     private async saveTarifToDatabase(tarif: Tarif): Promise<Tarif> {
@@ -69,22 +86,38 @@ export default class TarifController extends Controller {
 
 
     async addPut(router: Router): Promise<void> {
-        router.put("/:idTarif", async (req: Request, res: Response, next: NextFunction) => {
-            try {
-                let tarif: Tarif = await getRepository(Tarif).findOneOrFail(Number(req.params.idTarif))
-                tarif = getRepository(Tarif).merge(tarif, req.body as Object)
-                tarif.idTypeCouTypeCoursier = await getRepository(TypeCoursier).findOneOrFail(req.body.idTypeCouTypeCoursier)
-                tarif.idZonZone = await getRepository(Zone).findOneOrFail(req.body.idZonZone)
-                await getRepository(Tarif).save(tarif)
-                this.sendResponse(res, 200, { message: "Tarif changed" })
-            } catch (error) {
-                if (error.code == 23505)
-                    this.sendResponse(res, 400, { message: "Tarif doit etre unique" })
-                else
-                    this.sendResponse(res, 404, { message: "Tarif not found" })
-            }
+        router.put("/:idTarif", [
+            param('idTarif').notEmpty().isNumeric().withMessage("invalid ID"),
+            body(['idZonDepart', 'idZonArrivee', 'idTypeCouTypeCoursier', 'tarifTar',]).notEmpty().withMessage("value invalid"),
+            body(['idZonDepart', 'idZonArrivee']).custom(value => {
+                return getRepository(Zone).findOneOrFail(value)
+            }).withMessage("not found"),
+            body(['idTypeCouTypeCoursier']).custom(value => {
+                return getRepository(TypeCoursier).findOneOrFail(value)
+            }).withMessage("not found"),
+            body('tarifTar').isNumeric().custom(value => {
+                if (value < 0) {
+                    return Promise.reject("value invalid")
+                }
+            })
+        ], ErrorValidator,
+            async (req: Request, res: Response, next: NextFunction) => {
+                try {
+                    let tarif: Tarif = await getRepository(Tarif).findOneOrFail(Number(req.params.idTarif))
+                    tarif = getRepository(Tarif).merge(tarif, req.body as Object)
+                    tarif.idTypeCouTypeCoursier = await getRepository(TypeCoursier).findOneOrFail(req.body.idTypeCouTypeCoursier)
+                    tarif.idZonDepart = await getRepository(Zone).findOneOrFail(req.body.idZonDepart)
+                    tarif.idZonArrivee = await getRepository(Zone).findOneOrFail(req.body.idZonArrivee)
+                    await getRepository(Tarif).save(tarif)
+                    this.sendResponse(res, 200, { message: "Tarif changed" })
+                } catch (error) {
+                    if (error.code == 23505)
+                        this.sendResponse(res, 400, { message: "Tarif doit etre unique" })
+                    else
+                        this.sendResponse(res, 404, { message: "Tarif not found" })
+                }
 
-        })
+            })
     }
 
     async addDelete(router: Router): Promise<void> {

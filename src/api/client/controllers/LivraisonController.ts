@@ -15,6 +15,7 @@ import { TypeCoursier } from "../../../entities/TypeCoursier";
 import { Etats } from '../../../entities/Etats';
 import ErrorValidator from "../../ErrorValidator";
 import { body } from 'express-validator';
+import { Lieu } from "../../../entities/Lieu";
 export default class LivraisonController extends Controller {
     constructor() {
         super()
@@ -35,7 +36,8 @@ export default class LivraisonController extends Controller {
                     .leftJoinAndSelect("livraison.idEtaEtats", "etats")
                     .leftJoinAndSelect("livraison.idLimiteDat", "limiteDate")
                     .leftJoinAndSelect("livraison.idTypeCouTypeCoursier", "typeCoursier")
-                    .leftJoinAndSelect("livraison.idZonArrivee", "zoneArrivee")
+                    .leftJoinAndSelect("livraison.idLieArrivee", "lieArrivee")
+                    .leftJoinAndSelect("livraison.idLieDepart", "lieDepart")
                     .select()
                     .where("livraison.dateLiv > CURRENT_DATE")
                     .andWhere("livraison.idCliClient = :idCli", { idCli: res.locals.id })
@@ -50,7 +52,8 @@ export default class LivraisonController extends Controller {
                     .leftJoinAndSelect("livraison.idEtaEtats", "etats")
                     .leftJoinAndSelect("livraison.idLimiteDat", "limiteDate")
                     .leftJoinAndSelect("livraison.idTypeCouTypeCoursier", "typeCoursier")
-                    .leftJoinAndSelect("livraison.idZonArrivee", "zoneArrivee")
+                    .leftJoinAndSelect("livraison.idLieArrivee", "lieArrivee")
+                    .leftJoinAndSelect("livraison.idLieDepart", "lieDepart")
                     .select()
                     .where("livraison.idEtaEtats is not null")
                     .andWhere("livraison.idEtaEtats <> :id", { id: last.idEta })
@@ -63,7 +66,8 @@ export default class LivraisonController extends Controller {
                     .leftJoinAndSelect("livraison.idEtaEtats", "etats")
                     .leftJoinAndSelect("livraison.idLimiteDat", "limiteDate")
                     .leftJoinAndSelect("livraison.idTypeCouTypeCoursier", "typeCoursier")
-                    .leftJoinAndSelect("livraison.idZonArrivee", "zoneArrivee")
+                    .leftJoinAndSelect("livraison.idLieArrivee", "lieArrivee")
+                    .leftJoinAndSelect("livraison.idLieDepart", "lieDepart")
                     .select()
                     .where("livraison.dateLiv < CURRENT_DATE")
                     .orWhere("livraison.idEtaEtats = :id", { id: last.idEta })
@@ -96,9 +100,9 @@ export default class LivraisonController extends Controller {
                 .withMessage('non numeric'),
             body('produits.*.fragilePro').isBoolean().withMessage("non boolean"),
             body('livraison').isJSON().notEmpty().withMessage("pas de details"),
-            body(['livraison.zoneLiv', 'livraison.idLimiteDat',
+            body(['livraison.idLieArrivee', 'livraison.idLieDepart', 'livraison.idLimiteDat',
                 'livraison.typeCoursier']).isInt().withMessage("donne invalide"),
-            body(['livraison.departLiv', 'livraison.destinationLiv', 'livraison.numRecepLiv', 'livraison.dateLiv', 'livraison.zoneLiv', 'livraison.idLimiteDat',
+            body(['livraison.departLiv', 'livraison.destinationLiv', 'livraison.numRecepLiv', 'livraison.dateLiv', 'livraison.idLieArrivee', 'livraison.idLieDepart', 'livraison.idLimiteDat',
                 'livraison.typeCoursier']).notEmpty().withMessage("donne incomplete")
         ], ErrorValidator,
             async (req: Request, res: Response, next: NextFunction) => {
@@ -112,7 +116,8 @@ export default class LivraisonController extends Controller {
                     }
                     const livraison: Livraison = getRepository(Livraison).create(req.body.livraison as object)
                     livraison.produits = produits;
-                    livraison.idZonArrivee = { ... new Zone(), idZon: req.body.livraison.zoneLiv }
+                    livraison.idLieArrivee = { ... new Lieu(), idLie: req.body.livraison.idLieArrivee }
+                    livraison.idLieDepart = { ... new Lieu(), idLie: req.body.livraison.idLieDepart }
                     livraison.idCliClient = { ... new Client(), idCli: res.locals.id }
                     livraison.idLimiteDat = { ... new DateLimite(), idLimiteDat: req.body.livraison.idLimiteDat }
                     livraison.expressLiv = new Date(req.body.dateLiv).toDateString() == new Date().toDateString()

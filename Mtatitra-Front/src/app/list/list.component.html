@@ -1,205 +1,207 @@
 <div class="container mt-4">
-    <mat-tab-group [(selectedIndex)]="this.selectedIndex" (selectedTabChange)="onTabChange($event)" mat-align-tabs="center">
-        <mat-tab label="LIVRAISON PLANIFIE">
-            <div class="content d.flex justify-content-center">
-                <div class="example-header text-right">
-                    <mat-form-field class="w-25">
-                        <input matInput [(ngModel)]="this.sortValue" (keyup)="applyFilter()" placeholder="Rechercher">
-                        <mat-icon matSuffix>
-                            search
-                        </mat-icon>
-                    </mat-form-field>
-                </div>
-                <div class="example-container">
-                    <mat-table #table [dataSource]="dataSourcePlanifie" matSort>
-                        <!-- ID Column -->
-                        <ng-container matColumnDef="idLiv">
-                            <mat-header-cell *matHeaderCellDef mat-sort-header> ID </mat-header-cell>
-                            <mat-cell *matCellDef="let element"> {{element.idLiv}} </mat-cell>
-                        </ng-container>
-                        <!-- Progress Column -->
-                        <ng-container matColumnDef="departLiv">
-                            <mat-header-cell *matHeaderCellDef mat-sort-header> Depart </mat-header-cell>
-                            <mat-cell *matCellDef="let element"> {{element.departLiv}} </mat-cell>
-                        </ng-container>
-                        <!-- Name Column -->
-                        <ng-container matColumnDef="destinationLiv">
-                            <mat-header-cell *matHeaderCellDef mat-sort-header> Destination </mat-header-cell>
-                            <mat-cell *matCellDef="let element">{{element.destinationLiv}}</mat-cell>
-                        </ng-container>
-                        <!-- Color Column -->
-                        <ng-container matColumnDef="dateLiv">
-                            <mat-header-cell *matHeaderCellDef mat-sort-header> Date </mat-header-cell>
-                            <mat-cell *matCellDef="let element">{{element.dateLiv}}</mat-cell>
-                        </ng-container>
-                        <ng-container matColumnDef="expressLiv">
-                            <mat-header-cell *matHeaderCellDef mat-sort-header> Express </mat-header-cell>
-                            <mat-cell *matCellDef="let element">{{element.expressLiv? "Oui":"Non"}}</mat-cell>
-                        </ng-container>
-                        <!-- Name Column -->
-                        <ng-container matColumnDef="etats">
-                            <mat-header-cell *matHeaderCellDef mat-sort-header> Etats </mat-header-cell>
-                            <mat-cell *matCellDef="let element"> En attente </mat-cell>
-                        </ng-container>
-                        <!-- Color Column -->
-                        <ng-container matColumnDef="produits">
-                            <mat-header-cell *matHeaderCellDef mat-sort-header> Produits </mat-header-cell>
-                            <mat-cell *matCellDef="let element">
-                                <button mat-icon-button (click)="openModalProduits(element.produits)">
+  <mat-tab-group [(selectedIndex)]="this.selectedIndex" (selectedTabChange)="onTabChange($event)"
+    mat-align-tabs="center">
+    <mat-tab label="LIVRAISON PLANIFIE">
+      <div class="content d.flex justify-content-center">
+        <div class="example-header text-right">
+          <mat-form-field class="w-25">
+            <input matInput [(ngModel)]="this.sortValue" (keyup)="applyFilter()" placeholder="Rechercher">
+            <mat-icon matSuffix>
+              search
+            </mat-icon>
+          </mat-form-field>
+        </div>
+        <div class="example-container">
+          <mat-table #tablePlanifie="matSort" [dataSource]="dataSourcePlanifie" matSort>
+            <!-- ID Column -->
+            <ng-container matColumnDef="idLiv">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> ID </mat-header-cell>
+              <mat-cell *matCellDef="let element"> {{element.idLiv}} </mat-cell>
+            </ng-container>
+            <!-- Progress Column -->
+            <ng-container matColumnDef="departLiv">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> Depart </mat-header-cell>
+              <mat-cell *matCellDef="let element"> {{element.idLieDepart.nomLie}} </mat-cell>
+            </ng-container>
+            <!-- Name Column -->
+            <ng-container matColumnDef="destinationLiv">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> Destination </mat-header-cell>
+              <mat-cell *matCellDef="let element">{{element.idLieArrivee.nomLie}}</mat-cell>
+            </ng-container>
+            <!-- Color Column -->
+            <ng-container matColumnDef="dateLiv">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> Date </mat-header-cell>
+              <mat-cell *matCellDef="let element">{{element.dateLiv}}</mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="expressLiv">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> Express </mat-header-cell>
+              <mat-cell *matCellDef="let element">{{element.expressLiv? "Oui":"Non"}}</mat-cell>
+            </ng-container>
+            <!-- Name Column -->
+            <ng-container matColumnDef="etats">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> Etats </mat-header-cell>
+              <mat-cell *matCellDef="let element"> En attente </mat-cell>
+            </ng-container>
+            <!-- Color Column -->
+            <ng-container matColumnDef="produits">
+              <mat-header-cell *matHeaderCellDef> Produits </mat-header-cell>
+              <mat-cell *matCellDef="let element">
+                <button mat-icon-button (click)="openModalProduits(element.produits)">
                   <mat-icon>format_list_numbered</mat-icon>
                 </button>
-                            </mat-cell>
-                        </ng-container>
-                        <!-- Color Column -->
-                        <ng-container matColumnDef="details">
-                            <mat-header-cell *matHeaderCellDef mat-sort-header> Details </mat-header-cell>
-                            <mat-cell *matCellDef="let element">
-                                <button mat-icon-button (click)='openModalDetails(element)'>
+              </mat-cell>
+            </ng-container>
+            <!-- Color Column -->
+            <ng-container matColumnDef="details">
+              <mat-header-cell *matHeaderCellDef> Details </mat-header-cell>
+              <mat-cell *matCellDef="let element">
+                <button mat-icon-button (click)='openModalDetails(element)'>
                   <mat-icon>visibility</mat-icon>
                 </button>
-                            </mat-cell>
-                        </ng-container>
-                        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-                        <mat-row *matRowDef="let row; columns: displayedColumns;">
-                        </mat-row>
-                    </mat-table>
-                    <mat-paginator #planifie [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
-                </div>
-            </div>
-        </mat-tab>
-        <mat-tab label="LIVRAISON EN COURS">
-            <div class="content d.flex justify-content-center">
-                <div class="example-header text-right">
-                    <mat-form-field class="w-25">
-                        <input matInput [(ngModel)]="this.sortValue" (keyup)="applyFilter()" placeholder="Rechercher">
-                        <mat-icon matSuffix>
-                            search
-                        </mat-icon>
-                    </mat-form-field>
-                </div>
-                <div class="example-container">
-                    <mat-table #table [dataSource]="dataSourceEnCours" matSort>
-                        <!-- ID Column -->
-                        <ng-container matColumnDef="idLiv">
-                            <mat-header-cell *matHeaderCellDef mat-sort-header> ID </mat-header-cell>
-                            <mat-cell *matCellDef="let element"> {{element.idLiv}} </mat-cell>
-                        </ng-container>
-                        <!-- Progress Column -->
-                        <ng-container matColumnDef="departLiv">
-                            <mat-header-cell *matHeaderCellDef mat-sort-header> Depart </mat-header-cell>
-                            <mat-cell *matCellDef="let element"> {{element.departLiv}} </mat-cell>
-                        </ng-container>
-                        <!-- Name Column -->
-                        <ng-container matColumnDef="destinationLiv">
-                            <mat-header-cell *matHeaderCellDef mat-sort-header> Destination </mat-header-cell>
-                            <mat-cell *matCellDef="let element">{{element.destinationLiv}}</mat-cell>
-                        </ng-container>
-                        <ng-container matColumnDef="dateLiv">
-                            <mat-header-cell *matHeaderCellDef mat-sort-header> Date </mat-header-cell>
-                            <mat-cell *matCellDef="let element">{{element.dateLiv}}</mat-cell>
-                        </ng-container>
-                        <!-- Color Column -->
-                        <ng-container matColumnDef="expressLiv">
-                            <mat-header-cell *matHeaderCellDef mat-sort-header> Express </mat-header-cell>
-                            <mat-cell *matCellDef="let element">{{element.expressLiv? "Oui":"Non"}}</mat-cell>
-                        </ng-container>
-                        <!-- Name Column -->
-                        <ng-container matColumnDef="etats">
-                            <mat-header-cell *matHeaderCellDef mat-sort-header> Etats </mat-header-cell>
-                            <mat-cell *matCellDef="let element">{{element.idEtaEtats? element.idEtaEtats.etatEta: "En attente"}}</mat-cell>
-                        </ng-container>
-                        <ng-container matColumnDef="produits">
-                            <mat-header-cell *matHeaderCellDef mat-sort-header> Produits </mat-header-cell>
-                            <mat-cell *matCellDef="let element">
-                                <button mat-icon-button (click)="openModalProduits(element.produits)">
+              </mat-cell>
+            </ng-container>
+            <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: displayedColumns;">
+            </mat-row>
+          </mat-table>
+          <mat-paginator #planifie [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+        </div>
+      </div>
+    </mat-tab>
+    <mat-tab label="LIVRAISON EN COURS">
+      <div class="content d.flex justify-content-center">
+        <div class="example-header text-right">
+          <mat-form-field class="w-25">
+            <input matInput [(ngModel)]="this.sortValue" (keyup)="applyFilter()" placeholder="Rechercher">
+            <mat-icon matSuffix>
+              search
+            </mat-icon>
+          </mat-form-field>
+        </div>
+        <div class="example-container">
+          <mat-table #tableEnCours="matSort" [dataSource]="dataSourceEnCours" matSort>
+            <!-- ID Column -->
+            <ng-container matColumnDef="idLiv">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> ID </mat-header-cell>
+              <mat-cell *matCellDef="let element"> {{element.idLiv}} </mat-cell>
+            </ng-container>
+            <!-- Progress Column -->
+            <ng-container matColumnDef="departLiv">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> Depart </mat-header-cell>
+              <mat-cell *matCellDef="let element"> {{element.idLieDepart.nomLie}} </mat-cell>
+            </ng-container>
+            <!-- Name Column -->
+            <ng-container matColumnDef="destinationLiv">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> Destination </mat-header-cell>
+              <mat-cell *matCellDef="let element">{{element.idLieArrivee.nomLie}}</mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="dateLiv">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> Date </mat-header-cell>
+              <mat-cell *matCellDef="let element">{{element.dateLiv}}</mat-cell>
+            </ng-container>
+            <!-- Color Column -->
+            <ng-container matColumnDef="expressLiv">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> Express </mat-header-cell>
+              <mat-cell *matCellDef="let element">{{element.expressLiv? "Oui":"Non"}}</mat-cell>
+            </ng-container>
+            <!-- Name Column -->
+            <ng-container matColumnDef="etats">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> Etats </mat-header-cell>
+              <mat-cell *matCellDef="let element">{{element.idEtaEtats? element.idEtaEtats.etatEta: "En attente"}}
+              </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="produits">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> Produits </mat-header-cell>
+              <mat-cell *matCellDef="let element">
+                <button mat-icon-button (click)="openModalProduits(element.produits)">
                   <mat-icon>format_list_numbered</mat-icon>
                 </button>
-                            </mat-cell>
-                        </ng-container>
-                        <!-- Color Column -->
-                        <ng-container matColumnDef="details">
-                            <mat-header-cell *matHeaderCellDef mat-sort-header> Details </mat-header-cell>
-                            <mat-cell *matCellDef="let element">
-                                <button mat-icon-button (click)='openModalDetails(element)'>
+              </mat-cell>
+            </ng-container>
+            <!-- Color Column -->
+            <ng-container matColumnDef="details">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> Details </mat-header-cell>
+              <mat-cell *matCellDef="let element">
+                <button mat-icon-button (click)='openModalDetails(element)'>
                   <mat-icon>visibility</mat-icon>
                 </button>
-                            </mat-cell>
-                        </ng-container>
-                        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-                        <mat-row *matRowDef="let row; columns: displayedColumns;">
-                        </mat-row>
-                    </mat-table>
-                    <mat-paginator #enCours [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
-                </div>
-            </div>
-        </mat-tab>
-        <mat-tab label="HISTORIQUE">
-            <div class="content d.flex justify-content-center">
-                <div class="example-header text-right">
-                    <mat-form-field class="w-25">
-                        <input matInput [(ngModel)]="this.sortValue" (keyup)="applyFilter()" placeholder="Rechercher">
-                        <mat-icon matSuffix>
-                            search
-                        </mat-icon>
-                    </mat-form-field>
-                </div>
-                <div class="example-container">
-                    <mat-table #table [dataSource]="dataSourceHistorique" matSort>
-                        <!-- ID Column -->
-                        <ng-container matColumnDef="idLiv">
-                            <mat-header-cell *matHeaderCellDef mat-sort-header> ID </mat-header-cell>
-                            <mat-cell *matCellDef="let element"> {{element.idLiv}} </mat-cell>
-                        </ng-container>
-                        <!-- Progress Column -->
-                        <ng-container matColumnDef="departLiv">
-                            <mat-header-cell *matHeaderCellDef mat-sort-header> Depart </mat-header-cell>
-                            <mat-cell *matCellDef="let element"> {{element.departLiv}} </mat-cell>
-                        </ng-container>
-                        <!-- Name Column -->
-                        <ng-container matColumnDef="destinationLiv">
-                            <mat-header-cell *matHeaderCellDef mat-sort-header> Destination </mat-header-cell>
-                            <mat-cell *matCellDef="let element">{{element.destinationLiv}}</mat-cell>
-                        </ng-container>
-                        <!-- Color Column -->
-                        <ng-container matColumnDef="dateLiv">
-                            <mat-header-cell *matHeaderCellDef mat-sort-header> Date </mat-header-cell>
-                            <mat-cell *matCellDef="let element">{{element.dateLiv}}</mat-cell>
-                        </ng-container>
-                        <ng-container matColumnDef="expressLiv">
-                            <mat-header-cell *matHeaderCellDef mat-sort-header> Express </mat-header-cell>
-                            <mat-cell *matCellDef="let element">{{element.expressLiv? "Oui":"Non"}}</mat-cell>
-                        </ng-container>
-                        <!-- Name Column -->
-                        <ng-container matColumnDef="etats">
-                            <mat-header-cell *matHeaderCellDef mat-sort-header> Etats </mat-header-cell>
-                            <mat-cell *matCellDef="let element">Terminé</mat-cell>
-                        </ng-container>
-                        <!-- Color Column -->
-                        <ng-container matColumnDef="produits">
-                            <mat-header-cell *matHeaderCellDef mat-sort-header> Produits </mat-header-cell>
-                            <mat-cell *matCellDef="let element">
-                                <button mat-icon-button (click)="openModalProduits(element.produits)">
+              </mat-cell>
+            </ng-container>
+            <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: displayedColumns;">
+            </mat-row>
+          </mat-table>
+          <mat-paginator #enCours [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+        </div>
+      </div>
+    </mat-tab>
+    <mat-tab label="HISTORIQUE">
+      <div class="content d.flex justify-content-center">
+        <div class="example-header text-right">
+          <mat-form-field class="w-25">
+            <input matInput [(ngModel)]="this.sortValue" (keyup)="applyFilter()" placeholder="Rechercher">
+            <mat-icon matSuffix>
+              search
+            </mat-icon>
+          </mat-form-field>
+        </div>
+        <div class="example-container">
+          <mat-table #tableHistorique="matSort" [dataSource]="dataSourceHistorique" matSort>
+            <!-- ID Column -->
+            <ng-container matColumnDef="idLiv">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> ID </mat-header-cell>
+              <mat-cell *matCellDef="let element"> {{element.idLiv}} </mat-cell>
+            </ng-container>
+            <!-- Progress Column -->
+            <ng-container matColumnDef="departLiv">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> Depart </mat-header-cell>
+              <mat-cell *matCellDef="let element"> {{element.idLieDepart.nomLie}} </mat-cell>
+            </ng-container>
+            <!-- Name Column -->
+            <ng-container matColumnDef="destinationLiv">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> Destination </mat-header-cell>
+              <mat-cell *matCellDef="let element">{{element.idLieArrivee.nomLie}}</mat-cell>
+            </ng-container>
+            <!-- Color Column -->
+            <ng-container matColumnDef="dateLiv">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> Date </mat-header-cell>
+              <mat-cell *matCellDef="let element">{{element.dateLiv}}</mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="expressLiv">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> Express </mat-header-cell>
+              <mat-cell *matCellDef="let element">{{element.expressLiv? "Oui":"Non"}}</mat-cell>
+            </ng-container>
+            <!-- Name Column -->
+            <ng-container matColumnDef="etats">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> Etats </mat-header-cell>
+              <mat-cell *matCellDef="let element">Terminé</mat-cell>
+            </ng-container>
+            <!-- Color Column -->
+            <ng-container matColumnDef="produits">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> Produits </mat-header-cell>
+              <mat-cell *matCellDef="let element">
+                <button mat-icon-button (click)="openModalProduits(element.produits)">
                   <mat-icon>format_list_numbered</mat-icon>
                 </button>
-                            </mat-cell>
-                        </ng-container>
-                        <!-- Color Column -->
-                        <ng-container matColumnDef="details">
-                            <mat-header-cell *matHeaderCellDef mat-sort-header> Details </mat-header-cell>
-                            <mat-cell *matCellDef="let element;">
-                                <button mat-icon-button (click)='openModalDetails(element)'>
+              </mat-cell>
+            </ng-container>
+            <!-- Color Column -->
+            <ng-container matColumnDef="details">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> Details </mat-header-cell>
+              <mat-cell *matCellDef="let element;">
+                <button mat-icon-button (click)='openModalDetails(element)'>
                   <mat-icon>visibility</mat-icon>
                 </button>
-                            </mat-cell>
-                        </ng-container>
-                        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-                        <mat-row *matRowDef="let row; columns: displayedColumns;">
-                        </mat-row>
-                    </mat-table>
-                    <mat-paginator #historique [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
-                </div>
-            </div>
-        </mat-tab>
-    </mat-tab-group>
+              </mat-cell>
+            </ng-container>
+            <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: displayedColumns;">
+            </mat-row>
+          </mat-table>
+          <mat-paginator #historique [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+        </div>
+      </div>
+    </mat-tab>
+  </mat-tab-group>
 
 </div>
