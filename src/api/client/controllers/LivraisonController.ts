@@ -102,7 +102,7 @@ export default class LivraisonController extends Controller {
             body('livraison').isJSON().notEmpty().withMessage("pas de details"),
             body(['livraison.idLieArrivee', 'livraison.idLieDepart', 'livraison.idLimiteDat',
                 'livraison.typeCoursier']).isInt().withMessage("donne invalide"),
-            body(['livraison.departLiv', 'livraison.destinationLiv', 'livraison.numRecepLiv', 'livraison.dateLiv', 'livraison.idLieArrivee', 'livraison.idLieDepart', 'livraison.idLimiteDat',
+            body(['livraison.numRecepLiv', 'livraison.dateLiv', 'livraison.idLieArrivee', 'livraison.idLieDepart', 'livraison.idLimiteDat',
                 'livraison.typeCoursier']).notEmpty().withMessage("donne incomplete")
         ], ErrorValidator,
             async (req: Request, res: Response, next: NextFunction) => {
