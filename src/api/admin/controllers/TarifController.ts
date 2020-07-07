@@ -156,9 +156,20 @@ export default class TarifController extends Controller {
     async addDelete(router: Router): Promise<void> {
         router.delete("/:idTarif", async (req: Request, res: Response, next: NextFunction) => {
             try {
-                let tarif: Tarif = await getRepository(Tarif).findOneOrFail(Number(req.params.idTarif))
-                await getRepository(Tarif).remove(tarif)
-                this.sendResponse(res, 203, { message: "Tarif deleted" })
+                let tarif: Tarif = await getRepository(Tarif).findOneOrFail(Number(req.params.idTarif), { relations: ["idZonDepart", "idZonArrivee", "idTypeCouTypeCoursier"] })
+                let result = await getRepository(Tarif)
+                    .createQueryBuilder("tarif")
+                    .delete()
+                    .where("idTar = :id", { id: req.params.idTarif })
+                    .orWhere("idZonArrivee = :idZon1", { idZon1: tarif.idZonDepart.idZon })
+                    .andWhere("idZonDepart = :idZon2", { idZon2: tarif.idZonArrivee.idZon })
+                    .andWhere("idTypeCouTypeCoursier = :idType", { idType: tarif.idTypeCouTypeCoursier.idTypeCou })
+                    .execute()
+                if (result.affected > 0)
+                    this.sendResponse(res, 203, { message: "Tarif deleted" })
+                else {
+                    throw "error"
+                }
             } catch (error) {
                 this.sendResponse(res, 404, { message: "Tarif not found" })
             }
