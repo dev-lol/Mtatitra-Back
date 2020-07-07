@@ -30,6 +30,18 @@
           <mat-header-cell *matHeaderCellDef>Telephone</mat-header-cell>
           <mat-cell *matCellDef="let element">{{element.numTelCou}}</mat-cell>
         </ng-container>
+        <ng-container matColumnDef="numTelUrgentCou">
+          <mat-header-cell *matHeaderCellDef>Téléphone d'urgence</mat-header-cell>
+          <mat-cell *matCellDef="let element">{{element.numTelUrgentCou}}</mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="adresseCou">
+          <mat-header-cell *matHeaderCellDef>Adresse</mat-header-cell>
+          <mat-cell *matCellDef="let element">{{element.adresseCou}}</mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="referenceVehiculeCou">
+          <mat-header-cell *matHeaderCellDef>Référence véhicule</mat-header-cell>
+          <mat-cell *matCellDef="let element">{{element.referenceVehiculeCou}}</mat-cell>
+        </ng-container>
         <ng-container matColumnDef="usernameCou">
           <mat-header-cell *matHeaderCellDef>Nom d'utilisateur</mat-header-cell>
           <mat-cell *matCellDef="let element">{{element.usernameCou}}</mat-cell>
@@ -104,6 +116,48 @@
               </div>
               <input type="text" placeholder="Telephone" class="form-control" aria-label="telephone"
                 aria-describedby="telephone" name="telephone" required formControlName="numTelCou" autocomplete="off">
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-10 offset-md-1 col-xs-12">
+            <div class="input-group mb-3">
+              <div class="input-group-prepend">
+                <span class="input-group-text" id="telephone">
+                  <fa-icon [icon]="faPhone"></fa-icon>
+                </span>
+              </div>
+              <input type="text" placeholder="Telephone d'urgence" class="form-control" aria-label="numTelUrgentCou"
+                aria-describedby="numTelUrgentCou" name="numTelUrgentCou" required formControlName="numTelUrgentCou"
+                autocomplete="off">
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-10 offset-md-1 col-xs-12">
+            <div class="input-group mb-3">
+              <div class="input-group-prepend">
+                <span class="input-group-text" id="telephone">
+                  <fa-icon [icon]="faPin"></fa-icon>
+                </span>
+              </div>
+              <input type="text" placeholder="Adresse" class="form-control" aria-label="adresseCou"
+                aria-describedby="adresseCou" name="adresseCou" required formControlName="adresseCou"
+                autocomplete="off">
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-10 offset-md-1 col-xs-12">
+            <div class="input-group mb-3">
+              <div class="input-group-prepend">
+                <span class="input-group-text" id="telephone">
+                  <fa-icon [icon]="faCar"></fa-icon>
+                </span>
+              </div>
+              <input type="text" placeholder="Référence véhicule" class="form-control" aria-label="referenceVehiculeCou"
+                aria-describedby="referenceVehiculeCou" name="referenceVehiculeCou" required
+                formControlName="referenceVehiculeCou" autocomplete="off">
             </div>
           </div>
         </div>

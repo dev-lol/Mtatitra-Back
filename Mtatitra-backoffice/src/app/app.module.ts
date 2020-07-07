@@ -51,6 +51,7 @@ import { TarifComponent } from './admin/tarif/tarif.component';
 import { DatelimitComponent } from './admin/datelimit/datelimit.component';
 import { DetailDateComponent } from './admin/datelimit/detail-date/detail-date.component';
 import { DetailTarifComponent } from './admin/tarif/detail-tarif/detail-tarif.component';
+import { DetailLieuComponent } from './admin/zone/detail-lieu/detail-lieu.component';
 
 @NgModule({
     entryComponents: [
@@ -59,7 +60,8 @@ import { DetailTarifComponent } from './admin/tarif/detail-tarif/detail-tarif.co
         DetailZoneComponent,
         DetailCoursierComponent,
         DetailDateComponent,
-        DetailTarifComponent
+        DetailTarifComponent,
+        DetailLieuComponent
     ],
     declarations: [
         AppComponent,
@@ -80,7 +82,8 @@ import { DetailTarifComponent } from './admin/tarif/detail-tarif/detail-tarif.co
         LoginAdminComponent,
         TarifComponent,
         DatelimitComponent,
-        DetailDateComponent
+        DetailDateComponent,
+        DetailLieuComponent
     ],
     imports: [
         BrowserModule,

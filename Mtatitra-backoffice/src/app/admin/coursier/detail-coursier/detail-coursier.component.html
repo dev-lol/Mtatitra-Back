@@ -49,11 +49,31 @@
         <br>
         <div class="row">
           <div class="col">
-            <label class="label">Type Coursier</label>
+            <label class="label">Telephone d'urgence</label>
+          </div>
+          <div class="col">
+            <input type="text" autocomplete="off" class="data form-control" formControlName="numTelUrgentCou" id="telUrg">
+          </div>
+        </div>
+        <br>
+        <div class="row">
+          <div class="col">
+            <label class="label">Référence véhicule</label>
+          </div>
+          <div class="col">
+            <input type="text" autocomplete="off" class="data form-control" formControlName="referenceVehiculeCou"
+              id="referenceVehiculeCou">
+          </div>
+        </div>
+        <br>
+        <div class="row">
+          <div class="col">
+            <label class="label">Type Vehicule</label>
           </div>
           <div class="col">
             <select class="form-control" formControlName="idTypeCou">
-              <option *ngFor="let type of data.typeCoursier; let index = index" [value]="type.idTypeCou">{{type.typeCou}}
+              <option *ngFor="let type of data.typeCoursier; let index = index" [value]="type.idTypeCou">
+                {{type.typeCou}}
               </option>
             </select>
           </div>

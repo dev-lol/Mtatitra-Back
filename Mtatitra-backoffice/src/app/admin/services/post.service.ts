@@ -2,6 +2,7 @@ import { GetService } from './get.service';
 import { Injectable } from '@angular/core';
 import { HttpHeaders, HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
+import { finalize, map } from 'rxjs/operators';
 
 @Injectable({
     providedIn: 'root'
@@ -15,14 +16,7 @@ export class PostService {
     addTarif(value: object) {
         // tslint:disable-next-line: object-literal-key-quotes
         const headers: any = new HttpHeaders({ 'Content-Type': 'application/json' });
-        this.http.post(`${this.endpoint}/tarifs`, value, headers).subscribe(
-            (data: any) => {
-                console.log(data);
-                // Get service
-                this.getSrv.getTarif();
-            }, (error) => {
-                console.log(error);
-            });
+        return this.http.post(`${this.endpoint}/tarifs`, value, headers)
     }
 
     addLimitDat(value: string) {
@@ -71,6 +65,12 @@ export class PostService {
         // tslint:disable-next-line: object-literal-key-quotes
         const headers: any = new HttpHeaders({ 'Content-Type': 'application/json' });
         return this.http.post(`${this.endpoint}/zone`, data, headers)
+    }
+
+    addLieu(data: string) {
+        // tslint:disable-next-line: object-literal-key-quotes
+        const headers: any = new HttpHeaders({ 'Content-Type': 'application/json' });
+        return this.http.post(`${this.endpoint}/lieu`, data, headers)
     }
 
     addCoursier(model: object) {

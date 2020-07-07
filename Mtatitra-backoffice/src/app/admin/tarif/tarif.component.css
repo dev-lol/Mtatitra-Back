@@ -31,3 +31,7 @@
 mat-form-field {
   width: 100%;
 }
+.mat-column-edit,
+.mat-column-suppr {
+  max-width: 50px;
+}

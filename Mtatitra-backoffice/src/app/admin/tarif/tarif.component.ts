@@ -6,6 +6,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { PostService } from './../../admin/services/post.service';
 import { Subscription } from 'rxjs';
 import { faPlusCircle, faEdit, faMinusCircle } from '@fortawesome/free-solid-svg-icons';
+import { FormGroup, FormBuilder, Validators, FormGroupDirective } from '@angular/forms';
 
 function open() {
     document.getElementById('btn_open').click();
@@ -18,7 +19,8 @@ function close() {
 interface Tarif {
     idTar: number;
     tarifTar: number;
-    idZonZone: any;
+    idZonDepart: any;
+    idZonArrivee: any;
     idTypeCouTypeCoursier: any;
 }
 
@@ -40,14 +42,15 @@ interface Zone {
     styleUrls: ['./tarif.component.css']
 })
 export class TarifComponent implements OnInit {
+
+    autreErreur = null
     img = '../../../assets/images/tarif.png';
 
     @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
     @ViewChild(MatSort, { static: false }) sort: MatSort;
-    tarifAdded = 0;
     tarifSub: Subscription;
 
-    columnTarif: string[] = ['idTar', 'tarifTar', 'nomZon', 'typeCou', 'edit', 'suppr'];
+    columnTarif: string[] = ['idTar', 'tarifTar', 'zoneA', 'zoneB', 'typeCou', 'edit', 'suppr'];
     tarifs: Tarif[] = [];
     zones: Zone[] = []
     coursiers: TypeCoursier[] = []
@@ -58,25 +61,39 @@ export class TarifComponent implements OnInit {
     faMinusCircle = faMinusCircle;
 
     currentTarif: Tarif = null;
-    currentIdZone = 0;
-    currentIdTypeCoursier = 0;
     zoneSub: Subscription;
     coursiersSub: Subscription;
 
+    formTarif: FormGroup
+
     constructor(private postSrv: PostService, private getSrv: GetService, public dialog: MatDialog,
-        public deleteSrv: DeleteService) { }
+        public deleteSrv: DeleteService, private fb: FormBuilder) { }
 
     ngOnInit() {
         this.initTarif();
+        this.formTarif = this.fb.group({
+            tarifTar: ['', Validators.required],
+            idZonDepart: ['', Validators.required],
+            idZonArrivee: ['', Validators.required],
+            idTypeCouTypeCoursier: ['', Validators.required],
+        })
     }
     ngAfterViewInit() {
         this.dataSource.paginator = this.paginator
         this.dataSource.sortingDataAccessor = (item, property) => {
             switch (property) {
-                case 'nomZon': return item.idZonZone.nomZon;
+                case 'zoneA': return item.idZonDepart.nomZon;
+                case 'zoneB': return item.idZonArrivee.nomZon;
                 case 'typeCou': return item.idTypeCouTypeCoursier.typeCou
                 default: return item[property];
             }
+        }
+        this.dataSource.filterPredicate = (data, filter) => {
+            return data.idTar.toString().trim().toLowerCase().includes(filter)
+                || data.tarifTar.toString().trim().toLowerCase().includes(filter)
+                || data.idZonArrivee.nomZon.toString().trim().toLowerCase().includes(filter)
+                || data.idZonDepart.nomZon.toString().trim().toLowerCase().includes(filter)
+                || data.idTypeCouTypeCoursier.typeCou.toString().trim().toLowerCase().includes(filter)
         }
         this.dataSource.sort = this.sort
     }
@@ -105,17 +122,24 @@ export class TarifComponent implements OnInit {
         this.getSrv.getAllTypeCoursier();
     }
 
-    addTarif() {
-        const data: any = {
-            tarifTar: this.tarifAdded,
-            idZonZone: this.currentIdZone,
-            idTypeCouTypeCoursier: this.currentIdTypeCoursier
-        };
-        console.log(data);
-        this.postSrv.addTarif(data);
-        this.tarifAdded = 0;
-        this.currentIdZone = 0;
-        this.currentIdTypeCoursier = 0;
+    addTarif(formDirective: FormGroupDirective) {
+        this.autreErreur = null
+        this.postSrv.addTarif(this.formTarif.value).subscribe((res) => {
+            this.getSrv.getTarif()
+            formDirective.resetForm()
+            this.formTarif.reset()
+        }, (error: any) => {
+            let isError = error.error.errors;
+            if (isError) {
+                for (const err of error.error.errors) {
+                    this.formTarif.get(err["param"]).setErrors({ serverError: err["msg"] })
+                }
+            } else {
+                if (error.error.message) {
+                    this.autreErreur = error.error.message
+                }
+            }
+        })
     }
 
     deleteTarif(tarif: Tarif) {
@@ -132,18 +156,19 @@ export class TarifComponent implements OnInit {
     editTarif(tarif: Tarif) {
         const id = tarif.idTar;
         const tar = tarif.tarifTar;
-        const zone = tarif.idZonZone;
+        const zoneB = tarif.idZonArrivee;
+        const zoneA = tarif.idZonDepart;
         const typeCoursier = tarif.idTypeCouTypeCoursier;
         const typeCoursiers = this.coursiers
         const zones = this.zones
-        const dialogRef = this.dialog.open(DetailTarifComponent, { data: { id, tar, zone, typeCoursier, zones, typeCoursiers } });
+        const dialogRef = this.dialog.open(DetailTarifComponent, { data: { id, tar, zoneA, zoneB, typeCoursier, zones, typeCoursiers } });
         dialogRef.afterClosed().subscribe(
             result => {
                 // this.getSrv.getAllTypeLivraison();
             }
         );
     }
-    filter(value) {
-        this.dataSource.filter = value.trim().toLowerCase();
+    filter(val) {
+        this.dataSource.filter = val.trim().toLowerCase();
     }
 }
