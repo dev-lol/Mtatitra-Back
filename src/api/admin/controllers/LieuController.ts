@@ -3,7 +3,7 @@ import { Controller } from "../../Controller"
 import { Lieu } from "../../../entities/Lieu"
 import { getRepository } from "typeorm";
 import ErrorValidator from "../../ErrorValidator";
-import { query, sanitizeQuery, check, body } from "express-validator";
+import { query, sanitizeQuery, check, body, param } from "express-validator";
 import { Zone } from "../../../entities/Zone";
 
 export default class LieuController extends Controller {
@@ -38,13 +38,14 @@ export default class LieuController extends Controller {
     async postLieu(router: Router) {
         router.post("/", [
             body(['idZonZone', 'nomLie']).notEmpty(),
-            body('idZonZone').customSanitizer(async value => await getRepository(Zone).findOneOrFail(value))
+            body('idZonZone').toInt().isNumeric()
         ],
             ErrorValidator,
             async (req: Request, res: Response, next: NextFunction) => {
                 try {
 
                     let lieuToSave: Lieu = await this.createLieuFromRequest(req)
+                    lieuToSave.idZonZone = await getRepository(Zone).findOneOrFail(req.body.idZonZone)
                     let lieuSaved: Lieu = await this.saveLieuToDatabase(lieuToSave)
                     this.sendResponse(res, 200, { message: "OK" })
                 } catch (error) {
@@ -74,13 +75,14 @@ export default class LieuController extends Controller {
 
     async addPut(router: Router): Promise<void> {
         router.put("/:idLieu", [
-            body(['idZonZone', 'nomLie']).notEmpty(),
-            body('idZonZone').customSanitizer(async value => await getRepository(Zone).findOneOrFail(value))
+            param('idLieu').notEmpty().toInt().isNumeric(),
+            body(['idZonZone', 'nomLie']).notEmpty()
         ], ErrorValidator,
             async (req: Request, res: Response, next: NextFunction) => {
                 try {
                     let lieu: Lieu = await getRepository(Lieu).findOneOrFail(Number(req.params.idLieu))
                     lieu = getRepository(Lieu).merge(lieu, req.body as Object)
+                    lieu.idZonZone = await getRepository(Zone).findOneOrFail(req.body.idZonZone)
                     await getRepository(Lieu).save(lieu)
                     this.sendResponse(res, 200, { message: "Lieu changed" })
                 } catch (error) {
