@@ -72,11 +72,19 @@ export default class TarifController extends Controller {
         ], ErrorValidator,
             async (req: Request, res: Response, next: NextFunction) => {
                 try {
+                    let tarifs: Tarif[] = []
                     let tarifToSave: Tarif = await getRepository(Tarif).create(req.body as Object)
                     tarifToSave.idTypeCouTypeCoursier = await getRepository(TypeCoursier).findOneOrFail(req.body.idTypeCouTypeCoursier)
                     tarifToSave.idZonDepart = await getRepository(Zone).findOneOrFail(req.body.idZonDepart)
                     tarifToSave.idZonArrivee = await getRepository(Zone).findOneOrFail(req.body.idZonArrivee)
-                    await this.saveTarifToDatabase(tarifToSave)
+                    tarifs.push(tarifToSave)
+                    let tarif2 = { ...tarifToSave }
+                    if (tarifToSave.idZonDepart.idZon != tarifToSave.idZonArrivee.idZon) {
+                        [tarif2.idZonDepart, tarif2.idZonArrivee] = [tarif2.idZonArrivee, tarif2.idZonDepart]
+                        tarifs.push(tarif2)
+                    }
+                    console.log(tarifs)
+                    await this.saveTarifToDatabase(tarifs)
 
                     this.sendResponse(res, 201, { message: "OK" })
                 } catch (error) {
@@ -89,7 +97,7 @@ export default class TarifController extends Controller {
             })
     }
 
-    private async saveTarifToDatabase(tarif: Tarif): Promise<Tarif> {
+    private async saveTarifToDatabase(tarif: Tarif[]): Promise<Tarif[]> {
         return await getRepository(Tarif).save(tarif)
     }
 
