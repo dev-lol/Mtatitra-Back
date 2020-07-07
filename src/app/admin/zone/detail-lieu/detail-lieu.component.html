@@ -1,7 +1,7 @@
 <div class="content">
   <div mat-dialog-title>
     <h5 class="titre">
-      Tarif
+      Lieu
       <span class="btn btn-xs" id="btn_close" style="float: right;" mat-dialog-close mat-dialog-close="true">
         <fa-icon [icon]="faTimesCircle"></fa-icon>
       </span>
@@ -10,29 +10,32 @@
 
   <mat-dialog-content>
     <div class="container">
-      <form class="form" [formGroup]="formTarif">
+      <form class="form">
         <div class="row">
           <div class="col">
             <label class="label">id</label>
           </div>
           <div class="col">
-            <label class="note">{{idTar}}</label>
+            <label class="note">{{id}}</label>
           </div>
         </div>
         <br>
         <div class="row">
           <div class="col">
-            <label class="label">Tarif(Ar)</label>
+            <label class="label">Lieu</label>
           </div>
           <div class="col">
-            <div class="row">
-              <mat-form-field>
-                <mat-label>Montant(Ar)</mat-label>
-                <input matInput type="number" name="tarif" id="tarif" formControlName="tarifTar">
-              </mat-form-field>
-            </div>
+            <input class="data form-control" name="designation" id="designation" [(ngModel)]="designation">
           </div>
         </div>
+        <br>
+        <mat-form-field style="width: 100%;">
+          <mat-label>Zone</mat-label>
+          <mat-select [(value)]="zone">
+            <mat-option *ngFor="let zon of zones" [value]="zon.idZon"> {{zon.nomZon}} </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <br>
         <br>
         <div class="row">
           <div class="col-12">

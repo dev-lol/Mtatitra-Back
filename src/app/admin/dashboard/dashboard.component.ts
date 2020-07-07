@@ -133,23 +133,21 @@ export class DashboardComponent implements OnInit {
     /*type couriser */
 
     /*type pro */
-    typeProduitData3: number[] = []; // OnInit
-    typeProduitLabel3: string[] = []; // OnInit
-    typeProduitChartOptions3: ChartOptions = {
+    typeProduitData: number[] = []; // OnInit
+    typeProduitLabel: string[] = []; // OnInit
+    typeProduitChartOptions: ChartOptions = {
         responsive: true,
     };
-    typeProduitChartLabels3: Label[] = [];
-    typeProduitChartType3: ChartType = 'polarArea';
-    typeProduitChartLegend3 = true;
-    typeProduitChartPlugins3 = [];
-    typeProduitChartData3: ChartDataSets[] = [
+    typeProduitChartLabels: Label[] = [];
+    typeProduitChartType: ChartType = 'polarArea';
+    typeProduitChartLegend = true;
+    typeProduitChartPlugins = [];
+    typeProduitChartData: ChartDataSets[] = [
         {
             data: [], label: ''
         }
     ];
-    typeProduitChartColors3: Color[] = [
-        this.colors[Math.floor(Math.random() * (this.colors.length - 1))]
-    ];
+    typeProduitChartColors = [];
     graphTypeProSub: Subscription;
     graphTypePro: any[];
     /*type pro */
@@ -223,13 +221,21 @@ export class DashboardComponent implements OnInit {
 
                 break
             case 3:
-                this.typeProduitData3 = []
-                this.typeProduitLabel3 = []
+                this.typeProduitData = []
+                this.typeProduitLabel = []
+                this.typeProduitChartColors = []
+                const colors: Color[] = []
+                const used2 = []
                 data.forEach(item => {
-                    this.typeProduitData3.push(item.total)
-                    this.typeProduitLabel3.push(item.typePro)
+                    this.typeProduitData.push(item.total)
+                    this.typeProduitLabel.push(item.typePro)
+                    let index = Math.floor(Math.random() * (this.colors.length - 1))
+                    if (used2.includes(index))
+                        index = Math.floor(Math.random() * (this.colors.length - 1))
+                    used2.push(index)
+                    colors.push(this.colors[index])
                 })
-
+                this.typeProduitChartColors.push(colors)
         }
         this.updateLineGraph()
     }
@@ -239,9 +245,9 @@ export class DashboardComponent implements OnInit {
         this.zoneChartLabels = [];
         this.zoneChartLabels = this.zoneLabel;
 
-        this.typeProduitChartData3[0] = Object.assign({}, this.typeProduitChartData3[0], { data: this.typeProduitData3 });
-        this.typeProduitChartLabels3 = [];
-        this.typeProduitChartLabels3 = this.typeProduitLabel3;
+        this.typeProduitChartData[0] = Object.assign({}, this.typeProduitChartData[0], { data: this.typeProduitData });
+        this.typeProduitChartLabels = [];
+        this.typeProduitChartLabels = this.typeProduitLabel;
     }
 
     changeDateGraph() {

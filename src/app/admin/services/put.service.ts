@@ -48,6 +48,19 @@ export class PutService {
             });
     }
 
+    editLieu(idLieu: number, lieu: Object) {
+        // tslint:disable-next-line: object-literal-key-quotes
+        const headers: any = new HttpHeaders({ 'Content-Type': 'application/json' });
+        delete lieu["idLie"]
+        this.http.put(`${this.endpoint}/lieu/${idLieu}`, lieu, headers).subscribe(
+            (data: any) => {
+                console.log(data);
+                this.getSrv.getZone();
+            }, (error) => {
+                console.log(error);
+            });
+    }
+
     editCoursier(idCoursier: number, coursier: Object) {
         // tslint:disable-next-line: object-literal-key-quotes
         const headers: any = new HttpHeaders({ 'Content-Type': 'application/json' });

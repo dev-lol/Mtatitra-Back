@@ -1,3 +1,4 @@
+
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { DetailCoursierComponent } from './detail-coursier/detail-coursier.component';
 import { MatDialog, MatTableDataSource, MatPaginator } from '@angular/material';
@@ -5,7 +6,7 @@ import { DeleteService } from './../services/delete.service';
 import { GetService } from './../services/get.service';
 import { Subscription } from 'rxjs';
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { faEyeSlash, faMailBulk, faUser, faUserAlt, faUserAltSlash, faPhone, faEyeDropper, faCarAlt } from '@fortawesome/free-solid-svg-icons';
+import { faEyeSlash, faMailBulk, faUser, faUserAlt, faUserAltSlash, faPhone, faEyeDropper, faCarAlt, faCar, faMapPin } from '@fortawesome/free-solid-svg-icons';
 import { PostService } from './../../admin/services/post.service';
 import { faPlusCircle, faEdit, faMinusCircle, faSearch } from '@fortawesome/free-solid-svg-icons';
 import { TypeCoursier } from '../type/type.component';
@@ -27,6 +28,9 @@ export interface Coursier {
     nomCou: string;
     prenomCou: string;
     numTelCou: string;
+    numTelUrgentCou : string;
+    adresseCou : string;
+    referenceVehiculeCou : string;
     usernameCou: string;
     passCou: string;
 }
@@ -43,7 +47,7 @@ export class CoursierComponent implements OnInit {
 
     typeCoursier: TypeCoursier[] = [];
     coursierDatasource = new MatTableDataSource(this.coursiers);
-    columnCoursiers: string[] = ['idCou', 'nomCou', 'prenomCou', 'numTelCou', 'usernameCou', 'typeCoursier', 'edit', 'suppr'];
+    columnCoursiers: string[] = ['idCou', 'nomCou', 'prenomCou', 'numTelCou','numTelUrgentCou','adresseCou',"referenceVehiculeCou", 'usernameCou', 'typeCoursier', 'edit', 'suppr'];
     coursierSub: Subscription;
 
     selectedType = 'init';
@@ -52,6 +56,9 @@ export class CoursierComponent implements OnInit {
         nomCou: '',
         prenomCou: '',
         numTelCou: '',
+        numTelUrgentCou : '',
+        adresseCou : "",
+        referenceVehiculeCou : "",
         usernameCou: '',
         passCou: ''
     };
@@ -68,6 +75,7 @@ export class CoursierComponent implements OnInit {
     faEdit = faEdit;
     faMinusCircle = faMinusCircle;
     faSearch = faSearch;
+    faPin = faMapPin
 
     coursierForm: FormGroup;
 
@@ -91,6 +99,9 @@ export class CoursierComponent implements OnInit {
             nomCou: ['', Validators.required],
             prenomCou: ['', Validators.required],
             numTelCou: ['', Validators.required],
+            numTelUrgentCou : ["",Validators.required],
+            adresseCou : ["",Validators.required],
+            referenceVehiculeCou : ["",Validators.required],
             usernameCou: ['', Validators.required],
             passCou: ['', Validators.required],
             idTypeCou: [null, Validators.required],
@@ -135,17 +146,21 @@ export class CoursierComponent implements OnInit {
         close();
     }
 
+    // changer
     editCoursier(coursier: Coursier) {
         const id = coursier.idCou;
         const nom = coursier.nomCou;
         const prenom = coursier.prenomCou;
         const tel = coursier.numTelCou;
+        const telUrg = coursier.numTelUrgentCou;
+        const ref = coursier.numTelUrgentCou;
+        const adresse = coursier.adresseCou;
         const username = coursier.usernameCou;
         const pass = coursier.passCou;
         const type = coursier["idTypeCouTypeCoursier"].idTypeCou
         const typeCoursier = this.typeCoursier
 
-        const dialogRef = this.dialog.open(DetailCoursierComponent, { data: { id, nom, prenom, tel, username, pass, type, typeCoursier } });
+        const dialogRef = this.dialog.open(DetailCoursierComponent, { data: { id, nom, prenom, tel,telUrg,adresse,ref, username, pass, type, typeCoursier } });
         dialogRef.afterClosed().subscribe(
             result => {
                 // this.getSrv.getAllTypeProduit();

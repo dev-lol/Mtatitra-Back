@@ -4,6 +4,7 @@ import { Component, OnInit, Inject } from '@angular/core';
 import { faTimesCircle } from '@fortawesome/free-solid-svg-icons';
 import { PutService } from './../../services/put.service';
 import { Subscription } from 'rxjs';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 
 
@@ -25,46 +26,34 @@ interface Tarif {
     styleUrls: ['./detail-tarif.component.css']
 })
 export class DetailTarifComponent implements OnInit {
+    formTarif: FormGroup
     idTar: number;
-    tarifTar: number;
-    nomZon: string;
-    typeCou: string;
-    idZonZone: number = this.data.zone.idZon;
-    idTypeCouTypeCoursier: number = this.data.typeCoursier.idTypeCou;
-
-    tarif: Tarif = { tarifTar: 0, idZonZone: 0, idTypeCouTypeCoursier: 0 };
-
     faTimesCircle = faTimesCircle;
 
     coursiers = [];
 
     zones = [];
-    constructor(@Inject(MAT_DIALOG_DATA) public data: any, public putSrv: PutService, public getSrv: GetService) { }
+    constructor(@Inject(MAT_DIALOG_DATA) public data: any, public putSrv: PutService, public getSrv: GetService, private fb: FormBuilder) { }
 
     ngOnInit() {
-        this.getData();
+        console.log(this.data)
+        this.idTar = this.data.id;
         this.init();
+        this.formTarif = this.fb.group({
+            tarifTar: [this.data.tar, Validators.required],
+            idZonDepart: [this.data.zoneA.idZon, Validators.required], 
+            idZonArrivee: [this.data.zoneB.idZon, Validators.required],
+            idTypeCouTypeCoursier: [this.data.typeCoursier.idTypeCou, Validators.required]
+        })
     }
 
     init() {
-
         this.zones = this.data.zones;
         this.coursiers = this.data.typeCoursiers;
     }
 
-    getData() {
-        this.idTar = this.data.id;
-        this.tarifTar = this.data.tarif;
-        this.nomZon = this.data.zone;
-        this.typeCou = this.data.typeCou;
-    }
-
     modifier() {
-        this.tarif.tarifTar = this.tarifTar;
-        this.tarif.idZonZone = this.idZonZone;
-        this.tarif.idTypeCouTypeCoursier = this.idTypeCouTypeCoursier;
-        console.log(this.tarif)
-        this.putSrv.editTarif(this.idTar, this.tarif);
+        this.putSrv.editTarif(this.idTar, this.formTarif.value);
         close();
     }
 

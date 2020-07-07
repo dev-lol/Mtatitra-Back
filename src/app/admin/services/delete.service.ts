@@ -63,6 +63,20 @@ export class DeleteService {
             });
     }
 
+    deleteLieu(id: number) {
+        // tslint:disable-next-line: object-literal-key-quotes
+        this.http.delete(`${this.endpoint}/lieu/${id}`).subscribe(
+            (data: any) => {
+                console.log(data);
+                // Get service
+                this.getSrv.getZone();
+
+            }, (error) => {
+                console.log(error);
+            });
+    }
+
+
     deleteLimiteDat(id: number) {
         this.http.delete(`${this.endpoint}/datelimite/${id}`).subscribe(
             (data: any) => {
