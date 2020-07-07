@@ -1,0 +1,161 @@
+<img [src]="img" alt="img" id="img_title">
+
+<br>
+
+<div class="container">
+  <form (submit)="addTarif(formDirective)" #formDirective="ngForm" [formGroup]="formTarif">
+    <div class="row">
+
+      <div class="col-md-3 col-xs-12">
+        <mat-form-field>
+          <mat-label>Montant(Ar)</mat-label>
+          <input matInput type="number" formControlName="tarifTar" id="tarif">
+          <mat-error *ngIf="formTarif.get('tarifTar').errors?.required"> Ce champs ne doit pas etre vide </mat-error>
+          <mat-error *ngIf="formTarif.get('tarifTar').errors?.serverError">
+            {{ formTarif.get("tarifTar").errors?.serverError }} </mat-error>
+        </mat-form-field>
+      </div>
+      <div class="col-md-3 col-xs-12">
+        <mat-form-field>
+          <mat-label>Zone A</mat-label>
+          <mat-select formControlName="idZonDepart">
+            <mat-option *ngFor="let zone of zones; let i=index" [value]="zone.idZon" name="zone" id="zone">
+              {{zone.nomZon}}
+            </mat-option>
+          </mat-select>
+          <mat-error *ngIf="formTarif.get('idZonDepart').errors?.required"> Ce champs ne doit pas etre vide </mat-error>
+          <mat-error *ngIf="formTarif.get('idZonDepart').errors?.serverError">
+            {{ formTarif.get("idZonDepart").errors?.serverError }} </mat-error>
+        </mat-form-field>
+      </div>
+      <div class="col-md-3 col-xs-12">
+        <mat-form-field>
+          <mat-label>Zone B</mat-label>
+          <mat-select formControlName="idZonArrivee">
+            <mat-option *ngFor="let zone of zones; let i=index" [value]="zone.idZon" name="zone" id="zone">
+              {{zone.nomZon}}
+            </mat-option>
+
+          </mat-select>
+          <mat-error *ngIf="formTarif.get('idZonArrivee').errors?.required"> Ce champs ne doit pas etre vide
+          </mat-error>
+          <mat-error *ngIf="formTarif.get('idZonArrivee').errors?.serverError">
+            {{ formTarif.get("idZonArrivee").errors?.serverError }} </mat-error>
+        </mat-form-field>
+      </div>
+      <div class="col-md-3 col-xs-12">
+        <mat-form-field>
+          <mat-label>Type coursier</mat-label>
+          <mat-select formControlName="idTypeCouTypeCoursier">
+            <mat-option *ngFor="let coursier of coursiers; let i=index" [value]="coursier.idTypeCou" name="coursier"
+              id="coursier">
+              {{coursier.typeCou}}
+            </mat-option>
+          </mat-select>
+          <mat-error *ngIf="formTarif.get('idTypeCouTypeCoursier').errors?.required"> Ce champs ne doit pas etre vide
+          </mat-error>
+          <mat-error *ngIf="formTarif.get('idTypeCouTypeCoursier').errors?.serverError">
+            {{ formTarif.get("idTypeCouTypeCoursier").errors?.serverError }} </mat-error>
+        </mat-form-field>
+      </div>
+      <div *ngIf="autreErreur" class="col-12 text-right mb-1">
+        <mat-error class="small"> {{autreErreur}} </mat-error>
+      </div>
+      <div class="offset-md-9 offset-0 col-md-3 col-xs-12">
+        <button class="btn btn-primary form-control" type="submit" [disabled]="!formTarif.valid">
+          Ajouter
+        </button>
+      </div>
+    </div>
+  </form>
+</div>
+<br>
+<div class="row">
+  <div class="col-12 col-md-6">
+    <mat-form-field style="float: left;margin-left: 10px;">
+      <input (keyup)="filter($event.target.value)" matInput placeholder="rechercher" autocomplete="off"
+        style="padding-left: 20px;">
+      <mat-icon matSuffix>
+        search
+      </mat-icon>
+    </mat-form-field>
+  </div>
+  <div class="col-12 col-md-6">
+    <mat-paginator [pageSizeOptions]="[10,20,30]" showFirstLastButtons>
+    </mat-paginator>
+  </div>
+</div>
+
+<mat-table matSortActive="idTar" matSortDirection="asc" [dataSource]="dataSource" matSort>
+  <ng-container matColumnDef="idTar">
+    <mat-header-cell *matHeaderCellDef mat-sort-header>id</mat-header-cell>
+    <mat-cell *matCellDef="let element">{{element.idTar}}</mat-cell>
+  </ng-container>
+  <ng-container matColumnDef="zoneA">
+    <mat-header-cell *matHeaderCellDef mat-sort-header>Zone A</mat-header-cell>
+    <mat-cell *matCellDef="let element">{{element.idZonDepart.nomZon}}</mat-cell>
+  </ng-container>
+  <ng-container matColumnDef="zoneB">
+    <mat-header-cell *matHeaderCellDef mat-sort-header>Zone B</mat-header-cell>
+    <mat-cell *matCellDef="let element">{{ element.idZonArrivee.nomZon}}</mat-cell>
+  </ng-container>
+  <ng-container matColumnDef="typeCou">
+    <mat-header-cell *matHeaderCellDef mat-sort-header>Type Coursier</mat-header-cell>
+    <mat-cell *matCellDef="let element">{{element.idTypeCouTypeCoursier.typeCou}}</mat-cell>
+  </ng-container>
+  <ng-container matColumnDef="tarifTar">
+    <mat-header-cell *matHeaderCellDef mat-sort-header>Montant(Ariary)</mat-header-cell>
+    <mat-cell *matCellDef="let element">{{element.tarifTar}}</mat-cell>
+  </ng-container>
+  <ng-container matColumnDef="edit">
+    <mat-header-cell *matHeaderCellDef></mat-header-cell>
+    <mat-cell *matCellDef="let element; let i = index">
+      <span>
+        <fa-icon [icon]="faEdit" class="edit" (click)="editTarif(element)"></fa-icon>
+      </span>
+    </mat-cell>
+  </ng-container>
+  <ng-container matColumnDef="suppr">
+    <mat-header-cell *matHeaderCellDef></mat-header-cell>
+    <mat-cell *matCellDef="let element">
+      <span>
+        <fa-icon [icon]="faMinusCircle" class="suppr" (click)="deleteTarif(element)"></fa-icon>
+      </span>
+    </mat-cell>
+  </ng-container>
+  <mat-header-row *matHeaderRowDef="columnTarif"></mat-header-row>
+  <mat-row *matRowDef="let row;columns: columnTarif;"></mat-row>
+</mat-table>
+<label class="label" *ngIf="tarifs.length == 0">Aucun tarif ajouté</label>
+
+<!-- // changer -->
+<button type="button" id="btn_open" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#flip"
+  style="display: none;">
+  Confirmer
+</button>
+
+<!-- The modal -->
+<div class="modal fade" id="flip" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header" style="border: none;text-align: center;">
+        <h4 class="modal-title" id="modalLabel" style="text-align: center;">Confirmation</h4>
+        <button type="button" id="close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" style="border: none;">
+        <p style="text-align: center;">
+          Voulez vous supprimer ?
+        </p>
+      </div>
+      <div class="modal-footer" style="border: none;">
+        <div class="btn-group" role="group">
+          <button type="button" class="btn btn-primary" style="margin-right: 20px;border-radius: 5px;"
+            (click)="confirmDelete()">Oui</button>
+          <button type="button" class="btn btn-dark" data-dismiss="modal" style="border-radius: 5px;">Non</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,49 @@
+<div class="content">
+  <div mat-dialog-title>
+    <h5 class="titre">
+      Tarif
+      <span class="btn btn-xs" id="btn_close" style="float: right;" mat-dialog-close mat-dialog-close="true">
+        <fa-icon [icon]="faTimesCircle"></fa-icon>
+      </span>
+    </h5>
+  </div>
+
+  <mat-dialog-content>
+    <div class="container">
+      <form class="form" [formGroup]="formTarif">
+        <div class="row">
+          <div class="col">
+            <label class="label">id</label>
+          </div>
+          <div class="col">
+            <label class="note">{{idTar}}</label>
+          </div>
+        </div>
+        <br>
+        <div class="row">
+          <div class="col">
+            <label class="label">Tarif(Ar)</label>
+          </div>
+          <div class="col">
+            <div class="row">
+              <mat-form-field>
+                <mat-label>Montant(Ar)</mat-label>
+                <input matInput type="number" name="tarif" id="tarif" formControlName="tarifTar">
+              </mat-form-field>
+            </div>
+          </div>
+        </div>
+        <br>
+        <div class="row">
+          <div class="col-12">
+            <div style="text-align: center;">
+              <button class="btn btn-primary" (click)="modifier()">
+                Modifier
+              </button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </mat-dialog-content>
+</div>

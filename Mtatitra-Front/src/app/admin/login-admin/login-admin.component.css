@@ -1,0 +1,62 @@
+.body {
+	color: white;
+	height: 100vh;
+	background-image: linear-gradient(to right bottom, #02022e, #061050, #122183, #2136b1, #0a0c35);
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: cover;
+	padding-bottom: 10%;
+}
+
+.content {
+	position: absolute;
+	top: 20%;
+	left: 30%;
+	padding: 40px;
+	/* // background-color: #1C4E80; */
+	background-color: rgb(3, 3, 59);
+}
+
+.titre {
+	text-align: center;
+}
+
+.sous_titre {
+	text-align: center;
+	/* // color: #0091D5; */
+	color: blue;
+}
+
+.input {
+	border: 2px solid #6AB187;
+	background-color: rgba(35, 40, 45, 0.788);
+	color: white;
+}
+
+.btn_connexion {
+	border: 2px solid #6AB187;
+}
+
+.btn_valider {
+	float: left;
+}
+
+.btn_annuler {
+	float: right;
+}
+
+.reinit {
+	/* // color: #0091D5; */
+	color: blue;
+	float: right;
+	padding-top: 10px;
+	cursor: pointer;
+}
+
+@media screen and (max-width: 500px) {
+	.content {
+		top: 1%;
+		left: 1%;
+		padding: 20px;
+	}
+}
