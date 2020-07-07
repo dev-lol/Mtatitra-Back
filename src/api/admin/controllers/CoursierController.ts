@@ -17,6 +17,24 @@ export default class CoursierController extends Controller {
     async addGet(router: Router): Promise<void> {
         await this.getAllCoursier(router)
         await this.statByDate(router)
+        await this.planningByDate(router)
+    }
+
+    private async planningByDate(router: Router ) : Promise<void>{
+        router.get("/plan",async(req:Request,res:Response,next : NextFunction)=>{
+            try{
+                const date = new Date(req.query.date as string)
+
+                let planning : Livraison[] = await getRepository(Livraison)
+                    .find({relations : ["idCouCoursier","idZonDepart","idZonArrivee","idLimiteDat","idTypeCouTypeCoursier"],where : {dateLiv : date} })
+
+                let countLivDay : number = await getRepository(Livraison).count({where : {dateLiv : date}})
+
+            this.sendResponse(res,200, {planning,countLivDay})
+            }catch(err){
+
+            }
+        })
     }
 
 
