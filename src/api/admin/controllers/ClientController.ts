@@ -3,6 +3,8 @@ import { Controller } from "../../Controller"
 import { Client } from "../../../entities/Client"
 import { getRepository } from "typeorm";
 import { Livraison } from "../../../entities/Livraison";
+import { query } from 'express-validator';
+import ErrorValidator from "../../ErrorValidator";
 export default class ClientController extends Controller {
     constructor() {
         super()
@@ -27,11 +29,11 @@ export default class ClientController extends Controller {
     }
 
     statByDate = async (router: Router): Promise<void> => {
-        router.get("/stat", async (req: Request, res: Response, next: NextFunction) => {
+        router.get("/stat", [
+            query(['start', 'end']).notEmpty().toDate().isISO8601().withMessage("Bad request"),
+            query('limit').optional(true).toInt().isNumeric().withMessage("bad value")
+        ], ErrorValidator, async (req: Request, res: Response, next: NextFunction) => {
             try {
-                if (!req.query.start || !req.query.end) {
-                    return this.sendResponse(res, 400, { message: "Start date or End Date not provided" })
-                }
                 const startDate: Date = new Date(req.query.start as string)
                 const endDate: Date = new Date(req.query.end as string)
                 const limit: number = Number(req.query.limit)

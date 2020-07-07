@@ -6,7 +6,7 @@ import { ormconfig } from "../../../config";
 import { runInThisContext } from "vm";
 import { Livraison } from "../../../entities/Livraison";
 import { Produit } from "../../../entities/Produit";
-import { sanitizeQuery, query } from "express-validator";
+import { sanitizeQuery, query, param, body } from "express-validator";
 import ErrorValidator from "../../ErrorValidator";
 export default class TypeProduitController extends Controller {
     constructor() {
@@ -75,7 +75,9 @@ export default class TypeProduitController extends Controller {
     }
 
     async postTypeProduit(router: Router) {
-        router.post("/", async (req: Request, res: Response, next: NextFunction) => {
+        router.post("/", [
+            body(['typePro']).notEmpty().withMessage("Bad request")
+        ], ErrorValidator, async (req: Request, res: Response, next: NextFunction) => {
             let typeProduitToSave: TypeProduit = await this.createTypeProduitFromRequest(req)
 
             typeProduitToSave.estSupprime = false
@@ -108,7 +110,10 @@ export default class TypeProduitController extends Controller {
 
 
     async addPut(router: Router): Promise<void> {
-        router.put("/:idType", async (req: Request, res: Response, next: NextFunction) => {
+        router.put("/:idType", [
+            param('idType').notEmpty().toInt().isNumeric().withMessage("bad request"),
+            body(['typePro']).notEmpty().withMessage("Bad request")
+        ], ErrorValidator, async (req: Request, res: Response, next: NextFunction) => {
             try {
                 let type: TypeProduit = await getRepository(TypeProduit).findOneOrFail(Number(req.params.idType))
                 type = getRepository(TypeProduit).merge(type, req.body as Object)
@@ -124,7 +129,9 @@ export default class TypeProduitController extends Controller {
     }
 
     async addDelete(router: Router): Promise<void> {
-        router.delete("/:idType", async (req: Request, res: Response, next: NextFunction) => {
+        router.delete("/:idType", [
+            param('idType').notEmpty().toInt().isNumeric().withMessage("bad request"),
+        ], ErrorValidator, async (req: Request, res: Response, next: NextFunction) => {
             try {
                 let type: TypeProduit = await getRepository(TypeProduit).findOneOrFail(Number(req.params.idType))
                 type.estSupprime = true

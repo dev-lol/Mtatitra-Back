@@ -6,7 +6,7 @@ import { ormconfig } from "../../../config";
 import { runInThisContext } from "vm";
 import { Livraison } from "../../../entities/Livraison";
 import ErrorValidator from "../../ErrorValidator";
-import { query, sanitizeQuery } from "express-validator";
+import { query, sanitizeQuery, body, param } from "express-validator";
 export default class TypeCoursierController extends Controller {
     constructor() {
         super()
@@ -72,19 +72,22 @@ export default class TypeCoursierController extends Controller {
     }
 
     async postTypeCoursier(router: Router) {
-        router.post("/", async (req: Request, res: Response, next: NextFunction) => {
-            let typeCoursierToSave: TypeCoursier = await this.createTypeCoursierFromRequest(req)
+        router.post("/", [
+            body(['typeCou']).notEmpty().withMessage("Bad request")
+        ], ErrorValidator,
+            async (req: Request, res: Response, next: NextFunction) => {
+                let typeCoursierToSave: TypeCoursier = await this.createTypeCoursierFromRequest(req)
 
-            typeCoursierToSave.estSupprime = false
-            let typeCoursierSaved: TypeCoursier = await this.saveTypeCoursierToDatabase(typeCoursierToSave)
+                typeCoursierToSave.estSupprime = false
+                let typeCoursierSaved: TypeCoursier = await this.saveTypeCoursierToDatabase(typeCoursierToSave)
 
-            if (await this.isTypeCoursierSaved(typeCoursierSaved)) {
-                this.sendResponse(res, 200, { message: "OK" })
-            } else {
-                this.sendResponse(res, 400, { message: "KO" })
-            }
+                if (await this.isTypeCoursierSaved(typeCoursierSaved)) {
+                    this.sendResponse(res, 200, { message: "OK" })
+                } else {
+                    this.sendResponse(res, 400, { message: "KO" })
+                }
 
-        })
+            })
     }
 
     private async isTypeCoursierSaved(typeCoursier: TypeCoursier): Promise<boolean> {
@@ -105,7 +108,10 @@ export default class TypeCoursierController extends Controller {
 
 
     async addPut(router: Router): Promise<void> {
-        router.put("/:idType", async (req: Request, res: Response, next: NextFunction) => {
+        router.put("/:idType", [
+            param('idType').notEmpty().toInt().isNumeric().withMessage("bad request"),
+            body(['typeCou']).notEmpty().withMessage("Bad request")
+        ], ErrorValidator, async (req: Request, res: Response, next: NextFunction) => {
             try {
                 let type: TypeCoursier = await getRepository(TypeCoursier).findOneOrFail(Number(req.params.idType))
                 type = getRepository(TypeCoursier).merge(type, req.body as Object)
@@ -121,16 +127,19 @@ export default class TypeCoursierController extends Controller {
     }
 
     async addDelete(router: Router): Promise<void> {
-        router.delete("/:idType", async (req: Request, res: Response, next: NextFunction) => {
-            try {
-                let type: TypeCoursier = await getRepository(TypeCoursier).findOneOrFail(Number(req.params.idType))
-                type.estSupprime = true
-                await getRepository(TypeCoursier).save(type)
-                this.sendResponse(res, 203, { message: "Type deleted" })
-            } catch (error) {
-                this.sendResponse(res, 404, { message: "Type not found" })
-            }
+        router.delete("/:idType", [
+            param('idType').notEmpty().toInt().isNumeric().withMessage("bad request"),
+        ], ErrorValidator,
+            async (req: Request, res: Response, next: NextFunction) => {
+                try {
+                    let type: TypeCoursier = await getRepository(TypeCoursier).findOneOrFail(Number(req.params.idType))
+                    type.estSupprime = true
+                    await getRepository(TypeCoursier).save(type)
+                    this.sendResponse(res, 203, { message: "Type deleted" })
+                } catch (error) {
+                    this.sendResponse(res, 404, { message: "Type not found" })
+                }
 
-        })
+            })
     }
 }

@@ -37,8 +37,8 @@ export default class LieuController extends Controller {
 
     async postLieu(router: Router) {
         router.post("/", [
-            body(['idZonZone', 'nomLie']).notEmpty(),
-            body('idZonZone').toInt().isNumeric()
+            body('idZonZone').toInt().isNumeric().withMessage("value error"),
+            body(['idZonZone', 'nomLie']).notEmpty().withMessage("Champs vide"),
         ],
             ErrorValidator,
             async (req: Request, res: Response, next: NextFunction) => {
@@ -75,8 +75,9 @@ export default class LieuController extends Controller {
 
     async addPut(router: Router): Promise<void> {
         router.put("/:idLieu", [
-            param('idLieu').notEmpty().toInt().isNumeric(),
-            body(['idZonZone', 'nomLie']).notEmpty()
+            param('idLieu').notEmpty().toInt().isNumeric().withMessage("params error"),
+            body(['idZonZone', 'nomLie']).notEmpty().withMessage("champs vide"),
+            body('idZonZone').toInt().isNumeric().withMessage("value error")
         ], ErrorValidator,
             async (req: Request, res: Response, next: NextFunction) => {
                 try {
@@ -94,7 +95,9 @@ export default class LieuController extends Controller {
     }
 
     async addDelete(router: Router): Promise<void> {
-        router.delete("/:idLieu", async (req: Request, res: Response, next: NextFunction) => {
+        router.delete("/:idLieu", [
+            param('idLieu').notEmpty().toInt().isNumeric().withMessage("params error"),
+        ], ErrorValidator, async (req: Request, res: Response, next: NextFunction) => {
             try {
                 let lieu: Lieu = await getRepository(Lieu).findOneOrFail(Number(req.params.idLieu))
                 await getRepository(Lieu).remove(lieu)
