@@ -20,18 +20,18 @@ export default class CoursierController extends Controller {
         await this.planningByDate(router)
     }
 
-    private async planningByDate(router: Router ) : Promise<void>{
-        router.get("/plan",async(req:Request,res:Response,next : NextFunction)=>{
-            try{
+    private async planningByDate(router: Router): Promise<void> {
+        router.get("/plan", async (req: Request, res: Response, next: NextFunction) => {
+            try {
                 const date = new Date(req.query.date as string)
 
-                let planning : Livraison[] = await getRepository(Livraison)
-                    .find({relations : ["idCouCoursier","idZonDepart","idZonArrivee","idLimiteDat","idTypeCouTypeCoursier"],where : {dateLiv : date} })
+                let planning: Livraison[] = await getRepository(Livraison)
+                    .find({ relations: ["idCouCoursier", "idZonDepart", "idZonArrivee", "idLimiteDat", "idTypeCouTypeCoursier"], where: { dateLiv: date } })
 
-                let countLivDay : number = await getRepository(Livraison).count({where : {dateLiv : date}})
+                let countLivDay: number = await getRepository(Livraison).count({ where: { dateLiv: date } })
 
-            this.sendResponse(res,200, {planning,countLivDay})
-            }catch(err){
+                this.sendResponse(res, 200, { planning, countLivDay })
+            } catch (err) {
 
             }
         })
@@ -88,15 +88,23 @@ export default class CoursierController extends Controller {
 
     async postCoursier(router: Router) {
         router.post("/", [
-            body(['nomCou', 'prenomCou', 'numTelCou', 'numTelUrgentCou', 'adresseCou', 'referenceVehiculeCou', 'usernameCou', 'passCou', 'idTypeCouTypeCouriser']).notEmpty().withMessage("Champs vide"),
-            body(['numTelCou', 'numTelCou']).matches(/^3[2-49]\d{7}$/).withMessage("Numero telephone incorrecte")
+            body(['nomCou', 'prenomCou', 'numTelCou', 'numTelUrgentCou', 'adresseCou', 'referenceVehiculeCou', 'usernameCou', 'passCou', 'idTypeCouTypeCoursier']).notEmpty().withMessage("Champs vide"),
+            body(['numTelCou', 'numTelUrgentCou']).matches(/^3[2-49]\d{7}$/).withMessage("Numero telephone incorrecte"),
+            body('usernameCou').trim().custom(async (value) => {
+                const count = await getRepository(Coursier).count({ where: { usernameCou: value } })
+                if (count > 0) {
+                    throw "Nom d'utilisateur déjà pris"
+                } else {
+                    return true;
+                }
+            })
         ],
             ErrorValidator,
             async (req: Request, res: Response, next: NextFunction) => {
                 try {
                     const coursierToSave: Coursier = await getRepository(Coursier).create(req.body as Object)
                     coursierToSave.passCou = await Password.hash(coursierToSave.passCou)
-                    coursierToSave.idTypeCouTypeCoursier = await getRepository(TypeCoursier).findOneOrFail(req.body.idTypeCou)
+                    coursierToSave.idTypeCouTypeCoursier = await getRepository(TypeCoursier).findOneOrFail(req.body.idTypeCouTypeCoursier)
                     await getRepository(Coursier).save(coursierToSave)
                     this.sendResponse(res, 201, { message: "Coursier added" })
                 } catch (error) {
@@ -107,8 +115,8 @@ export default class CoursierController extends Controller {
 
     async addPut(router: Router): Promise<void> {
         router.put("/:idCoursier", [
-            body(['nomCou', 'prenomCou', 'numTelCou', 'numTelUrgentCou', 'adresseCou', 'referenceVehiculeCou', 'usernameCou', 'idTypeCouTypeCouriser']).notEmpty().withMessage("Champs vide"),
-            body(['numTelCou', 'numTelCou']).matches(/^3[2-49]\d{7}$/).withMessage("Numero telephone incorrecte"),
+            body(['nomCou', 'prenomCou', 'numTelCou', 'numTelUrgentCou', 'adresseCou', 'referenceVehiculeCou', 'usernameCou', 'idTypeCouTypeCoursier']).notEmpty().withMessage("Champs vide"),
+            body(['numTelCou', 'numTelUrgentCou']).matches(/^3[2-49]\d{7}$/).withMessage("Numero telephone incorrecte"),
             body('passCou').optional(true)
         ],
             ErrorValidator, async (req: Request, res: Response, next: NextFunction) => {

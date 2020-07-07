@@ -99,11 +99,12 @@ export default class LivraisonController extends Controller {
                 .isNumeric()
                 .withMessage('non numeric'),
             body('produits.*.fragilePro').isBoolean().withMessage("non boolean"),
-            body('livraison').isJSON().notEmpty().withMessage("pas de details"),
+            body('livraison').notEmpty().withMessage("pas de details"),
             body(['livraison.idLieArrivee', 'livraison.idLieDepart', 'livraison.idLimiteDat',
                 'livraison.typeCoursier']).isInt().withMessage("donne invalide"),
             body(['livraison.numRecepLiv', 'livraison.dateLiv', 'livraison.idLieArrivee', 'livraison.idLieDepart', 'livraison.idLimiteDat',
-                'livraison.typeCoursier']).notEmpty().withMessage("donne incomplete")
+                'livraison.typeCoursier']).notEmpty().withMessage("donne incomplete"),
+            body(['numRecepLiv']).matches(/^3[2-49]\d{7}$/).withMessage("Numero telephone incorrecte"),
         ], ErrorValidator,
             async (req: Request, res: Response, next: NextFunction) => {
                 try {
