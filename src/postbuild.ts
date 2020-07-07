@@ -185,14 +185,29 @@ import { Lieu } from './entities/Lieu';
         for (let type of typeCoursier) {
             for (let zone of zones) {
                 for (let zone2 of zones) {
-                    if (zone.idZon >= zone2.idZon)
+                    if (zone.idZon > zone2.idZon)
                         continue
-                    let tarif = new Tarif()
-                    tarif.idTypeCouTypeCoursier = type
-                    tarif.idZonDepart = zone
-                    tarif.idZonArrivee = zone2
-                    tarif.tarifTar = Math.floor(Math.random() * (10 - 3) + 3) * 1000
-                    tarifs.push(tarif)
+                    if (zone.idZon == zone2.idZon) {
+                        let tarif = new Tarif()
+                        tarif.idTypeCouTypeCoursier = type
+                        tarif.idZonDepart = zone
+                        tarif.idZonArrivee = zone2
+                        tarif.tarifTar = Math.floor(Math.random() * (10 - 3) + 3) * 1000
+                        tarifs.push(tarif)
+                    } else {
+                        let tarif = new Tarif()
+                        tarif.idTypeCouTypeCoursier = type
+                        tarif.idZonDepart = zone
+                        tarif.idZonArrivee = zone2
+                        tarif.tarifTar = Math.floor(Math.random() * (10 - 3) + 3) * 1000
+                        let tarif2 = new Tarif()
+                        tarif2.idTypeCouTypeCoursier = type
+                        tarif2.idZonDepart = zone2
+                        tarif2.idZonArrivee = zone
+                        tarif2.tarifTar = Math.floor(Math.random() * (10 - 3) + 3) * 1000
+                        tarifs.push(tarif)
+                        tarifs.push(tarif2)
+                    }
                 }
             }
         }
