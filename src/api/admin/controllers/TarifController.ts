@@ -138,7 +138,7 @@ export default class TarifController extends Controller {
                         .andWhere("idZonDepart = :idZon2", { idZon2: tarif.idZonArrivee.idZon })
                         .andWhere("idTypeCouTypeCoursier = :idType", { idType: tarif.idTypeCouTypeCoursier.idTypeCou })
                         .execute()
-                    if (result.affected == 2)
+                    if (result.affected > 0)
                         this.sendResponse(res, 200, { message: "Tarif changed" })
                     else {
                         throw "error"
