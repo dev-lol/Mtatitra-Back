@@ -1,0 +1,163 @@
+.conteneur {
+  flex: 1;
+  overflow: hidden;
+}
+.aside {
+  height: 100%;
+  background-color: white;
+  padding-top: 1rem;
+  color: black;
+  border-right: 5px solid whitesmoke;
+  overflow-y: auto;
+  z-index: 1000;
+}
+
+.arrow {
+  color: black;
+}
+
+.icon {
+  color: rgba(48, 46, 46, 0.747);
+}
+
+.route {
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+}
+
+.scrollbar::-webkit-scrollbar {
+  width: 1px;
+  background-color: white;
+}
+
+.card-content {
+  padding: 10px;
+}
+
+.body {
+  background-color: white;
+}
+
+.profile {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.thumbnail {
+  position: relative;
+  display: inline-block;
+  height: 100%;
+}
+
+.text {
+  position: absolute;
+  top: 85%;
+  left: 0%;
+  text-align: center;
+  transform: translate(-50%, -50%);
+  color: white;
+  font-weight: bold;
+}
+
+span {
+  padding-right: 1rem;
+}
+
+.dot:after {
+  content: "\2807";
+}
+
+.imgList {
+  height: 90px;
+}
+
+.listImg {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  height: 25%;
+}
+
+.menu {
+  padding-left: 20px;
+  text-align: left;
+}
+
+.active {
+  color: black;
+  font-weight: bolder;
+}
+
+mat-list-item .menu {
+  margin-bottom: 10px;
+  color: black;
+  padding-left: 10px;
+  border-bottom: 3px solid rgba(48, 46, 46, 0.747);
+}
+
+mat-list-item .section {
+  color: rgba(48, 46, 46, 0.747);
+}
+
+.btn-default {
+  color: rgba(0, 0, 0, 0.925);
+}
+
+#title {
+  border-bottom: none;
+}
+
+.mat_card {
+  background-color: white;
+  color: black;
+  border: 3px solid rgb(240, 233, 233);
+  padding-top: 10px;
+}
+
+.btn-dot {
+  color: rgb(255, 255, 255);
+  font-weight: lighter;
+}
+
+.pic {
+  display: inline-block;
+  vertical-align: super;
+  width: 0;
+  height: 0;
+}
+
+.arrow-right {
+  border-top: 7px solid transparent;
+  border-bottom: 7px solid transparent;
+  border-left: 7px solid white;
+}
+
+.menu_card {
+  height: 60%;
+  width: 100%;
+  background-color: white;
+  color: black;
+}
+
+.card_image {
+  background-image: url("../../../assets/images/livraison.jpg");
+  background-size: cover;
+}
+
+/* Responsive Styles */
+@media screen and (max-width: 980px) {
+  .menu_card {
+    display: none;
+  }
+}
+
+@media screen and (max-width: 571px) {
+  .aside {
+    display: none;
+  }
+}
+
+#wrapper {
+  height: 100vh;
+}

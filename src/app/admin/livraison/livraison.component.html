@@ -1,0 +1,198 @@
+<img [src]="img" alt="img" id="img_title">
+
+
+<div *ngIf="!showGraph" class="header container">
+  <div class="row">
+    <div class="col-5">
+      <mat-form-field style="width: 100%;">
+        <mat-label>Filtrer</mat-label>
+        <mat-select [(value)]="selectedValue" (selectionChange)="changeSelection()">
+          <mat-option value="all">
+            Tout
+          </mat-option>
+          <mat-option value="false">
+            Pas de coursier
+          </mat-option>
+          <mat-option value="true">
+            Avec coursier
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div class="col-5">
+      <mat-form-field style="width: 100%;">
+        <input matInput [matDatepicker]="myDate" [(ngModel)]="dateValue" (dateChange)="changeSelection()">
+        <mat-datepicker-toggle [for]="myDate" matSuffix></mat-datepicker-toggle>
+        <mat-datepicker #myDate>
+        </mat-datepicker>
+      </mat-form-field>
+    </div>
+    <div class="col-2" style="text-align: center;">
+      <div>
+        <p class="btn btn-success" (click)="toggleGraph()" *ngIf="!showGraph">Graph</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="scroll content" *ngIf="!showGraph">
+  <mat-card *ngFor="let liv of livraisons; let i=index">
+    <mat-card-content>
+      <button mat-mini-fab style="float: left;">
+        {{i+1}}
+      </button>
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-md-3 col-xs-6 font-weight-bold">
+            <p>Depart</p>
+          </div>
+          <div class="col-md-3 col-xs-6">
+            {{liv.departLiv}}
+          </div>
+          <div class="col-md-3 col-xs-6 font-weight-bold">
+            Destination
+          </div>
+          <div class="col-md-3 col-xs-6">
+            {{liv.destinationLiv}}
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-3 col-xs-6 font-weight-bold">
+            <p>Numero</p>
+          </div>
+          <div class="col-md-3 col-xs-6">
+            {{liv.numRecepLiv}}
+          </div>
+          <div class="col-md-3 col-xs-6 font-weight-bold">
+            Date
+          </div>
+          <div class="col-md-3 col-xs-6">
+            {{liv.dateLiv}}
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-3 col-xs-6 font-weight-bold">
+            <p>Vehicule</p>
+          </div>
+          <div class="col-md-3 col-xs-6">
+            {{liv['idTypeCouTypeCoursier'].typeCou}}
+          </div>
+          <div class="col-md-3 col-xs-6">
+          </div>
+          <div class="col-md-3 col-xs-6">
+          </div>
+        </div>
+        <br>
+        <p class="note">Les produits</p>
+        <div class="table-responsive">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Type</th>
+                <th>Prix</th>
+                <th>Fragile</th>
+                <th>Consigne</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let prod of liv.produits; let i=index">
+                <td>{{prod['idTypeProTypeProduit'].typePro}}</td>
+                <td>{{prod.prixPro}}</td>
+                <td>
+                  <span *ngIf="prod.fragilePro">
+                    Oui
+                  </span>
+                  <span *ngIf="!prod.fragilePro">
+                    Non
+                  </span>
+                </td>
+                <td>{{prod.consignePro}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </mat-card-content>
+    <mat-card-footer *ngIf="!liv.nomCou || !liv.prenomCou">
+      <div class="container">
+        <div class="row">
+          <div class="col-xs-12 col-md-5 offset-md-2">
+            <mat-form-field *ngIf="!liv['idCouCoursier']" style="width: 100%;">
+              <mat-label>Coursier</mat-label>
+              <mat-select>
+                <mat-option *ngFor="let coursier of liv['idTypeCouTypeCoursier'].coursiers; let i=index"
+                  [value]="coursier.idCou" (click)="changeIdCoursier(coursier.idCou)">
+                  {{coursier.nomCou}}&nbsp;&nbsp;{{coursier.prenomCou}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+            <mat-form-field *ngIf="liv['idCouCoursier']" style="width: 100%;">
+              <mat-label>Coursier</mat-label>
+              <mat-select [value]="liv['idCouCoursier']['idCou']">
+                <mat-option *ngFor="let coursier of liv['idTypeCouTypeCoursier'].coursiers; let i=index"
+                  [value]="coursier.idCou" (click)="changeIdCoursier(coursier.idCou)">
+                  {{coursier.nomCou}}&nbsp;&nbsp;{{coursier.prenomCou}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="col-xs-12 col-md-3">
+            <div class="btn_footer">
+              <button class="btn btn-primary" [disabled]="currentIdCoursier === 0" (click)="assigne(liv.idLiv)">
+                {{!liv['idCouCoursier'] ? "Assigner" : "Modifier"}}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </mat-card-footer>
+  </mat-card>
+</div>
+
+<div class="stat_graph" *ngIf="showGraph">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-5 col-offset-1 offset-xs-1 col-xs-10">
+        <mat-form-field class="datePicker">
+          <input matInput placeholder="date de debut" [matDatepicker]="dateStart"
+          name="startDate"  required readonly [(ngModel)]="startDate" (dateChange)="changeDateGraph()">
+          <mat-datepicker-toggle [for]="dateStart" matSuffix></mat-datepicker-toggle>
+          <mat-datepicker #dateStart [startAt]="today">
+          </mat-datepicker>
+        </mat-form-field>
+      </div>
+
+      <div class="col-md-5 offset-xs-1 col-xs-10">
+        <mat-form-field class="datePicker">
+          <input matInput placeholder="date de fin" [matDatepicker]="dateEnd"
+          name="dateEnd" required readonly [(ngModel)]="endDate" (dateChange)="changeDateGraph()" [min]="startDate">
+          <mat-datepicker-toggle [for]="dateEnd" matSuffix></mat-datepicker-toggle>
+          <mat-datepicker #dateEnd>
+          </mat-datepicker>
+        </mat-form-field>
+      </div>
+
+      <div class="col-md-2 offset-xs-1 col-xs-10" style="text-align: center;">
+        <div class="btn btn-dark" style="float: right;" (click)="toggleGraph()" *ngIf="showGraph">
+          <fa-icon [icon]="faEye"></fa-icon>
+          liste
+        </div>
+      </div>
+    </div>
+  </div>
+  <mat-card class="dashboard_card">
+    <mat-card-header>
+      <mat-card-title>Graph</mat-card-title>
+      <mat-card-subtitle style="color: black;">Livraivon / Date</mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      <div class="chart-wrapper line-Chart">
+        <canvas baseChart [datasets]="lineChartData" [labels]="lineChartLabels" [options]="lineChartOptions"
+          [plugins]="lineChartPlugins" [legend]="lineChartLegend" [chartType]="lineChartType"
+          [colors]="lineChartColors">
+        </canvas>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

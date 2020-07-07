@@ -1,0 +1,59 @@
+<header>
+  <nav class="navbar navbar-expand-sm navbar-light bg-faded">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#nav-content"
+      aria-controls="nav-content" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <!-- Brand -->
+    <div class="navbar-brand">
+      <img [src]="logo" alt="logo" id="logo">
+      <!-- <button mat-raised-button color="primary" class="btn_login_brand" (click)="goToLogin()">
+				<a class="nav-link" href="#" style="text-decoration: none;color: white;">Login</a>
+			</button> -->
+    </div>
+
+    <!-- Links -->
+    <div class="collapse navbar-collapse nav-content" id="nav-content">
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <button mat-flat-button class="btn_nav item" (click)="slideDashboard()">
+            <a class="nav-link">Dashboard</a>
+          </button>
+        </li>
+        <li class="nav-item">
+          <button mat-flat-button class="btn_nav item" (click)="slideClient()">
+            <a class="nav-link">Clients</a>
+          </button>
+        </li>
+        <li class="nav-item">
+          <button mat-flat-button class="btn_nav item" (click)="slideCoursier()">
+            <a class="nav-link">Coursiers</a>
+          </button>
+        </li>
+        <li class="nav-item">
+          <button mat-flat-button class="btn_nav item" (click)="slideProduit()">
+            <a class="nav-link">Produits</a>
+          </button>
+        </li>
+        <li class="nav-item">
+          <button mat-flat-button class="btn_nav item" (click)="slideLivraison()">
+            <a class="nav-link">Livraisons</a>
+          </button>
+        </li>
+        <li class="nav-item">
+          <button mat-flat-button class="btn_nav item" (click)="slideZone()">
+            <a class="nav-link">Zone</a>
+          </button>
+        </li>
+        <li class="nav-item">
+          <button mat-raised-button class="btn_nav btn_login" (click)="logOut()">
+            <a class="nav-link" style="text-decoration: none;color: #1C4E80;">
+              Déconnexion
+            </a>
+          </button>
+        </li>
+      </ul>
+    </div>
+  </nav>
+</header>

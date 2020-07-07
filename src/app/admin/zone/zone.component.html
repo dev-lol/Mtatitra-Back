@@ -1,0 +1,163 @@
+<img [src]="img" alt="img" id="img_title">
+
+<br>
+<mat-tab-group>
+  <mat-tab label="Liste des zones">
+    <form (ngSubmit)="addZone()" class="mt-5" [formGroup]="zoneForm" #form="ngForm" #form="ngForm">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-10 offset-md-1 col-xs-12">
+            <div class="input-group mb-3">
+              <div class="input-group-prepend">
+                <span class="input-group-text" id="nomZon">
+                  <fa-icon [icon]="faLocation"></fa-icon>
+                </span>
+              </div>
+              <input type="text" placeholder="Zone" class="form-control" aria-label="nomZon" aria-describedby="nomZon"
+                name="nomZon" required formControlName="nomZon" autocomplete="off">
+              <div class="input-group-append">
+                <button class="btn btn-secondary" id="nomZon" color="accent" type="submit"
+                  [disabled]="zoneForm.invalid">
+                  Ajouter
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+
+    <mat-paginator #zonePaginator='matPaginator' [pageSizeOptions]="[10,20,30]" showFirstLastButtons>
+    </mat-paginator>
+    <mat-table #zoneSort="matSort" [dataSource]="zones" matSort>
+      <ng-container matColumnDef="idZon">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>id</mat-header-cell>
+        <mat-cell *matCellDef="let element">{{element.idZon}}</mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="nomZon">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Zone</mat-header-cell>
+        <mat-cell *matCellDef="let element">{{element.nomZon}}</mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="edit" stickyEnd>
+        <mat-header-cell *matHeaderCellDef></mat-header-cell>
+        <mat-cell *matCellDef="let element; let i = index">
+          <span>
+            <fa-icon [icon]="faEdit" class="edit" (click)="editZone(element)"></fa-icon>
+          </span>
+        </mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="suppr" stickyEnd>
+        <mat-header-cell *matHeaderCellDef></mat-header-cell>
+        <mat-cell *matCellDef="let element">
+          <span>
+            <fa-icon [icon]="faMinusCircle" class="suppr" (click)="deleteZone(element)"></fa-icon>
+          </span>
+        </mat-cell>
+      </ng-container>
+      <mat-header-row *matHeaderRowDef="columnZone"></mat-header-row>
+      <mat-row *matRowDef="let row;columns: columnZone;"></mat-row>
+    </mat-table>
+    <label class="label" *ngIf="zones.length == 0">Aucun type ajouté</label>
+  </mat-tab>
+  <mat-tab label="Lieu par zone">
+    <form (submit)="addLieu()" [formGroup]="lieuForm" class="form my-4">
+      <div class="row">
+        <div class="col-5">
+          <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text" id="nomLie">
+                <fa-icon [icon]="faLocation"></fa-icon>
+              </span>
+            </div>
+            <input type="text" placeholder="Lieu" class="form-control" aria-label="nomLie" aria-describedby="nomLie"
+              name="nomLie" required formControlName="nomLie" autocomplete="off">
+          </div>
+        </div>
+        <div class="col-5">
+          <mat-form-field style="width: 100%;">
+            <mat-label>Zone</mat-label>
+            <mat-select formControlName="idZonZone">
+              <mat-option></mat-option>
+              <mat-option *ngFor="let zon of zones" [value]="zon.idZon"> {{zon.nomZon}} </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="col-2">
+          <div style="text-align: center;">
+            <button class="btn btn-secondary" type="submit">
+              Ajouter
+            </button>
+          </div>
+        </div>
+      </div>
+    </form>
+
+    <mat-tab-group [(selectedIndex)]="currentTab" (selectedTabChange)="onChangeTab($event)">
+      <mat-tab *ngFor="let zone of zones" [label]="zone.nomZon">
+        <mat-paginator [pageSizeOptions]="[10,20,30]" showFirstLastButtons>
+        </mat-paginator>
+        <mat-table [dataSource]="dataSources[zone.idZon]" matSort>
+          <ng-container matColumnDef="idLie">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>id</mat-header-cell>
+            <mat-cell *matCellDef="let element">{{element.idLie}}</mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="nomLie">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Lieu</mat-header-cell>
+            <mat-cell *matCellDef="let element">{{element.nomLie}}</mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="edit">
+            <mat-header-cell *matHeaderCellDef></mat-header-cell>
+            <mat-cell *matCellDef="let element; let i = index">
+              <span>
+                <fa-icon [icon]="faEdit" class="edit" (click)="editLieu(element)"></fa-icon>
+              </span>
+            </mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="suppr">
+            <mat-header-cell *matHeaderCellDef></mat-header-cell>
+            <mat-cell *matCellDef="let element">
+              <span>
+                <fa-icon [icon]="faMinusCircle" class="suppr" (click)="deleteLieu(element)"></fa-icon>
+              </span>
+            </mat-cell>
+          </ng-container>
+          <mat-header-row *matHeaderRowDef="columnLieu"></mat-header-row>
+          <mat-row *matRowDef="let row;columns: columnLieu;"></mat-row>
+        </mat-table>
+
+      </mat-tab>
+    </mat-tab-group>
+  </mat-tab>
+</mat-tab-group>
+
+<!-- // changer -->
+<button type="button" id="btn_open" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#flip"
+  style="display: none;">
+  Confirmer
+</button>
+
+<!-- The modal -->
+<div class="modal fade" id="flip" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header" style="border: none;text-align: center;">
+        <h4 class="modal-title" id="modalLabel" style="text-align: center;">Confirmation</h4>
+        <button type="button" id="close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" style="border: none;">
+        <p style="text-align: center;">
+          Voulez vous supprimer ?
+        </p>
+      </div>
+      <div class="modal-footer" style="border: none;">
+        <div class="btn-group" role="group">
+          <button type="button" class="btn btn-primary" style="margin-right: 20px;border-radius: 5px;"
+            (click)="confirmDelete()">Oui</button>
+          <button type="button" class="btn btn-dark" data-dismiss="modal" style="border-radius: 5px;">Non</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

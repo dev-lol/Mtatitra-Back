@@ -1,0 +1,71 @@
+#logo {
+  height: 40px;
+}
+
+#logo:hover {
+  cursor: pointer;
+}
+
+.navbar {
+  width: auto;
+  background-color: #1c4e80;
+}
+
+.nav-content {
+  position: absolute;
+  right: 2rem;
+}
+
+.navbar {
+  padding-top: 10px;
+}
+
+.nav-item {
+  margin-top: -7px;
+}
+
+.item {
+  padding-right: 20px;
+  width: 100px;
+  display: none;
+}
+
+.btn_nav {
+  /* width: 100px; */
+  text-align: center;
+  background-color: white;
+  color: #1c4e80;
+  width: 150px;
+}
+
+.btn_login_brand {
+  display: none;
+}
+
+.nav-link {
+  color: black;
+  font-weight: bolder;
+  text-align: center;
+}
+
+@media screen and (max-width: 575px) {
+  .nav-content {
+    position: relative;
+  }
+
+  .btn_nav,
+  .nav-item {
+    text-align: left;
+  }
+
+  .dropdown-menu,
+  .dropdown-item {
+    text-align: right;
+  }
+}
+
+@media screen and (max-width: 571px) {
+  .item {
+    display: inline-block;
+  }
+}

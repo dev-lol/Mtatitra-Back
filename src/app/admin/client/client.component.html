@@ -1,0 +1,104 @@
+<img [src]="img" alt="img" id="img_title">
+
+<div class="container" *ngIf="!showGraph">
+  <br>
+  <fa-icon [icon]="faSearch" style="padding-right: 30px;"></fa-icon>
+  <mat-form-field style="float: left;margin-left: 10px;">
+      <input (keyup)="filterClient($event.target.value)" matInput placeholder="rechercher" autocomplete="off" style="padding-left: 20px;">
+  </mat-form-field>
+  <mat-paginator [pageSizeOptions]="[10,20,30]" showFirstLastButtons style="float: right;">
+  </mat-paginator>
+  <br>
+  <mat-table [dataSource]="clientDatasource" style="clear: both;">
+    <ng-container matColumnDef="idCli">
+      <mat-header-cell *matHeaderCellDef>id</mat-header-cell>
+      <mat-cell *matCellDef="let element">{{element.idCli}}</mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="nomCli">
+      <mat-header-cell *matHeaderCellDef>Nom</mat-header-cell>
+      <mat-cell *matCellDef="let element">{{element.nomCli}}</mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="prenomCli">
+      <mat-header-cell *matHeaderCellDef>Prénoms</mat-header-cell>
+      <mat-cell *matCellDef="let element">{{element.prenomCli}}</mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="numTelCli">
+      <mat-header-cell *matHeaderCellDef>Telephone</mat-header-cell>
+      <mat-cell *matCellDef="let element">{{element.numTelCli}}</mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="adresseCli">
+      <mat-header-cell *matHeaderCellDef>Adresse</mat-header-cell>
+      <mat-cell *matCellDef="let element">{{element.adresseCli}}</mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="emailCli">
+      <mat-header-cell *matHeaderCellDef>Email</mat-header-cell>
+      <mat-cell *matCellDef="let element">{{element.emailCli}}</mat-cell>
+    </ng-container>
+    <mat-header-row *matHeaderRowDef="columnClients"></mat-header-row>
+    <mat-row *matRowDef="let row;columns: columnClients;"></mat-row>
+  </mat-table>
+  <label class="label" *ngIf="clients.length == 0">Aucun client inscrit</label>
+</div>
+
+<div class="stat_graph" *ngIf="showGraph">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-5 col-offset-1 offset-xs-1 col-xs-10">
+        <mat-form-field class="datePicker">
+          <input matInput placeholder="date de debut" [matDatepicker]="dateStart"
+          name="startDate"  required readonly [(ngModel)]="startDate" (dateChange)="changeTop()">
+          <mat-datepicker-toggle [for]="dateStart" matSuffix></mat-datepicker-toggle>
+          <mat-datepicker #dateStart [startAt]="today">
+          </mat-datepicker>
+        </mat-form-field>
+      </div>
+
+      <div class="col-md-5 offset-xs-1 col-xs-10">
+        <mat-form-field class="datePicker">
+          <input matInput placeholder="date de fin" [matDatepicker]="dateEnd"
+          name="dateEnd" required readonly [(ngModel)]="endDate" (dateChange)="changeTop()" [min]="startDate">
+          <mat-datepicker-toggle [for]="dateEnd" matSuffix></mat-datepicker-toggle>
+          <mat-datepicker #dateEnd>
+          </mat-datepicker>
+        </mat-form-field>
+      </div>
+
+      <mat-form-field>
+        <mat-label>Top livraison par :</mat-label>
+        <mat-select [(ngModel)]="top" (selectionChange)="changeTop()" [(ngModel)]="top">
+          <mat-option value="5">5</mat-option>
+          <mat-option value="10">10</mat-option>
+          <mat-option value="15">15</mat-option>
+          <mat-option value="20">20</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    
+  </div>
+  <mat-card class="dashboard_card">
+    <mat-card-header>
+      <mat-card-title>Graph</mat-card-title>
+      <mat-card-subtitle style="color: black;">Livraison / Client</mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      <div class="chart-wrapper line-Chart">
+      <canvas baseChart [datasets]="barChartData" [labels]="barChartLabels"
+      [options]="barChartOptions" [plugins]="barChartPlugins" [legend]="barChartLegend"
+      [chartType]="barChartType" [colors]="barChartColors">
+      </canvas>
+      </div>
+    </mat-card-content>
+    </mat-card>
+</div>
+
+<div class="float">
+    <div class="btn btn-dark" style="cursor: pointer;" *ngIf="showGraph" (click)="toggleGraph()" >
+    <fa-icon [icon]="faEye"></fa-icon>
+       Liste
+  </div>
+  <div class="btn btn-dark" style="cursor: pointer;" *ngIf="!showGraph" (click)="toggleGraph()" >
+    <fa-icon [icon]="faEye"></fa-icon>
+       Graph
+  </div>
+</div>

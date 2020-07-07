@@ -1,0 +1,94 @@
+<div class="body">
+	<div class="content">
+		<br>
+		<h3 class="titre">Se connecter sur le compte Administrateur</h3>
+		<div *ngIf="!reinit">
+			<p class="sous_titre">Livraison</p>
+			<br>
+			<br>
+			<form class="form" [formGroup]="signIn" (ngSubmit)="signInAdmin($event)" #form="ngForm">
+				<div class="row">
+					<div class="col">
+						Email
+					</div>
+					<div class="col">
+						<input class="form-control input" formControlName="username" >
+					</div>
+				</div>
+				<br>
+				<div class="row">
+					<div class="col">
+						Mot de Passe
+					</div>
+					<div class="col">
+						<input type="password" class="form-control input" formControlName="password">
+					</div>
+				</div>
+				<br>
+				<div class="row">
+					<div class="col">
+
+					</div>
+					<div class="col">
+						<button type="submit" class="btn btn-dark btn_connexion" [disabled]="signIn.invalid">
+							Connecter
+						</button>
+						<p class="reinit" (click)="toggleReinit()">Reinitialiser</p>
+					</div>
+				</div>
+				<br><br>
+			</form>
+		</div>
+
+		<div *ngIf="reinit">
+			<p class="sous_titre">
+				changement de mot de passe administrateur
+			</p>
+			<br>
+			<form class="form" [formGroup]="signUp" (ngSubmit)="newAdmin()" #form="ngForm">
+				<div class="row">
+					<div class="col">
+						Ancien mot de passe
+					</div>
+					<div class="col">
+						<input type="password" class="form-control input" formControlName="oldPass">
+					</div>
+				</div>
+				<br>
+				<div class="row">
+					<div class="col">
+						Nouveau mot de passe
+					</div>
+					<div class="col">
+						<input type="password" class="form-control input" formControlName="newPass">
+					</div>
+				</div>
+				<br>
+				<div class="row">
+					<div class="col">
+						Confirmer mot de passe
+					</div>
+					<div class="col">
+						<input type="password" class="form-control input" formControlName="confPass">
+					</div>
+				</div>
+				<br>
+				<div class="row">
+					<div class="col">
+
+					</div>
+					<div class="col">
+						<button class="btn btn-primary btn_valider" type="submit" [disabled]="signUp.invalid">
+							Valider
+						</button>
+						<button class="btn btn-danger btn_annuler" (click)="toggleReinit()" type="button">
+							Annuler
+						</button>
+					</div>
+				</div>
+				<br><br>
+			</form>
+
+		</div>
+	</div>
+</div>

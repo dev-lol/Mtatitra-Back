@@ -1,0 +1,88 @@
+<div class="stat_graph">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-5 col-offset-1 offset-xs-1 col-xs-10">
+        <mat-form-field class="datePicker">
+          <input matInput placeholder="date de debut" [matDatepicker]="dateStart" name="startDate" required readonly
+            [(ngModel)]="startDate" (dateChange)="changeDateGraph()" [max]="endDate">
+          <mat-datepicker-toggle [for]="dateStart" matSuffix></mat-datepicker-toggle>
+          <mat-datepicker #dateStart [startAt]="today">
+          </mat-datepicker>
+        </mat-form-field>
+      </div>
+
+      <div class="col-md-5 offset-xs-1 col-xs-10">
+        <mat-form-field class="datePicker">
+          <input matInput placeholder="date de fin" [matDatepicker]="dateEnd" name="dateEnd" required readonly
+            [(ngModel)]="endDate" (dateChange)="changeDateGraph()" [min]="startDate">
+          <mat-datepicker-toggle [for]="dateEnd" matSuffix></mat-datepicker-toggle>
+          <mat-datepicker #dateEnd>
+          </mat-datepicker>
+        </mat-form-field>
+      </div>
+
+
+    </div>
+  </div>
+  <div class="container">
+    <div class="row">
+      <div class="col-md-6 offset-xs-1 col-xs-10">
+        <mat-card class="dashboard_card">
+
+          <mat-card-header>
+            <mat-card-title>Graph</mat-card-title>
+            <mat-card-subtitle style="color: black;">Livraivon / Zone</mat-card-subtitle>
+          </mat-card-header>
+
+          <mat-card-content>
+            <div class="chart-wrapper line-Chart">
+              <canvas baseChart [datasets]="zoneChartData" [labels]="zoneChartLabels" [options]="zoneChartOptions"
+                [plugins]="zoneChartPlugins" [legend]="zoneChartLegend" [chartType]="zoneChartType"
+                [colors]="zoneChartColors">
+              </canvas>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+      <div class="col-md-6 offset-xs-1 col-xs-10">
+        <mat-card class="dashboard_card">
+
+          <mat-card-header>
+            <mat-card-title>Graph</mat-card-title>
+            <mat-card-subtitle style="color: black;">Livraivon / Type coursier</mat-card-subtitle>
+          </mat-card-header>
+
+          <mat-card-content>
+            <div class="chart-wrapper line-Chart">
+              <canvas [colors]="typeCoursierColors" baseChart [data]="typeCoursierChartData"
+                [labels]="typeCoursierChartLabels" [chartType]="typeCoursierChartType">
+              </canvas>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </div>
+    <div class="row mt-4">
+      <div class="col-12">
+        <mat-card class="dashboard_card">
+
+          <mat-card-header>
+            <mat-card-title>Graph</mat-card-title>
+            <mat-card-subtitle style="color: black;">Livraivon / Type produit</mat-card-subtitle>
+          </mat-card-header>
+
+          <mat-card-content>
+            <div class="chart-wrapper line-Chart">
+              <canvas baseChart [datasets]="typeProduitChartData" [labels]="typeProduitChartLabels"
+                [options]="typeProduitChartOptions" [plugins]="typeProduitChartPlugins"
+                [legend]="typeProduitChartLegend" [chartType]="typeProduitChartType"
+                [colors]="typeProduitChartColors">
+              </canvas>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </div>
+
+  </div>
+</div>
