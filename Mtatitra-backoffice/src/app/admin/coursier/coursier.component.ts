@@ -1,5 +1,5 @@
 
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators, FormGroupDirective } from '@angular/forms';
 import { DetailCoursierComponent } from './detail-coursier/detail-coursier.component';
 import { MatDialog, MatTableDataSource, MatPaginator } from '@angular/material';
 import { DeleteService } from './../services/delete.service';
@@ -13,6 +13,7 @@ import { TypeCoursier } from '../type/type.component';
 import { catchError } from 'rxjs/operators';
 import { ChartOptions, ChartType, ChartDataSets } from 'chart.js';
 import { Label, Color } from 'ng2-charts';
+import { FormatterService } from '../services/formatter.service';
 
 // changer
 function open() {
@@ -28,9 +29,9 @@ export interface Coursier {
     nomCou: string;
     prenomCou: string;
     numTelCou: string;
-    numTelUrgentCou : string;
-    adresseCou : string;
-    referenceVehiculeCou : string;
+    numTelUrgentCou: string;
+    adresseCou: string;
+    referenceVehiculeCou: string;
     usernameCou: string;
     passCou: string;
 }
@@ -47,7 +48,7 @@ export class CoursierComponent implements OnInit {
 
     typeCoursier: TypeCoursier[] = [];
     coursierDatasource = new MatTableDataSource(this.coursiers);
-    columnCoursiers: string[] = ['idCou', 'nomCou', 'prenomCou', 'numTelCou','numTelUrgentCou','adresseCou',"referenceVehiculeCou", 'usernameCou', 'typeCoursier', 'edit', 'suppr'];
+    columnCoursiers: string[] = ['idCou', 'nomCou', 'prenomCou', 'numTelCou', 'numTelUrgentCou', 'adresseCou', "referenceVehiculeCou", 'usernameCou', 'typeCoursier', 'edit', 'suppr'];
     coursierSub: Subscription;
 
     selectedType = 'init';
@@ -56,9 +57,9 @@ export class CoursierComponent implements OnInit {
         nomCou: '',
         prenomCou: '',
         numTelCou: '',
-        numTelUrgentCou : '',
-        adresseCou : "",
-        referenceVehiculeCou : "",
+        numTelUrgentCou: '',
+        adresseCou: "",
+        referenceVehiculeCou: "",
         usernameCou: '',
         passCou: ''
     };
@@ -83,7 +84,7 @@ export class CoursierComponent implements OnInit {
     currentCoursier: Coursier = null;
 
     constructor(public postSrv: PostService, private getSrv: GetService,
-        private deleteSrv: DeleteService, public dialog: MatDialog, public formBuild: FormBuilder) { }
+        private deleteSrv: DeleteService, public dialog: MatDialog, public formBuild: FormBuilder,public formatter: FormatterService) { }
 
     ngOnInit() {
         this.initCoursier();
@@ -99,12 +100,12 @@ export class CoursierComponent implements OnInit {
             nomCou: ['', Validators.required],
             prenomCou: ['', Validators.required],
             numTelCou: ['', Validators.required],
-            numTelUrgentCou : ["",Validators.required],
-            adresseCou : ["",Validators.required],
-            referenceVehiculeCou : ["",Validators.required],
+            numTelUrgentCou: ["", Validators.required],
+            adresseCou: ["", Validators.required],
+            referenceVehiculeCou: ["", Validators.required],
             usernameCou: ['', Validators.required],
             passCou: ['', Validators.required],
-            idTypeCou: [null, Validators.required],
+            idTypeCouTypeCoursier: [null, Validators.required],
         });
     }
 
@@ -126,10 +127,21 @@ export class CoursierComponent implements OnInit {
         this.getSrv.getAllTypeCoursier()
     }
 
-    addCoursier() {
+    addCoursier(formDirective: FormGroupDirective) {
         this.postSrv.addCoursier(this.coursierForm.value).subscribe((res) => {
-            this.coursierForm.reset();
             this.getSrv.getCoursiers()
+            formDirective.resetForm();
+            this.coursierForm.reset();
+        }, (error) => {
+            let isError = error.error.errors;
+            if (isError) {
+                for (const err of error.error.errors) {
+                    console.log(err)
+                    this.coursierForm.get(err["param"]).setErrors({ serverError: err["msg"] })
+                }
+            } else {
+                console.log(error)
+            }
         })
     }
 
@@ -160,7 +172,7 @@ export class CoursierComponent implements OnInit {
         const type = coursier["idTypeCouTypeCoursier"].idTypeCou
         const typeCoursier = this.typeCoursier
 
-        const dialogRef = this.dialog.open(DetailCoursierComponent, { data: { id, nom, prenom, tel,telUrg,adresse,ref, username, pass, type, typeCoursier } });
+        const dialogRef = this.dialog.open(DetailCoursierComponent, { data: { id, nom, prenom, tel, telUrg, adresse, ref, username, pass, type, typeCoursier } });
         dialogRef.afterClosed().subscribe(
             result => {
                 // this.getSrv.getAllTypeProduit();

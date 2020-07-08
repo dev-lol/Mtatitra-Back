@@ -23,7 +23,7 @@
   </ng-container>
 
   <ng-container matColumnDef="edit">
-    <mat-header-cell *matHeaderCellDef>Modifier</mat-header-cell>
+    <mat-header-cell *matHeaderCellDef></mat-header-cell>
     <mat-cell *matCellDef="let element; let i = index">
       <span>
         <fa-icon [icon]="faEdit" class="edit" (click)="editDateLimit(element)"></fa-icon>
@@ -31,7 +31,7 @@
     </mat-cell>
   </ng-container>
   <ng-container matColumnDef="suppr">
-    <mat-header-cell *matHeaderCellDef>Supprimer</mat-header-cell>
+    <mat-header-cell *matHeaderCellDef></mat-header-cell>
     <mat-cell *matCellDef="let element">
       <span>
         <fa-icon [icon]="faMinusCircle" class="suppr" (click)="deleteDateLimit(element)"></fa-icon>
