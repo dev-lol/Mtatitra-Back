@@ -16,6 +16,7 @@ export default class TypeCoursierController extends Controller {
     async addGet(router: Router): Promise<void> {
         await this.getAllTypeCoursier(router)
         await this.statByCoursier(router)
+        await this.planning(router)
     }
 
 
@@ -62,6 +63,27 @@ export default class TypeCoursierController extends Controller {
                     this.sendResponse(res, 404, { message: "not found" })
                 }
             })
+    }
+    private async planning(router): Promise<void> {
+        router.get("/planning", async (req: Request, res: Response, next: NextFunction) => {
+            const date: Date = new Date(req.query.date as string)
+            const id: number = Number(req.params.idTypeCou)
+            try {
+                let plan = await getRepository(TypeCoursier)
+                    .createQueryBuilder("type")
+                    .leftJoinAndSelect("type.livraisons", "livraison")
+                    .leftJoinAndSelect("livraison.idCouCoursier", "coursier")
+                    .leftJoinAndSelect("livraison.idLimiteDat", "limiteDat")
+                    .leftJoinAndSelect("livraison.idZonArrivee", "zone")
+                    .andWhere("livraison.dateLiv = :date", { date: date })
+                    .getMany()
+
+                this.sendResponse(res, 200, plan)
+            } catch (err) {
+                next(err)
+            }
+
+        })
     }
 
     private async fetchTypeCoursiersFromDatabase(): Promise<TypeCoursier[]> {
