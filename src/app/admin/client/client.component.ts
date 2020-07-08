@@ -5,6 +5,7 @@ import { faSearch, faEye } from '@fortawesome/free-solid-svg-icons'; // changer
 import { MatPaginator, MatTableDataSource } from '@angular/material';
 import { ChartOptions, ChartType, ChartDataSets } from 'chart.js'; // changer
 import { Label, Color } from 'ng2-charts'; // changer
+import { FormatterService } from '../services/formatter.service';
 
 interface Client {
     idCli: number;
@@ -33,7 +34,7 @@ export class ClientComponent implements OnInit {
 
     img = '../../../assets/images/client.png';
 
-    clientDatasource = new MatTableDataSource(this.clients);
+    clientDatasource = new MatTableDataSource<Client>(this.clients);
 
 
     // changer
@@ -63,7 +64,7 @@ export class ClientComponent implements OnInit {
     graphSub: Subscription;
     graph: any[];
 
-    constructor(private getSrv: GetService) { }
+    constructor(private getSrv: GetService, public formatter: FormatterService) { }
     today = new Date();
     startDate: Date = new Date(this.today.getFullYear(), this.today.getMonth() - 1, 1);;
     endDate: Date = new Date(this.today.getFullYear(), this.today.getMonth(), 0);
@@ -89,7 +90,6 @@ export class ClientComponent implements OnInit {
     }
     ngAfterViewInit() {
         this.clientDatasource.paginator = this.clientPaginator;
-
     }
 
     getClients() {
