@@ -3,7 +3,7 @@ import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import { print } from 'util';
 export default function securityClient(req: Request, res: Response, next: NextFunction) {
-    if (req.path == "/login" || req.path.includes("confirmation") || req.path.includes("resend") || req.path.includes("signup") || req.path.includes("tarif")) return next()
+    if (req.path == "/login" || req.path.includes("confirmation") || req.path.includes("resend") || req.path.includes("signup") || req.path.includes("tarif") || req.path.includes("lieu")) return next()
     var jwtToken: string = req.headers["authorization"]
     if (jwtToken == undefined) {
         res.status(401).send({

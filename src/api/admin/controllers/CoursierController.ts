@@ -26,13 +26,14 @@ export default class CoursierController extends Controller {
                 const date = new Date(req.query.date as string)
 
                 let planning: Livraison[] = await getRepository(Livraison)
-                    .find({ relations: ["idCouCoursier", "idZonDepart", "idZonArrivee", "idLimiteDat", "idTypeCouTypeCoursier"], where: { dateLiv: date } })
+                    .find({ relations: ["idCouCoursier", "idLieDepart", "idLieArrivee", "idLimiteDat", "idTypeCouTypeCoursier"], where: { dateLiv: date } })
 
                 let countLivDay: number = await getRepository(Livraison).count({ where: { dateLiv: date } })
 
                 this.sendResponse(res, 200, { planning, countLivDay })
             } catch (err) {
-
+                console.log(err)
+                this.sendResponse(res,404,{message: "Not found"})
             }
         })
     }
