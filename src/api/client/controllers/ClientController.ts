@@ -66,25 +66,27 @@ export default class ClientController extends Controller {
         router.put("/profile", [
             body('emailCli').isEmail().withMessage("email invalide"),
             body(['nomCli', 'prenomCli', 'numTelCli', 'adresseCli', 'emailCli']).notEmpty().withMessage('donnee incomplete'),
-            body('passCli').isLength({ min: 6 })
+            body('newPassword').optional(true).isLength({ min: 6 })
                 .withMessage('mot de passe trop court')
                 .matches(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/)
-                .withMessage("mot de passe doit contenir au moins un nombre et une lettre")
+                .withMessage("mot de passe doit contenir au moins un nombre et une lettre"),
         ], ErrorValidator, async (req: Request, res: Response, next: NextFunction) => {
             try {
                 var clientToModify: Client = await getRepository(Client).findOneOrFail(res.locals.id)
                 var clientFromRequest: Client = getRepository(Client).create(req.body as Object)
                 delete clientFromRequest["passCli"]
+                if (req.body.emailCli != clientToModify.emailCli) {
+                    if ((await getRepository(Client).count({ where: { emailCli: req.body.emailCli } })) > 0) {
+                        return this.sendResponse(res, 400, { errors: [{ msg: "Email déjà utilisé par un autre comptre", param: "emailCli" }] })
+                    }
+                }
                 clientToModify = { ...clientToModify, ...clientFromRequest }
                 if (req.body.oldPassword) {
                     const isSame = await Password.compare(req.body.oldPassword, clientToModify.passCli)
                     if (isSame) {
-                        if (/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/.test(req.body.newPassword))
-                            clientToModify.passCli = await Password.hash(req.body.newPassword)
-                        else
-                            return this.sendResponse(res, 400, { message: "mot de passe doit contenir au moins un nombre et une lettre" })
+                        clientToModify.passCli = await Password.hash(req.body.newPassword)
                     } else {
-                        return this.sendResponse(res, 400, { message: "password not same" })
+                        return this.sendResponse(res, 400, { errors: [{ msg: "Ancien mot de passe incorrect", param: "oldPassword" }] })
                     }
                 }
                 await getRepository(Client).save(clientToModify)

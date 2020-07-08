@@ -92,19 +92,19 @@ export default class LivraisonController extends Controller {
     async setLivraison(router: Router): Promise<void> {
         router.post("/", [
             body('produits').isArray().notEmpty().withMessage("pas de produits"),
-            body(['produits.*.largeurPro', 'produits.*.longueurPro', 'produits.*.hauteurPro', 'produits.*.consignePro', 'produits.*.poidsPro', 'produits.*.fragilePro'])
-                .notEmpty()
-                .withMessage("donne incomplete"),
             body(['produits.*.largeurPro', 'produits.*.longueurPro', 'produits.*.hauteurPro', 'produits.*.poidsPro'])
                 .isNumeric()
-                .withMessage('non numeric'),
+                .withMessage('Valeur incorrecte'),
+            body(['produits.*.largeurPro', 'produits.*.longueurPro', 'produits.*.hauteurPro', 'produits.*.consignePro', 'produits.*.poidsPro', 'produits.*.fragilePro'])
+                .notEmpty()
+                .withMessage("Champs vide"),
             body('produits.*.fragilePro').isBoolean().withMessage("non boolean"),
             body('livraison').notEmpty().withMessage("pas de details"),
             body(['livraison.idLieArrivee', 'livraison.idLieDepart', 'livraison.idLimiteDat',
                 'livraison.typeCoursier']).isInt().withMessage("donne invalide"),
             body(['livraison.numRecepLiv', 'livraison.dateLiv', 'livraison.idLieArrivee', 'livraison.idLieDepart', 'livraison.idLimiteDat',
-                'livraison.typeCoursier']).notEmpty().withMessage("donne incomplete"),
-            body(['numRecepLiv']).matches(/^3[2-49]\d{7}$/).withMessage("Numero telephone incorrecte"),
+                'livraison.typeCoursier']).notEmpty().withMessage("Champs vide"),
+            body(['numRecepLiv']).not().matches(/^3[2-49]\d{7}$/).withMessage("Numero telephone incorrecte"),
         ], ErrorValidator,
             async (req: Request, res: Response, next: NextFunction) => {
                 try {
