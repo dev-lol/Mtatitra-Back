@@ -14,6 +14,7 @@ this.addAllRoutes(this.mainRouter)
     async addGet(router: Router): Promise<void> {
         await this.getAllTypeCoursier(router)
         await this.statByCouriser(router)
+        await this.planning(router)
     }
 
 
@@ -29,6 +30,27 @@ this.addAllRoutes(this.mainRouter)
             }
         })
 
+    }
+
+    private async planning(router) : Promise<void>{
+        router.get("/:idTypeCou/planning",async(req:Request,res:Response,next:NextFunction)=>{
+            const date : Date = new Date(req.query.date as string)
+            const id : number = Number(req.params.idTypeCou)
+            try{
+                let plan  = await getRepository(TypeCoursier)
+                .createQueryBuilder("type")
+                .leftJoinAndSelect("type.livraisons","livraison")
+                .leftJoinAndSelect("livraison.idCouCoursier","coursier")
+                .leftJoinAndSelect("livraison.idLimiteDat","limiteDat")
+                .where("type.idTypeCou =:id",{id : id})
+                .getMany()
+
+           this.sendResponse(res,200,plan)
+            }catch(err){
+                next(err)
+            }
+            
+        })
     }
 
     private async statByCouriser(router : Router) : Promise<void>{
