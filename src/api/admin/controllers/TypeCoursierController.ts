@@ -33,7 +33,7 @@ this.addAllRoutes(this.mainRouter)
     }
 
     private async planning(router) : Promise<void>{
-        router.get("/:idTypeCou/planning",async(req:Request,res:Response,next:NextFunction)=>{
+        router.get("/planning",async(req:Request,res:Response,next:NextFunction)=>{
             const date : Date = new Date(req.query.date as string)
             const id : number = Number(req.params.idTypeCou)
             try{
@@ -43,7 +43,6 @@ this.addAllRoutes(this.mainRouter)
                 .leftJoinAndSelect("livraison.idCouCoursier","coursier")
                 .leftJoinAndSelect("livraison.idLimiteDat","limiteDat")
                 .leftJoinAndSelect("livraison.idZonArrivee","zone")
-                .where("type.idTypeCou =:id",{id : id})
                 .andWhere("livraison.dateLiv = :date",{date : date})
                 .getMany()
 
