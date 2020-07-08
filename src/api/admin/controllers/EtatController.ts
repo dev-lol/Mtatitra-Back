@@ -23,7 +23,7 @@ export default class EtatsController extends Controller {
 
                 let etatss: Etats[] = await this.fetchEtatssFromDatabase()
 
-                this.sendResponse(res, 200, { data: etatss })
+                this.sendResponse(res, 200, etatss)
             } catch (err) {
 
             }
@@ -32,7 +32,7 @@ export default class EtatsController extends Controller {
     }
 
     private async fetchEtatssFromDatabase(): Promise<Etats[]> {
-        return await getRepository(Etats).find({ where: { estSupprime: false } })
+        return await getRepository(Etats).find({ where: { estSupprime: false }, order: { ordreEta: "ASC" } })
     }
     async addPost(router: Router): Promise<void> {
         await this.postEtats(router)
@@ -74,14 +74,17 @@ export default class EtatsController extends Controller {
 
 
     async addPut(router: Router): Promise<void> {
-        router.put("/:idEtats", [
-            param('idEtats').notEmpty().toInt().isNumeric().withMessage("params error"),
-            body(['etatEta']).notEmpty().withMessage("Champs vide")
+        router.put("/", [
+            body(['etapes']).notEmpty().withMessage("Champs vide")
         ], ErrorValidator, async (req: Request, res: Response, next: NextFunction) => {
             try {
-                let etats: Etats = await getRepository(Etats).findOneOrFail(Number(req.params.idEtats))
-                etats = getRepository(Etats).merge(etats, req.body as Object)
-                await getRepository(Etats).save(etats)
+
+                let etats: Etats[] = await getRepository(Etats).save(req.body.etapes)
+                let notRemove = []
+                for (const etat of etats) {
+                    notRemove.push(etat.idEta)
+                }
+                await getRepository(Etats).createQueryBuilder().delete().where("idEta not in (:...notRemove)", { notRemove: notRemove }).execute()
                 this.sendResponse(res, 200, { message: "Etats changed" })
             } catch (error) {
                 console.log(error)
