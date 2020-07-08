@@ -1,0 +1,71 @@
+.content {
+    margin-top: 5vh;
+    text-align: justify;
+    font-weight: lighter;
+}
+
+.card {
+    width: 30vw;
+    margin-top: 5vh;
+    margin: auto;
+    padding-top: 2vh;
+    text-align: center;
+    font-size: 0.8rem;
+    font-weight: lighter;
+}
+
+h5 {
+    color: #708090;
+}
+
+.icon {
+    height: 50px;
+    width: 50px;
+    margin-top: 15px;
+}
+
+.loader {
+    height: 60x;
+    width: 60px;
+    margin-top: 15px;
+}
+
+.form-group {
+    margin: 7vh;
+}
+
+.btn-warnning {
+    background-color: #EF1233;
+    color: #ffffffff;
+    border-radius: 0%;
+}
+
+@media (max-width: 1110px) {
+    .card {
+        width: 50vw;
+        top: 5vh;
+        margin: auto;
+    }
+    .form-group {
+        margin: 4vh;
+    }
+}
+
+@media only screen and (max-width: 768px) {
+    body {
+        margin-top: 5vh;
+        text-align: justify;
+        font-weight: lighter;
+        font-size: 0.8rem;
+    }
+    .card {
+        width: 60vw;
+        top: 5vh;
+        margin: auto;
+        font-size: 0.5rem;
+        font-weight: lighter;
+    }
+    .form-group {
+        margin: 2vh;
+    }
+}

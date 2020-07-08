@@ -1,0 +1,57 @@
+<div class="container-fluid h-100">
+    <ngx-spinner [zIndex]=2 name="profile" bdColor="white" size="medium" color="rgb(239, 18, 51,0.8)" type="ball-triangle-path"></ngx-spinner>
+    <div class="row h-100">
+        <div class="col">
+            <mat-tab-group class="h-100" mat-align-tabs="center" dynamicHeight>
+                <mat-tab label="Profile">
+                    <div class="container h-100">
+                        <div class="row justify-content-center head">
+                            <div class="col-md-10 col-lg-4">
+                                <div class="image text-center mt-3">
+                                    <img src="/assets/images/avatar.jpg" class="img" alt="">
+                                </div>
+                            </div>
+                            <div class="col-md-12 col-lg-8">
+                                <div class="prof my-5">
+                                    <div>
+                                        <p>
+                                            <span class="nom"><strong>{{currentUser["nomCli"] ? currentUser["nomCli"]: ""}}</strong></span> &nbsp;&nbsp; <span class="prenom">{{currentUser["prenomCli"] ? currentUser["prenomCli"]: ""}}</span>
+                                        </p>
+                                        <p class="contact"><strong>ADRESSE</strong></p>
+                                        <p class="adress"><i class="fa fa-map-marker"></i> {{currentUser["adresseCli"]? currentUser["adresseCli"]: ""}}
+                                        </p>
+
+                                        <p class="contact"><strong>CONTACT</strong></p>
+                                        <p><i class="fa fa-phone" style="color: #EF1233;"></i><span style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;"> Téléphone :</span><span style="color: rgb(99, 97, 97); font-family: Arial, Helvetica, sans-serif; text-decoration: none; margin-left: 15px;">
+                                           <strong> {{currentUser["numTelCli"] ? formatter.numTel(currentUser["numTelCli"]): ""}}</strong></span>
+                                        </p>
+                                        <p><i class="fa fa-envelope" style="color: #EF1233;"></i><span style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;"> Email :</span><span style="color: rgb(99, 97, 97); font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif; text-decoration: none; margin-left: 15px;">{{currentUser["emailCli"] ? currentUser["emailCli"]: ""}}</span></p>
+                                        <p *ngIf="currentUser['compteFbCli']"><i class="fa fa-facebook" style="color: #EF1233;"></i><span style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;"> Facebook :</span><span style="color: rgb(99, 97, 97); font-family: Arial, Helvetica, sans-serif; text-decoration: none; margin-left: 15px;">
+                                          <strong> {{currentUser["compteFbCli"] ? currentUser["compteFbCli"]: ""}}</strong></span>
+                                        </p>
+                                        <p *ngIf="currentUser['pageFbCli']"><i class="fa fa-flag" style="color: #EF1233;"></i><span style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;"> Page :</span><span style="color: rgb(99, 97, 97); font-family: Arial, Helvetica, sans-serif; text-decoration: none; margin-left: 15px;">
+                                          <strong> {{currentUser["pageFbCli"] ? currentUser["pageFbCli"]: ""}}</strong></span>
+                                        </p>
+                                        <p *ngIf="currentUser['siteWebCli']"><i class="fa fa-globe" style="color: #EF1233;"></i><span style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;"> Site Web :</span><span style="color: rgb(99, 97, 97); font-family: Arial, Helvetica, sans-serif; text-decoration: none; margin-left: 15px;">
+                                          <strong> {{currentUser["siteWebCli"] ? currentUser["siteWebCli"]: ""}}</strong></span>
+                                        </p>
+                                        <div class="option">
+                                            <a routerLink="/profile/modifier" class="modifier"><i class="fa fa-pencil"></i><span>Modifier</span></a>
+                                            <!-- 
+                                              <a routerLink="/signup" class="btnlink"><i class="fa fa-pencil"></i><span> Modifier</span></a>
+                                              <a routerLink="/signup" class="btnlink"><i class="fa fa-pencil"></i><span> Modifier</span></a>-->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </mat-tab>
+                <mat-tab label="Mes livraisons">
+                    <app-list></app-list>
+                </mat-tab>
+            </mat-tab-group>
+        </div>
+    </div>
+
+</div>

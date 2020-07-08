@@ -1,0 +1,44 @@
+<div class="content">
+  <div class="container">
+    <!-- 
+ <p>
+            Afin de confirmer l'authenticité de votre adresse éléctronique, nous y avons envoyé une code de confirmation. Veuillez vous connecter à votre adresse éléctronique. Sinon, vous ne serez pas aptes à remplir le processus de confirmation.
+            <br/>Après l'authentification, vous serez redirigé vers la page suivante :
+        </p>
+        -->
+    <div class="card shadow">
+      <div class="card-heading text-center">
+        <h5>Confirmer votre adresse email</h5>
+        <img src="/assets/images/mail.png" alt="Email" class="icon">
+      </div>
+      <div class="card-body">
+        <p>
+          Nous avons envoyé un email à votremail@gmail.com . S'il vous plaît vérifiez votre boîte de réception et
+          trouvez l'email de confirmation que nous vous avons envoyé.
+        </p>
+        <p>
+          Si vous ne trouvez pas l'e-mail dans votre boîte de réception, consultez votre dossier SPAM. Cela peut prendre
+          jusqu'à 10 minutes pour recevoir cet e-mail. Une fois que votre email est confirmé, renvoie à cette page pour
+          continuer.
+        </p>
+        <p><img src="/assets/images/loader.gif" alt="Loading..." class="loader"></p>
+        <p>
+          Je n'ai pas reçu l'e-mail. <a href="#" (click)="resendCode($event)">Le renvoyer</a>
+        </p>
+        <form [formGroup]="codeForm" (ngSubmit)="confirmCode()">
+
+          <div class="form-group">
+            <p>
+              <label for="code">Entrez ici le code de validation noté dans l'e-mail :</label>
+              <input id="code" type="text" class="form-control" formControlName="code">
+            </p>
+            <button class="btn btn-warnning btn-block">Confirmer</button>
+          </div>
+        </form>
+        <p>
+          <a href="#">Pourquoi je dois confirmer mon addresse électronique?</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,83 @@
+.container {
+  width: 100%;
+}
+
+.head {
+  font-family: "Montserrat", Arial, Tahoma, sans-serif;
+}
+
+.nom {
+  font-size: 30px;
+}
+
+.prenom {
+  font-size: 30px;
+}
+
+.btnlink {
+  margin-left: 25px;
+}
+
+.body {
+  text-align: center;
+  /* margin-top: 10%; */
+}
+
+.img {
+  width: 300px;
+}
+
+.body i {
+  color: #ef1233;
+  font-size: 50px;
+}
+
+.body h4 {
+  font-size: 40px;
+  margin-top: 10%;
+}
+
+.count-to {
+  margin-top: 5%;
+}
+
+.card {
+  border: none;
+  margin-top: 6%;
+}
+
+small {
+  font-size: 16px;
+  font-family: "Google Sans", arial, sans-serif;
+}
+
+.adress {
+  color: #424241;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 18px;
+}
+
+.client {
+  font-size: 15px;
+  color: #ef1233;
+}
+
+.contact {
+  font-size: 11px;
+  color: #83837d;
+}
+
+.modifier {
+  background-color: #ef1233;
+  padding: 7px;
+  color: #ffffff;
+}
+
+.modifier:hover {
+  background-color: #212121;
+  color: #ffffff;
+}
+
+.option {
+  margin-top: 7%;
+}

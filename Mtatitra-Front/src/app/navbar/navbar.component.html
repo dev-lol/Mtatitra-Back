@@ -1,0 +1,64 @@
+<div *ngIf="!estAcceuil" class="container-fluid bg-white fixed-top">
+    <nav class="navbar navbar-expand-lg shadow" >
+        <a href="#" class="navbar-brand"><img src="assets/images/logo.png" class="logo" alt=""></a>
+        <button class="navbar-toggler btn-danger" data-toggle="collapse" data-target="#navbarMenu">
+            <i class="fa fa-navicon" style="color:#212121; font-size:28px; background-color: #ffffff;"></i>
+        </button>
+        <div class="navbar-collapse collapse justify-content-between menu" id="navbarMenu">
+            <ul class="navbar-nav navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a href="#" class="nav-link navmenu">ACCEUIL</a>
+                </li>
+                <li *ngIf="!loginService.isLoggedIn" class="nav-item">
+                    <a href="#" class="nav-link navmenu">REGLEMENT</a>
+                </li>
+                <li *ngIf="loginService.isLoggedIn" class="nav-item">
+                    <a class="nav-link navmenu" routerLink="/profile">PROFILE</a>
+                </li>
+                <li class="nav-item">
+                    <a routerLink="/tarif" class="nav-link navmenu">TARIF</a>
+                </li>
+                <li *ngIf="loginService.isLoggedIn" class="nav-item">
+                    <a href="#" class="nav-link navmenu" routerLink="/livrer">LIVRER</a>
+                </li>
+                <li *ngIf="!loginService.isLoggedIn" class="nav-item connexion">
+                    <a class="nav-link navmenu" routerLink="/login">SE CONNECTER</a>
+                </li>
+                <li *ngIf="loginService.isLoggedIn" class="nav-item connexion">
+                    <a class="nav-link navmenu" routerLink="/" (click)="loginService.doLogout()">SE DECONNECTER</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+</div>
+<nav *ngIf="estAcceuil" class="navbar navbar-expand-lg fixed-top bg-white" >
+    <a href="#" class="navbar-brand"><img src="assets/images/logo.png" class="logo" alt=""></a>
+    <button class="navbar-toggler btn-danger" data-toggle="collapse" data-target="#navbarMenu">
+        <i class="fa fa-navicon" style="color:#212121; font-size:28px; background-color: #ffffff;"></i>
+    </button>
+    <div class="navbar-collapse collapse justify-content-between" id="navbarMenu">
+        <ul class="navbar-nav navbar-nav ml-auto">
+            <li class="nav-item">
+                <a routerLink="/acceuil" class="nav-link navmenu">ACCEUIL</a>
+            </li>
+            <li *ngIf="!loginService.isLoggedIn" class="nav-item">
+                <a href="#" class="nav-link navmenu">REGLEMENT</a>
+            </li>
+            <li *ngIf="loginService.isLoggedIn" class="nav-item">
+                <a class="nav-link navmenu" routerLink="/profile">PROFILE</a>
+            </li>
+            <li class="nav-item">
+                <a routerLink="/tarif" class="nav-link navmenu">TARIF</a>
+            </li>
+            <li *ngIf="loginService.isLoggedIn" class="nav-item">
+                <a href="#" class="nav-link navmenu" routerLink="/livrer">LIVRER</a>
+            </li>
+            <li *ngIf="!loginService.isLoggedIn" class="nav-item connexion">
+                <a class="nav-link" routerLink="/login">SE CONNECTER</a>
+            </li>
+            <li *ngIf="loginService.isLoggedIn" class="nav-item connexion">
+                <a class="nav-link" routerLink="/" (click)="loginService.doLogout()">SE DECONNECTER</a>
+            </li>
+        </ul>
+    </div>
+</nav>

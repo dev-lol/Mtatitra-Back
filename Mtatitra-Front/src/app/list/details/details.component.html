@@ -1,0 +1,13 @@
+<h2 mat-dialog-title>DETAILS DU LIVRAISONS</h2>
+<mat-dialog-content class="mat-typography">
+  <p class="h6"><span class="title">Vehicule:</span><span class="part">
+      {{data.element.idTypeCouTypeCoursier.typeCou}}</span></p>
+  <p class="h6"><span class="title">Description :</span><span class="part"> {{data.element.descriptionLiv}}</span></p>
+  <p class="h6"><span class="title">Heure limite :</span><span class="part">
+      {{data.element.idLimiteDat.limiteDat}}</span></p>
+  <p class="h6"><span class="title">Télephone du recepteur :</span><span class="part">
+      {{data.element.numRecepLiv}}</span></p>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Fermer</button>
+</mat-dialog-actions>
