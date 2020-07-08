@@ -29,3 +29,10 @@ row {
   top: 100px;
   right: 50px;
 }
+mat-table{
+    width: 1900px;
+}
+
+.table-container{
+    overflow-x: auto;
+}

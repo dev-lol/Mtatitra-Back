@@ -6,6 +6,8 @@ import { ormconfig } from "../../../config";
 import jwt from 'jsonwebtoken';
 import { Livraison } from "../../../entities/Livraison";
 import { Etats } from "../../../entities/Etats";
+import ErrorValidator from "../../ErrorValidator";
+import { body } from "express-validator";
 export default class CoursierController extends Controller {
     constructor() {
         super()
@@ -38,29 +40,32 @@ export default class CoursierController extends Controller {
     }
 
     async postCoursier(router: Router) {
-        router.post("/login", async (req: Request, res: Response, next: NextFunction) => {
-            try {
+        router.post("/login", [
+            body(['password', 'username']).notEmpty().withMessage('Champs vide'),
+        ], ErrorValidator,
+            async (req: Request, res: Response, next: NextFunction) => {
+                try {
 
-                let coursier = await getRepository(Coursier).findOneOrFail({ where: { usernameCou: req.body.username } })
-                var bcrypt = require("bcrypt")
-                bcrypt.compare(req.body.password, coursier.passCou, (err, isSame) => {
-                    if (!err && isSame) {
-                        this.sendResponse(res, 200, {
-                            token: jwt.sign({ id: coursier.idCou, username: coursier.usernameCou }, process.env.COURSIER_PASS_PHRASE, { expiresIn: "30d" })
-                        })
-                    } else {
-                        this.sendResponse(res, 401, {
-                            message: "Invalid credentials"
-                        })
-                    }
-                })
-            } catch (error) {
-                this.sendResponse(res, 401, {
-                    message: "Invalid credentials"
-                })
-            }
+                    let coursier = await getRepository(Coursier).findOneOrFail({ where: { usernameCou: req.body.username } })
+                    var bcrypt = require("bcrypt")
+                    bcrypt.compare(req.body.password, coursier.passCou, (err, isSame) => {
+                        if (!err && isSame) {
+                            this.sendResponse(res, 200, {
+                                token: jwt.sign({ id: coursier.idCou, username: coursier.usernameCou }, process.env.COURSIER_PASS_PHRASE, { expiresIn: "30d" })
+                            })
+                        } else {
+                            this.sendResponse(res, 401, {
+                                message: "Invalid credentials"
+                            })
+                        }
+                    })
+                } catch (error) {
+                    this.sendResponse(res, 401, {
+                        message: "Invalid credentials"
+                    })
+                }
 
-        })
+            })
     }
 
 
@@ -70,16 +75,20 @@ export default class CoursierController extends Controller {
     }
 
     async updateLivraison(router): Promise<void> {
-        router.put("/livraison/:idLivraison", async (req: Request, res: Response, next: NextFunction) => {
-            let livraisonToUpdate: Livraison = await this.fetchLivraisonToUpdateFromDb(req)
-            let nouveauEtat: Etats = await this.createEtatFromRequest(req)
-            let livraisonUpdated: Livraison = await this.updateEtatLivraison(livraisonToUpdate, nouveauEtat)
+        router.put("/livraison/:idLivraison", [
+            // body(['password', 'username']).notEmpty().withMessage('donnee incomplete'),
+        ],
+            ErrorValidator,
+            async (req: Request, res: Response, next: NextFunction) => {
+                let livraisonToUpdate: Livraison = await this.fetchLivraisonToUpdateFromDb(req)
+                let nouveauEtat: Etats = await this.createEtatFromRequest(req)
+                let livraisonUpdated: Livraison = await this.updateEtatLivraison(livraisonToUpdate, nouveauEtat)
 
-            this.sendResponse(res, 200, {
-                message: "success",
-                data: livraisonUpdated
+                this.sendResponse(res, 200, {
+                    message: "success",
+                    data: livraisonUpdated
+                })
             })
-        })
     }
 
     private async updateEtatLivraison(liv: Livraison, etat: Etats): Promise<Livraison> {

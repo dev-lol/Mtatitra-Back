@@ -5,8 +5,8 @@
 export const environment = {
   production: false,
   SOCKET_ENDPOINT: 'https://livraison-app.herokuapp.com',
-  API_ENDPOINT: 'https://livraison-app.herokuapp.com/api/admin',
-  sitemap: "login",
+  API_ENDPOINT: 'https://livraison-app.herokuapp.com/api/client',
+  sitemap: "login"
 };
 
 /*

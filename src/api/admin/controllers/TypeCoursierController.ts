@@ -6,7 +6,7 @@ import { ormconfig } from "../../../config";
 import { runInThisContext } from "vm";
 import { Livraison } from "../../../entities/Livraison";
 import ErrorValidator from "../../ErrorValidator";
-import { query, sanitizeQuery } from "express-validator";
+import { query, sanitizeQuery, body, param } from "express-validator";
 export default class TypeCoursierController extends Controller {
     constructor() {
         super()
@@ -16,6 +16,7 @@ export default class TypeCoursierController extends Controller {
     async addGet(router: Router): Promise<void> {
         await this.getAllTypeCoursier(router)
         await this.statByCoursier(router)
+        await this.planning(router)
     }
 
 
@@ -63,6 +64,31 @@ export default class TypeCoursierController extends Controller {
                 }
             })
     }
+    private async planning(router): Promise<void> {
+        router.get("/planning", async (req: Request, res: Response, next: NextFunction) => {
+            const date: Date = new Date(req.query.date as string)
+            const id: number = Number(req.params.idTypeCou)
+            try {
+                let plan = await getRepository(TypeCoursier)
+                    .createQueryBuilder("type")
+                    .leftJoinAndSelect("type.livraisons", "livraison")
+                    .innerJoinAndSelect("livraison.idCliClient", "client")
+                    .innerJoinAndSelect("livraison.idCouCoursier", "coursier")
+                    .leftJoinAndSelect("livraison.idLimiteDat", "limiteDat")
+                    .leftJoinAndSelect("livraison.idLieDepart", "lieuDepart")
+                    .leftJoinAndSelect("lieuDepart.idZonZone", "zoneDepart")
+                    .leftJoinAndSelect("livraison.idLieArrivee", "lieuArrivee")
+                    .leftJoinAndSelect("lieuArrivee.idZonZone", "zoneArrivee")
+                    .andWhere("livraison.dateLiv = :date", { date: date })
+                    .getMany()
+
+                this.sendResponse(res, 200, plan)
+            } catch (err) {
+                next(err)
+            }
+
+        })
+    }
 
     private async fetchTypeCoursiersFromDatabase(): Promise<TypeCoursier[]> {
         return await getRepository(TypeCoursier).find({ where: { estSupprime: false } })
@@ -72,19 +98,22 @@ export default class TypeCoursierController extends Controller {
     }
 
     async postTypeCoursier(router: Router) {
-        router.post("/", async (req: Request, res: Response, next: NextFunction) => {
-            let typeCoursierToSave: TypeCoursier = await this.createTypeCoursierFromRequest(req)
+        router.post("/", [
+            body(['typeCou']).notEmpty().withMessage("Bad request")
+        ], ErrorValidator,
+            async (req: Request, res: Response, next: NextFunction) => {
+                let typeCoursierToSave: TypeCoursier = await this.createTypeCoursierFromRequest(req)
 
-            typeCoursierToSave.estSupprime = false
-            let typeCoursierSaved: TypeCoursier = await this.saveTypeCoursierToDatabase(typeCoursierToSave)
+                typeCoursierToSave.estSupprime = false
+                let typeCoursierSaved: TypeCoursier = await this.saveTypeCoursierToDatabase(typeCoursierToSave)
 
-            if (await this.isTypeCoursierSaved(typeCoursierSaved)) {
-                this.sendResponse(res, 200, { message: "OK" })
-            } else {
-                this.sendResponse(res, 400, { message: "KO" })
-            }
+                if (await this.isTypeCoursierSaved(typeCoursierSaved)) {
+                    this.sendResponse(res, 200, { message: "OK" })
+                } else {
+                    this.sendResponse(res, 400, { message: "KO" })
+                }
 
-        })
+            })
     }
 
     private async isTypeCoursierSaved(typeCoursier: TypeCoursier): Promise<boolean> {
@@ -105,7 +134,10 @@ export default class TypeCoursierController extends Controller {
 
 
     async addPut(router: Router): Promise<void> {
-        router.put("/:idType", async (req: Request, res: Response, next: NextFunction) => {
+        router.put("/:idType", [
+            param('idType').notEmpty().toInt().isNumeric().withMessage("bad request"),
+            body(['typeCou']).notEmpty().withMessage("Bad request")
+        ], ErrorValidator, async (req: Request, res: Response, next: NextFunction) => {
             try {
                 let type: TypeCoursier = await getRepository(TypeCoursier).findOneOrFail(Number(req.params.idType))
                 type = getRepository(TypeCoursier).merge(type, req.body as Object)
@@ -121,16 +153,19 @@ export default class TypeCoursierController extends Controller {
     }
 
     async addDelete(router: Router): Promise<void> {
-        router.delete("/:idType", async (req: Request, res: Response, next: NextFunction) => {
-            try {
-                let type: TypeCoursier = await getRepository(TypeCoursier).findOneOrFail(Number(req.params.idType))
-                type.estSupprime = true
-                await getRepository(TypeCoursier).save(type)
-                this.sendResponse(res, 203, { message: "Type deleted" })
-            } catch (error) {
-                this.sendResponse(res, 404, { message: "Type not found" })
-            }
+        router.delete("/:idType", [
+            param('idType').notEmpty().toInt().isNumeric().withMessage("bad request"),
+        ], ErrorValidator,
+            async (req: Request, res: Response, next: NextFunction) => {
+                try {
+                    let type: TypeCoursier = await getRepository(TypeCoursier).findOneOrFail(Number(req.params.idType))
+                    type.estSupprime = true
+                    await getRepository(TypeCoursier).save(type)
+                    this.sendResponse(res, 203, { message: "Type deleted" })
+                } catch (error) {
+                    this.sendResponse(res, 404, { message: "Type not found" })
+                }
 
-        })
+            })
     }
 }

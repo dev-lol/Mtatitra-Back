@@ -3,7 +3,9 @@ import { Component, OnInit } from '@angular/core';
 import { faStar, faChartBar, faUserGraduate, faUniversity, faBlog, faCube, faBars, faCreditCard,
   faArrowAltCircleRight, faHome, faUser, faCarAlt, faCartArrowDown, faStream, faGlobe,
   faStreetView, 
-  faClock} from '@fortawesome/free-solid-svg-icons';
+  faClock,
+  faTasks,
+  faStepForward} from '@fortawesome/free-solid-svg-icons';
 import { Router } from '@angular/router';
 
 @Component({
@@ -31,7 +33,8 @@ export class AdminComponent implements OnInit {
   faGlobe = faGlobe;
   faStreetView = faStreetView;
   faClock = faClock
-
+  faTasks = faTasks
+  faStep = faStepForward
   show = '';
 
   constructor(public router: Router, public display: DisplayService) { }
@@ -42,6 +45,11 @@ export class AdminComponent implements OnInit {
   slideDashboard() {
     this.display.show = 'dashboard';
     this.router.navigate(['/dashboard']);
+  }
+
+  slidePlanning(){
+    this.display.show = "planning"
+    this.router.navigate(["/planning"])
   }
 
   slideClient() {
@@ -80,10 +88,17 @@ export class AdminComponent implements OnInit {
     this.router.navigate(['/tarif']);
   }
 
+  slideEtape(){
+    this.display.show = "etape"
+    this.router.navigate(["/etape"])
+  }
+
   slideDate(){
     this.display.show = "date",
     this.router.navigate(["/date"])
   }
+
+  
 
  
 

@@ -1,0 +1,106 @@
+::ng-deep .mat-focused .mat-form-field-label {
+    /*change color of label*/
+    color: green !important;
+}
+
+ ::ng-deep .mat-form-field-underline {
+    /*change color of underline*/
+    background-color: grey !important;
+}
+
+ ::ng-deep.mat-form-field-ripple {
+    /*change color of underline when focused*/
+    color: grey !important;
+    ;
+}
+
+.container {
+    margin-top: 5%;
+}
+
+.mat-stepper-vertical {
+    margin-top: 8px;
+}
+
+.mat-form-field {
+    margin-top: 16px;
+}
+
+.produit {
+    margin-right: 7%;
+    width: 40%;
+    margin-top: 5%;
+}
+
+.btnnext {
+    margin-top: 0%;
+    margin-right: 10%;
+}
+
+.btnnextprev {
+    margin-top: 3%;
+    width: 100%;
+    padding-right: 10%;
+}
+
+.btnnextprev button {
+    background-color: #EF1233;
+    color: #ffffffff;
+    margin: 20px;
+}
+
+.btnnext button {
+    background-color: #EF1233;
+    color: #ffffffff;
+}
+
+.btnnext button:hover {
+    background-color: #212121;
+}
+
+.cancel :hover {
+    color: #212121;
+}
+
+.addproduct:hover {
+    color: #212121;
+}
+
+.produittextarea {
+    width: 87%;
+    margin-right: 8%;
+}
+
+.checkbox {
+    margin-top: 3%;
+    margin-left: 1%;
+}
+
+.cancel {
+    display: inline-block;
+    float: right;
+    margin-right: 17%;
+    color: #EF1233;
+}
+
+h2 {
+    margin-left: 8%;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+h3 {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 40px;
+    margin-top: 15%;
+}
+
+.addproduct {
+    font-size: 20px;
+    color: #EF1233;
+    font-size: 80px;
+    margin-right: 18%;
+}
+
+mat-error {
+    font-size: 11px;
+}

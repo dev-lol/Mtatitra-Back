@@ -13,6 +13,8 @@ import { LogoutGuard } from './admin/login-admin/logout.guard';
 
 import { TarifComponent } from './admin/tarif/tarif.component';
 import { DatelimitComponent } from './admin/datelimit/datelimit.component';
+import { PlanningComponent } from './admin/planning/planning.component';
+import { EtapesComponent } from './admin/etapes/etapes.component';
 
 
 
@@ -39,6 +41,10 @@ const routes: Routes = [
 
             },
             {
+                path : "planning",
+                component : PlanningComponent
+            },
+            {
                 path: 'client',
                 component: ClientComponent
             },
@@ -61,6 +67,10 @@ const routes: Routes = [
             {
                 path: 'tarif',
                 component: TarifComponent
+            },
+            {
+                path : "etape",
+                component : EtapesComponent
             },
             {
                 path: 'date',

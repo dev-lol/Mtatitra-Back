@@ -1,12 +1,13 @@
 import { Router, Response, Request, NextFunction, ErrorRequestHandler } from "express";
 import { Controller } from "../../Controller"
 import { Etats } from "../../../entities/Etats"
-import { Repository, Connection, createConnection, getConnection } from "typeorm";
+import { Repository, Connection, createConnection, getConnection, getRepository } from "typeorm";
 import { ormconfig } from "../../../config";
 import { runInThisContext } from "vm";
 import { json } from "body-parser";
+import ErrorValidator from "../../ErrorValidator";
+import { body, param } from 'express-validator';
 export default class EtatsController extends Controller {
-    etatsRepository: Repository<Etats>
     constructor() {
         super()
         this.addAllRoutes(this.mainRouter)
@@ -22,7 +23,7 @@ export default class EtatsController extends Controller {
 
                 let etatss: Etats[] = await this.fetchEtatssFromDatabase()
 
-                this.sendResponse(res, 200, { data: etatss })
+                this.sendResponse(res, 200, etatss)
             } catch (err) {
 
             }
@@ -31,39 +32,41 @@ export default class EtatsController extends Controller {
     }
 
     private async fetchEtatssFromDatabase(): Promise<Etats[]> {
-        return await this.etatsRepository.find({ where: { estSupprime: false } })
+        return await getRepository(Etats).find({ where: { estSupprime: false }, order: { ordreEta: "ASC" } })
     }
     async addPost(router: Router): Promise<void> {
         await this.postEtats(router)
     }
 
     async postEtats(router: Router) {
-        router.post("/", async (req: Request, res: Response, next: NextFunction) => {
-            let etatsToSave: Etats = await this.createEtatsFromRequest(req)
+        router.post("/", [
+            body(['etatEta']).notEmpty().withMessage("Champs vide")
+        ],
+            ErrorValidator,
+            async (req: Request, res: Response, next: NextFunction) => {
+                try {
 
-
-            let etatsSaved: Etats = await this.saveEtatsToDatabase(etatsToSave)
-
-            if (await this.isEtatsSaved(etatsSaved)) {
-                this.sendResponse(res, 200, { message: "OK" })
-            } else {
-                this.sendResponse(res, 400, { message: "KO" })
-            }
-
-        })
-    }
-
-    private async isEtatsSaved(etats: Etats): Promise<boolean> {
-        return etats !== undefined
+                    let etatsToSave: Etats = await this.createEtatsFromRequest(req)
+                    const lastEtat = (await getRepository(Etats).findOne({ order: { ordreEta: "DESC" } })).ordreEta
+                    if (lastEtat)
+                        etatsToSave.ordreEta = lastEtat + 1
+                    else
+                        etatsToSave.ordreEta = 0
+                    let etatsSaved: Etats = await this.saveEtatsToDatabase(etatsToSave)
+                    this.sendResponse(res, 200, { message: "OK" })
+                } catch (error) {
+                    this.sendResponse(res, 400, { message: "KO" })
+                }
+            })
     }
 
     private async createEtatsFromRequest(req: Request): Promise<Etats> {
-        let etats = this.etatsRepository.create(req.body as Object)
+        let etats = getRepository(Etats).create(req.body as Object)
         return etats
     }
 
     private async saveEtatsToDatabase(etats: Etats): Promise<Etats> {
-        return await this.etatsRepository.save(etats)
+        return await getRepository(Etats).save(etats)
     }
 
 
@@ -71,11 +74,17 @@ export default class EtatsController extends Controller {
 
 
     async addPut(router: Router): Promise<void> {
-        router.put("/:idEtats", async (req: Request, res: Response, next: NextFunction) => {
+        router.put("/", [
+            body(['etapes']).notEmpty().withMessage("Champs vide")
+        ], ErrorValidator, async (req: Request, res: Response, next: NextFunction) => {
             try {
-                let etats: Etats = await this.etatsRepository.findOneOrFail(Number(req.params.idEtats))
-                etats = this.etatsRepository.merge(etats, req.body as Object)
-                await this.etatsRepository.save(etats)
+
+                let etats: Etats[] = await getRepository(Etats).save(req.body.etapes)
+                let notRemove = []
+                for (const etat of etats) {
+                    notRemove.push(etat.idEta)
+                }
+                await getRepository(Etats).createQueryBuilder().delete().where("idEta not in (:...notRemove)", { notRemove: notRemove }).execute()
                 this.sendResponse(res, 200, { message: "Etats changed" })
             } catch (error) {
                 console.log(error)
@@ -100,31 +109,37 @@ export default class EtatsController extends Controller {
      * 
      */
     private patchOrdre(router: Router) {
-        router.patch("/ordre", async (req: Request, res: Response, next: NextFunction) => {
-            try {
-                var ordre: Object = JSON.parse(req.body.ordre)
-                let count = await this.etatsRepository.count()
-                if (Object.keys(ordre).length != count || (new Set(Object.values(ordre))).size != count)
-                    throw new Error("Ordre dupliquee ou manquante")
-                var etats = await this.etatsRepository.find()
-                for (let etat of etats) {
-                    etat.ordreEta = ordre[etat.idEta]
+        router.patch("/ordre", [
+            body('ordre').isJSON().withMessage("value error")
+        ],
+            ErrorValidator,
+            async (req: Request, res: Response, next: NextFunction) => {
+                try {
+                    var ordre: Object = JSON.parse(req.body.ordre)
+                    let count = await getRepository(Etats).count()
+                    if (Object.keys(ordre).length != count || (new Set(Object.values(ordre))).size != count)
+                        throw new Error("Ordre dupliquee ou manquante")
+                    var etats = await getRepository(Etats).find()
+                    for (let etat of etats) {
+                        etat.ordreEta = ordre[etat.idEta]
+                    }
+                    await getRepository(Etats).save(etats);
+                    this.sendResponse(res, 200, { message: "Ordre changed" });
                 }
-                await this.etatsRepository.save(etats);
-                this.sendResponse(res, 200, { message: "Ordre changed" });
-            }
-            catch (error) {
-                console.log(error);
-                this.sendResponse(res, 404, { message: "Ordre not changed" });
-            }
-        });
+                catch (error) {
+                    console.log(error);
+                    this.sendResponse(res, 404, { message: "Ordre not changed" });
+                }
+            });
     }
 
     async addDelete(router: Router): Promise<void> {
-        router.delete("/:idEtats", async (req: Request, res: Response, next: NextFunction) => {
+        router.delete("/:idEtats", [
+            param('idEtats').notEmpty().toInt().isNumeric().withMessage("params error")
+        ], ErrorValidator, async (req: Request, res: Response, next: NextFunction) => {
             try {
-                let etats: Etats = await this.etatsRepository.findOneOrFail(Number(req.params.idEtats))
-                await this.etatsRepository.remove(etats)
+                let etats: Etats = await getRepository(Etats).findOneOrFail(Number(req.params.idEtats))
+                await getRepository(Etats).remove(etats)
                 this.sendResponse(res, 203, { message: "Etats deleted" })
             } catch (error) {
                 this.sendResponse(res, 404, { message: "Etats not found" })

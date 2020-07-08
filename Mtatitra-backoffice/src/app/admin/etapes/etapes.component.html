@@ -1,0 +1,31 @@
+<div class="container-fluid">
+  <div class="row justify-content-center">
+    <div class="col-10">
+      <div cdkDropList class="example-list m-auto" (cdkDropListDropped)="drop($event)">
+        <div class="example-box" *ngFor="let etape of etapes" cdkDrag>
+          <div class="example-custom-placeholder" *cdkDragPlaceholder></div>
+          <input class="w-75" *ngIf="editMode && currentEdit.idEta == etape.idEta" [(ngModel)]="modifiedEtape"
+            placeholder="Etapes" autocomplete="off">
+
+          <fa-icon *ngIf="editMode && currentEdit.idEta == etape.idEta" [icon]="faCheck" style="cursor: pointer;"
+            (click)="save(etape)"></fa-icon>
+
+          <fa-icon *ngIf="editMode && currentEdit.idEta == etape.idEta" [icon]="faClose" style="cursor: pointer;"
+            (click)="exit(etape)"></fa-icon>
+
+          <span class="w-75" *ngIf="!editMode || currentEdit.idEta != etape.idEta">
+            {{etape.etatEta}}
+          </span>
+          <fa-icon [icon]="faEdit" *ngIf="!editMode" style="cursor: pointer;" (click)="edit(etape)"></fa-icon>
+          <fa-icon [icon]="faClose" *ngIf="!editMode" style="cursor: pointer;" (click)="remove(etape)"></fa-icon>
+        </div>
+      </div>
+    </div>
+    <div class="col-10 mt-3 text-center">
+      <button class="btn btn-success mx-1" [disabled]="isAdding" (click)="add()"> Ajouter </button>
+      <button class="btn btn-primary mx-1" [disabled]="!isChanged || editMode" (click)="submit()"> Enregistrer </button>
+      <button class="btn btn-danger mx-1" [disabled]="!isChanged || editMode" (click)="reset()"> Annuler </button>
+
+    </div>
+  </div>
+</div>

@@ -22,6 +22,18 @@ export class PutService {
             });
     }
 
+    editEtape(etapes: Object) {
+        // tslint:disable-next-line: object-literal-key-quotes
+        const headers: any = new HttpHeaders({ 'Content-Type': 'application/json' });
+        this.http.put(`${this.endpoint}/etats`, etapes, headers).subscribe(
+            (data: any) => {
+                console.log(data);
+                this.getSrv.getEtapes();
+            }, (error) => {
+                console.log(error);
+            });
+    }
+
 
     editTypeProduit(idType: number, type: Object) {
         // tslint:disable-next-line: object-literal-key-quotes

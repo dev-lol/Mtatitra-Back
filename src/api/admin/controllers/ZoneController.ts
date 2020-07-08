@@ -3,7 +3,7 @@ import { Controller } from "../../Controller"
 import { Zone } from "../../../entities/Zone"
 import { getRepository } from "typeorm";
 import ErrorValidator from "../../ErrorValidator";
-import { query, sanitizeQuery, check } from "express-validator";
+import { query, sanitizeQuery, check, body, param } from "express-validator";
 import { Lieu } from '../../../entities/Lieu';
 export default class ZoneController extends Controller {
     constructor() {
@@ -39,18 +39,16 @@ export default class ZoneController extends Controller {
                 try {
                     const startDate: Date = new Date(req.query.start as string)
                     const endDate: Date = new Date(req.query.end as string)
-                    let a = await getRepository(Lieu)
-                        .createQueryBuilder("lieu")
-                        .leftJoin("lieu.livraisons2", "livraison")
-                        .leftJoin("lieu.idZonZone", "zone")
+                    let a = await getRepository(Zone)
+                        .createQueryBuilder("zone")
+                        .leftJoinAndSelect("zone.lieu", "lieu")
+                        .leftJoinAndSelect("lieu.livraisons2", "livraison", "livraison.dateLiv >= :startDate AND livraison.dateLiv <= :endDate", { startDate: startDate, endDate: endDate })
                         .select(`zone.nomZon as "nomZon"`)
                         .addSelect(`zone.idZon as "idZon"`)
                         .addSelect(`count(livraison) as total`)
                         .groupBy("zone.idZon")
                         .orderBy("total", "DESC")
                         .addOrderBy("zone.idZon", "ASC")
-                        .where("livraison.dateLiv >= :startDate", { startDate: startDate })
-                        .andWhere("livraison.dateLiv <= :endDate", { endDate: endDate })
                         .getRawMany()
                     this.sendResponse(res, 200, a)
                 } catch (err) {
@@ -70,19 +68,23 @@ export default class ZoneController extends Controller {
     }
 
     async postZone(router: Router) {
-        router.post("/", async (req: Request, res: Response, next: NextFunction) => {
-            let zoneToSave: Zone = await this.createZoneFromRequest(req)
+        router.post("/", [
+            body(['nomZon']).notEmpty().withMessage("Champs vide"),
+        ],
+            ErrorValidator,
+            async (req: Request, res: Response, next: NextFunction) => {
+                let zoneToSave: Zone = await this.createZoneFromRequest(req)
 
-            zoneToSave.estSupprime = false
-            let zoneSaved: Zone = await this.saveZoneToDatabase(zoneToSave)
+                zoneToSave.estSupprime = false
+                let zoneSaved: Zone = await this.saveZoneToDatabase(zoneToSave)
 
-            if (await this.isZoneSaved(zoneSaved)) {
-                this.sendResponse(res, 200, { message: "OK" })
-            } else {
-                this.sendResponse(res, 400, { message: "KO" })
-            }
+                if (await this.isZoneSaved(zoneSaved)) {
+                    this.sendResponse(res, 200, { message: "OK" })
+                } else {
+                    this.sendResponse(res, 400, { message: "KO" })
+                }
 
-        })
+            })
     }
 
     private async isZoneSaved(zone: Zone): Promise<boolean> {
@@ -103,32 +105,41 @@ export default class ZoneController extends Controller {
 
 
     async addPut(router: Router): Promise<void> {
-        router.put("/:idZone", async (req: Request, res: Response, next: NextFunction) => {
-            try {
-                let zone: Zone = await getRepository(Zone).findOneOrFail(Number(req.params.idZone))
-                zone = getRepository(Zone).merge(zone, req.body as Object)
-                zone.estSupprime = false
-                await getRepository(Zone).save(zone)
-                this.sendResponse(res, 200, { message: "Zone changed" })
-            } catch (error) {
-                console.log(error)
-                this.sendResponse(res, 404, { message: "Zone not found" })
-            }
+        router.put("/:idZone", [
+            body(['nomZon']).notEmpty().withMessage("Champs vide"),
+            param('idZone').notEmpty().toInt().isNumeric().withMessage("bad request")
+        ],
+            ErrorValidator,
+            async (req: Request, res: Response, next: NextFunction) => {
+                try {
+                    let zone: Zone = await getRepository(Zone).findOneOrFail(Number(req.params.idZone))
+                    zone = getRepository(Zone).merge(zone, req.body as Object)
+                    zone.estSupprime = false
+                    await getRepository(Zone).save(zone)
+                    this.sendResponse(res, 200, { message: "Zone changed" })
+                } catch (error) {
+                    console.log(error)
+                    this.sendResponse(res, 404, { message: "Zone not found" })
+                }
 
-        })
+            })
     }
 
     async addDelete(router: Router): Promise<void> {
-        router.delete("/:idZone", async (req: Request, res: Response, next: NextFunction) => {
-            try {
-                let zone: Zone = await getRepository(Zone).findOneOrFail(Number(req.params.idZone))
-                zone.estSupprime = true
-                await getRepository(Zone).save(zone)
-                this.sendResponse(res, 203, { message: "Zone deleted" })
-            } catch (error) {
-                this.sendResponse(res, 404, { message: "Zone not found" })
-            }
+        router.delete("/:idZone", [
+            param('idZone').notEmpty().toInt().isNumeric().withMessage("bad request")
+        ],
+            ErrorValidator,
+            async (req: Request, res: Response, next: NextFunction) => {
+                try {
+                    let zone: Zone = await getRepository(Zone).findOneOrFail(Number(req.params.idZone))
+                    zone.estSupprime = true
+                    await getRepository(Zone).save(zone)
+                    this.sendResponse(res, 203, { message: "Zone deleted" })
+                } catch (error) {
+                    this.sendResponse(res, 404, { message: "Zone not found" })
+                }
 
-        })
+            })
     }
 }

@@ -4,6 +4,8 @@ import { DateLimite } from "../../../entities/DateLimite"
 import { Repository, Connection, createConnection, getConnection, getRepository } from "typeorm";
 import { ormconfig } from "../../../config";
 import { runInThisContext } from "vm";
+import ErrorValidator from "../../ErrorValidator";
+import { body, param } from 'express-validator';
 export default class DateLimiteController extends Controller {
     constructor() {
         super()
@@ -16,17 +18,19 @@ export default class DateLimiteController extends Controller {
 
 
     private async getAllDateLimite(router: Router): Promise<void> {
-        router.get("/", async (req: Request, res: Response, next: NextFunction) => {
-             try {
-                
+        router.get("/",
 
-                let dateLimites: DateLimite[] = await getRepository(DateLimite).find({where : {estSupprime : false}})
+            async (req: Request, res: Response, next: NextFunction) => {
+                try {
 
-                this.sendResponse(res, 200, dateLimites)
-            } catch (err) {
-                this.sendResponse(res, 404, { message: "not found" })
-            }
-        })
+
+                    let dateLimites: DateLimite[] = await getRepository(DateLimite).find({ where: { estSupprime: false } })
+
+                    this.sendResponse(res, 200, dateLimites)
+                } catch (err) {
+                    this.sendResponse(res, 404, { message: "not found" })
+                }
+            })
 
     }
 
@@ -38,21 +42,19 @@ export default class DateLimiteController extends Controller {
     }
 
     async postDateLimite(router: Router) {
-        router.post("/", async (req: Request, res: Response, next: NextFunction) => {
+        router.post("/", [
+            body(['limiteDat']).notEmpty().withMessage("Champs vide")
+        ],
+            ErrorValidator, async (req: Request, res: Response, next: NextFunction) => {
+                let dateLimiteToSave: DateLimite = await this.createDateLimiteFromRequest(req)
+                let dateLimiteSaved: DateLimite = await this.saveDateLimiteToDatabase(dateLimiteToSave)
+                if (await this.isDateLimiteSaved(dateLimiteSaved)) {
+                    this.sendResponse(res, 200, { message: "OK" })
+                } else {
+                    this.sendResponse(res, 400, { message: "KO" })
+                }
 
-          
-             let dateLimiteToSave: DateLimite = await this.createDateLimiteFromRequest(req)
-
-
-            let dateLimiteSaved: DateLimite = await this.saveDateLimiteToDatabase(dateLimiteToSave)
-
-            if (await this.isDateLimiteSaved(dateLimiteSaved)) {
-                this.sendResponse(res, 200, { message: "OK" })
-            } else {
-                this.sendResponse(res, 400, { message: "KO" })
-            }
- 
-        })
+            })
     }
 
     private async isDateLimiteSaved(dateLimite: DateLimite): Promise<boolean> {
@@ -74,34 +76,41 @@ export default class DateLimiteController extends Controller {
 
 
     async addPut(router: Router): Promise<void> {
-        router.put("/:idDate", async (req: Request, res: Response, next: NextFunction) => {
-            try {
-                let date: DateLimite = await getRepository(DateLimite).findOneOrFail(Number(req.params.idDate))
-                date = getRepository(DateLimite).merge(date, req.body as Object)
-                date.estSupprime = false
-                await getRepository(DateLimite).save(date)
-                this.sendResponse(res, 200, { message: "Date changed" })
-            } catch (error) {
-                console.log(error)
-                this.sendResponse(res, 404, { message: "Date not found" })
-            }
+        router.put("/:idDate", [
+            param('idDate').toInt().isNumeric().withMessage("invalid params"),
+            body(['limiteDat']).notEmpty().withMessage("Champs vide")
+        ],
+            ErrorValidator, async (req: Request, res: Response, next: NextFunction) => {
+                try {
+                    let date: DateLimite = await getRepository(DateLimite).findOneOrFail(Number(req.params.idDate))
+                    date = getRepository(DateLimite).merge(date, req.body as Object)
+                    date.estSupprime = false
+                    await getRepository(DateLimite).save(date)
+                    this.sendResponse(res, 200, { message: "Date changed" })
+                } catch (error) {
+                    console.log(error)
+                    this.sendResponse(res, 404, { message: "Date not found" })
+                }
 
-        })
+            })
     }
 
     async addDelete(router: Router): Promise<void> {
-        router.delete("/:idDate", async (req: Request, res: Response, next: NextFunction) => {
-            try {
-                let date: DateLimite = await getRepository(DateLimite).findOneOrFail(Number(req.params.idDate))
-                date.estSupprime = true
-                await getRepository(DateLimite).save(date)
-                this.sendResponse(res, 203, { message: "Date deleted" })
-            } catch (error) {
-             
-                this.sendResponse(res, 404, { message: "Date not found" })
-            }
- 
+        router.delete("/:idDate", [
+            param('idDate').toInt().isNumeric().withMessage("invalid params"),
+        ],
+            ErrorValidator,
+            async (req: Request, res: Response, next: NextFunction) => {
+                try {
+                    let date: DateLimite = await getRepository(DateLimite).findOneOrFail(Number(req.params.idDate))
+                    date.estSupprime = true
+                    await getRepository(DateLimite).save(date)
+                    this.sendResponse(res, 203, { message: "Date deleted" })
+                } catch (error) {
 
-        })
+                    this.sendResponse(res, 404, { message: "Date not found" })
+                }
+
+            })
     }
 }

@@ -154,7 +154,9 @@ export default class TarifController extends Controller {
     }
 
     async addDelete(router: Router): Promise<void> {
-        router.delete("/:idTarif", async (req: Request, res: Response, next: NextFunction) => {
+        router.delete("/:idTarif", [
+            param(['idTarif']).notEmpty().toInt().isNumeric().withMessage("Bad request")
+        ], ErrorValidator,  async (req: Request, res: Response, next: NextFunction) => {
             try {
                 let tarif: Tarif = await getRepository(Tarif).findOneOrFail(Number(req.params.idTarif), { relations: ["idZonDepart", "idZonArrivee", "idTypeCouTypeCoursier"] })
                 let result = await getRepository(Tarif)

@@ -46,12 +46,15 @@ import { DetailZoneComponent } from './admin/zone/detail-zone/detail-zone.compon
 import { DetailCoursierComponent } from './admin/coursier/detail-coursier/detail-coursier.component';
 import { LoginAdminComponent } from './admin/login-admin/login-admin.component';
 import { AuthInterceptor } from './admin/login-admin/authconfig.interceptor.ts ';
-import { NgxSpinnerComponent, NgxSpinnerModule } from 'ngx-spinner'
+import { NgxSpinnerModule } from 'ngx-spinner'
 import { TarifComponent } from './admin/tarif/tarif.component';
 import { DatelimitComponent } from './admin/datelimit/datelimit.component';
 import { DetailDateComponent } from './admin/datelimit/detail-date/detail-date.component';
 import { DetailTarifComponent } from './admin/tarif/detail-tarif/detail-tarif.component';
 import { DetailLieuComponent } from './admin/zone/detail-lieu/detail-lieu.component';
+import { PlanningComponent } from './admin/planning/planning.component';
+import { EtapesComponent } from './admin/etapes/etapes.component';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 
 @NgModule({
     entryComponents: [
@@ -83,7 +86,9 @@ import { DetailLieuComponent } from './admin/zone/detail-lieu/detail-lieu.compon
         TarifComponent,
         DatelimitComponent,
         DetailDateComponent,
-        DetailLieuComponent
+        DetailLieuComponent,
+        PlanningComponent,
+        EtapesComponent
     ],
     imports: [
         BrowserModule,
@@ -127,7 +132,8 @@ import { DetailLieuComponent } from './admin/zone/detail-lieu/detail-lieu.compon
         MatGridListModule,
         MatToolbarModule,
         NgxSpinnerModule,
-        ChartsModule
+        ChartsModule,
+        DragDropModule
     ],
     providers: [
         FormBuilder,

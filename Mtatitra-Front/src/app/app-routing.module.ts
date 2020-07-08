@@ -1,84 +1,39 @@
-import { AdminGuard } from './admin/login-admin/admin.guard';
-import { LoginAdminComponent } from './admin/login-admin/login-admin.component';
-import { TypeComponent } from './admin/type/type.component';
-import { ZoneComponent } from './admin/zone/zone.component';
-import { LivraisonComponent } from "./admin/livraison/livraison.component";
-import { CoursierComponent } from './admin/coursier/coursier.component';
-import { ClientComponent } from './admin/client/client.component';
-import { DashboardComponent } from './admin/dashboard/dashboard.component';
-import { AdminComponent } from "./admin/admin/admin.component";
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { LogoutGuard } from './admin/login-admin/logout.guard';
-
-import { TarifComponent } from './admin/tarif/tarif.component';
-import { DatelimitComponent } from './admin/datelimit/datelimit.component';
-
+import { LoginComponent } from './login/login.component';
+import { AcceuilComponent } from './acceuil/acceuil.component';
+import { ClientformComponent } from './clientform/clientform.component';
+import { MailconfirmationComponent } from './mailconfirmation/mailconfirmation.component';
+import { SignupComponent } from './signup/signup.component';
+import { ProfileclientComponent } from './profileclient/profileclient.component';
+import { AuthGuard } from './login/auth.guard';
+import { NotfoundComponent } from './notfound/notfound.component';
+import { LogoutGuard } from './login/logout.guard';
+import { EditComponent } from './edit/edit.component';
+import { TarifComponent } from './tarif/tarif.component';
+import { ListComponent } from './list/list.component';
 
 
 const routes: Routes = [
-    {
-        path: 'login',
-        component: LoginAdminComponent,
-        canActivate: [LogoutGuard]
-    },
-    {
-
-        path: '',
-        canActivate: [AdminGuard],
-        component: AdminComponent,
-        children: [
-            {
-                path: '',
-                redirectTo: '/dashboard',
-                pathMatch: 'full'
-            },
-            {
-                path: 'dashboard',
-                component: DashboardComponent,
-
-            },
-            {
-                path: 'client',
-                component: ClientComponent
-            },
-            {
-                path: 'coursier',
-                component: CoursierComponent
-            },
-            {
-                path: 'livraison',
-                component: LivraisonComponent
-            },
-            {
-                path: 'type',
-                component: TypeComponent
-            },
-            {
-                path: 'zone',
-                component: ZoneComponent
-            },
-            {
-                path: 'tarif',
-                component: TarifComponent
-            },
-            {
-                path: 'date',
-                component: DatelimitComponent
-            }
-        ]
-    },
-
-
+    { path: '', redirectTo: '/acceuil', pathMatch: 'full' },
+    { path: 'acceuil', component: AcceuilComponent },
+    { path: 'login', component: LoginComponent, canActivate: [LogoutGuard] },
+    { path: 'livrer', component: ClientformComponent, canActivate: [AuthGuard] },
+    { path: 'mailconfirmation/:email/:code', component: MailconfirmationComponent, canActivate: [LogoutGuard] },
+    { path: 'mailconfirmation/:email', component: MailconfirmationComponent, canActivate: [LogoutGuard] },
+    { path: 'mailconfirmation', redirectTo: 'acceuil', canActivate: [LogoutGuard] },
+    { path: 'signup', component: SignupComponent, canActivate: [LogoutGuard] },
+    { path: 'list', component: ListComponent},
+    { path: '404', component: NotfoundComponent },
+    { path: 'profile', component: ProfileclientComponent, canActivate: [AuthGuard] },
+    { path: 'profile/modifier', component: EditComponent, canActivate: [AuthGuard] },
+    { path: 'tarif', component: TarifComponent},
     { path: '**', redirectTo: '404' }
 ];
 
 @NgModule({
     imports: [RouterModule.forRoot(routes)],
-    exports: [RouterModule]
+exports: [RouterModule]
 })
 export class AppRoutingModule { }
-export const routingComponents = [
-    AdminComponent, DashboardComponent,
-    ClientComponent, CoursierComponent, LivraisonComponent, ZoneComponent
-];
+export const routingComponents = [AcceuilComponent, LoginComponent, ClientformComponent, MailconfirmationComponent, SignupComponent, ProfileclientComponent, NotfoundComponent,EditComponent, TarifComponent,ListComponent]

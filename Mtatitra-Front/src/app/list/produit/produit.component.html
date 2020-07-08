@@ -1,0 +1,16 @@
+<h2 mat-dialog-title class="ml-2">
+    DETAILS DU LIVRAISONS</h2>
+<div *ngFor="let produit of produits" class="card m-2 p-2">
+    <mat-dialog-content class="mat-typography">
+        <p class="h6"><span class="title">Produits n° :</span><span class="part"> {{produit.idPro}}</span></p>
+        <p class="h6"><span class="title">Consigne :</span><span class="part"> {{produit.consignePro}}</span></p>
+        <p class="h6"><span class="title">Hauteur :</span><span class="part"> {{produit.hauteurPro}}</span></p>
+        <p class="h6"><span class="title">Longeur :</span><span class="part"> {{produit.longueurPro}}</span></p>
+        <p class="h6"><span class="title">Largeur :</span><span class="part"> {{produit.largeurPro}}</span></p>
+        <p class="h6"><span class="title">Poids :</span><span class="part"> {{produit.poidsPro}}</span></p>
+        <p class="h6"><span class="title">Prix :</span><span class="part"> {{produit.prixPro}}</span></p>
+    </mat-dialog-content>
+</div>
+<mat-dialog-actions align="end">
+    <button mat-button mat-dialog-close>Fermer</button>
+</mat-dialog-actions>

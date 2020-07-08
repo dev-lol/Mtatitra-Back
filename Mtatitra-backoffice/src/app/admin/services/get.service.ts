@@ -24,8 +24,29 @@ export class GetService {
     graphTypeCouSubject = new Subject<any>();
     graphTypeProSubject = new Subject<any>();
     graphCoursierSubject = new Subject<any>();
+
+    planningSubject = new Subject<any>();
+    etapesSubject = new Subject<any>();
+
+
+
     constructor(public http: HttpClient) { }
 
+    getEtapes() {
+        this.http.get(`${this.endpoint}/etats`).subscribe(
+            (result: any) => {
+                this.etapesSubject.next(result.slice())
+            }
+        )
+    }
+    getTypeCouriserPlanning(date: string = this.lastDate) {
+        this.http.get(`${this.endpoint}/typecoursier/planning?date=${date}`).subscribe(
+            (result: any) => {
+                let plan: any[]
+                plan = result
+                this.planningSubject.next(plan.slice())
+            })
+    }
     getAllType() {
         this.getAllTypeCoursier();
         this.getAllTypeProduit();

@@ -204,7 +204,7 @@ import { Lieu } from './entities/Lieu';
                         tarif2.idTypeCouTypeCoursier = type
                         tarif2.idZonDepart = zone2
                         tarif2.idZonArrivee = zone
-                        tarif2.tarifTar = Math.floor(Math.random() * (10 - 3) + 3) * 1000
+                        tarif2.tarifTar = tarif.tarifTar
                         tarifs.push(tarif)
                         tarifs.push(tarif2)
                     }

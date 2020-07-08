@@ -224,7 +224,7 @@ export class DashboardComponent implements OnInit {
                 this.typeProduitData = []
                 this.typeProduitLabel = []
                 this.typeProduitChartColors = []
-                const colors: Color[] = []
+                const colors: any[] = []
                 const used2 = []
                 data.forEach(item => {
                     this.typeProduitData.push(item.total)
@@ -233,9 +233,13 @@ export class DashboardComponent implements OnInit {
                     if (used2.includes(index))
                         index = Math.floor(Math.random() * (this.colors.length - 1))
                     used2.push(index)
-                    colors.push(this.colors[index])
+                    colors.push(this.colors[index].backgroundColor)
                 })
-                this.typeProduitChartColors.push(colors)
+                this.typeProduitChartColors = [{
+                    backgroundColor: [
+                        ...colors
+                    ]
+                }]
         }
         this.updateLineGraph()
     }

@@ -39,6 +39,17 @@
                 style="float: right;"></fa-icon>
             </mat-list-item>
 
+            <mat-list-item class="btn btn-default item" (click)="slidePlanning()">
+              <!-- <mat-icon matListIcon></mat-icon> -->
+              <fa-icon matListIcon class="icon" [icon]="faTasks"></fa-icon>
+              <p matLine class="menu">
+                Planning
+              </p>
+              <!-- <span class="pic arrow-right" *ngIf="show === 'dashboard'"></span> -->
+              <fa-icon class="arrow" [icon]="faArrowAltCircleRight" *ngIf="display.show === 'planning'"
+                style="float: right;"></fa-icon>
+            </mat-list-item>
+
             <mat-list-item class="btn btn-default item" (click)="slideClient()">
               <!-- <mat-icon matListIcon></mat-icon> -->
               <fa-icon matListIcon class="icon" [icon]="faUser"></fa-icon>
@@ -83,6 +94,7 @@
             <!-- <mat-list-item>
             <p matLine class="section">Autre</p>
         </mat-list-item> -->
+
             <mat-list-item class="btn btn-default item">
               <!-- <mat-icon matListIcon></mat-icon> -->
               <fa-icon matListIcon class="icon" [icon]="faStreetView"></fa-icon>
@@ -112,8 +124,20 @@
               <p matLine class="menu">
                 Tarifs
               </p>
-              <fa-icon class="arrow" [icon]="faArrowAltCircleRight" *ngIf="display.show === 'produit'"
+              <fa-icon class="arrow" [icon]="faArrowAltCircleRight" *ngIf="display.show === 'tarif'"
                 style="float: right;"></fa-icon>
+            </mat-list-item>
+
+            <mat-list-item class="btn btn-default item">
+              <!-- <mat-icon matListIcon></mat-icon> -->
+              <fa-icon matListIcon class="icon" [icon]="faStep"></fa-icon>
+              <p matLine class="menu" (click)="slideEtape()">
+                Etapes
+              </p>
+              <!-- <span class="pic arrow-right" *ngIf="show === 'zone'"></span> -->
+              <fa-icon class="arrow" [icon]="faArrowAltCircleRight" *ngIf="display.show === 'etape'"
+                style="float: right;">
+              </fa-icon>
             </mat-list-item>
 
             <mat-list-item class="btn btn-default item" (click)="slideDate()">
@@ -122,7 +146,7 @@
               <p matLine class="menu">
                 Dates
               </p>
-              <fa-icon class="arrow" [icon]="faArrowAltCircleRight" *ngIf="display.show === 'produit'"
+              <fa-icon class="arrow" [icon]="faArrowAltCircleRight" *ngIf="display.show === 'date'"
                 style="float: right;"></fa-icon>
             </mat-list-item>
 
