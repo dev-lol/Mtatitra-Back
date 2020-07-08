@@ -1,0 +1,114 @@
+<div class="content w-100 h-100 position-relative">
+  <div class="container-fluid h-100">
+    <div class="row h-100 justify-content-center align-items-center">
+      <div class="col-xs-12 col-md-8 col-lg-6">
+
+
+        <div class="card shadow">
+          <div class="card-heading">
+            <h4>Créer votre compte MTATITRA</h4>
+          </div>
+          <div class="card-body">
+            <div class="row align-items-center">
+              <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 form">
+                <form class="form-signin" [formGroup]="signupForm" (ngSubmit)="registerUser()">
+                  <mat-form-field class="formulaire">
+                    <mat-label>Nom</mat-label>
+                    <input required matInput class="formControlName" formControlName="nomCli" placeholder="Ex. Ratoko">
+                    <mat-error *ngIf="controls.nomCli.errors?.required">Champs vide</mat-error>
+                    <mat-error *ngIf="controls.nomCli.errors?.serverError">{{controls.nomCli.errors?.serverError}}
+                    </mat-error>
+                  </mat-form-field>
+                  <mat-form-field class="formulaire">
+                    <mat-label>Prenom</mat-label>
+                    <input required matInput placeholder="Ex. Naivo" formControlName="prenomCli">
+                    <mat-error *ngIf="controls.prenomCli.errors?.required">Champs vide</mat-error>
+                    <mat-error *ngIf="controls.prenomCli.errors?.serverError">{{controls.prenomCli.errors?.serverError}}
+                    </mat-error>
+                  </mat-form-field>
+                  <mat-form-field class="formulaire">
+                    <mat-label>Telephone</mat-label>
+                    <span matPrefix>+261 &nbsp;</span>
+                    <input required type="tel" matInput placeholder="3333333" formControlName="numTelCli">
+                    <mat-icon matSuffix>mode_edit</mat-icon>
+                    <mat-error *ngIf="controls.numTelCli.errors?.required">Champs vide</mat-error>
+                    <mat-error *ngIf="controls.numTelCli.errors?.pattern">Numero telephone incorrecte</mat-error>
+                    <mat-error *ngIf="controls.numTelCli.errors?.serverError">{{controls.numTelCli.errors?.serverError}}
+                    </mat-error>
+                  </mat-form-field>
+                  <mat-form-field class="formulaire">
+                    <mat-label>Adresse</mat-label>
+                    <input required matInput placeholder="Ex. Behoririka" formControlName="adresseCli">
+                    <mat-error *ngIf="controls.adresseCli.errors?.required">Champs vide</mat-error>
+                    <mat-error *ngIf="controls.adresseCli.errors?.serverError">{{controls.adresseCli.errors?.serverError}}
+                    </mat-error>
+                  </mat-form-field>
+                  <mat-form-field class="formulaire">
+                    <mat-label>Compte Facebook</mat-label>
+                    <input matInput placeholder="Ex. Rakoto " formControlName="compteFbCli">
+                  </mat-form-field>
+                  <mat-form-field class="formulaire">
+                    <mat-label>Page Facebook</mat-label>
+                    <input matInput placeholder="Ex. Page Facebook" formControlName="pageFbCli">
+                  </mat-form-field>
+                  <mat-form-field class="formulaire">
+                    <mat-label>Site Web</mat-label>
+                    <input matInput placeholder="Ex. www.mtatitra-transport.mg" formControlName="siteWebCli">
+                  </mat-form-field>
+                  <mat-form-field class="produittextarea">
+                    <mat-label>Enter votre adresse mail</mat-label>
+                    <input matInput placeholder="pat@example.com" required formControlName="emailCli">
+                    <mat-error *ngIf="controls.emailCli.errors?.required">Champs vide</mat-error>
+                    <mat-error *ngIf="controls.emailCli.errors?.email">Email incorrecte</mat-error>
+                    <mat-error *ngIf="controls.emailCli.errors?.serverError">{{controls.emailCli.errors?.serverError}}
+                    </mat-error>
+                  </mat-form-field>
+                  <mat-form-field class="formulaire">
+                    <input required matInput [type]="hide ? 'password' : 'text'" placeholder="Mot de passe"
+                      formControlName="passCli">
+                    <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'"
+                      [attr.aria-pressed]="hide">
+                      <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+                    </button>
+                    <mat-error *ngIf="controls['passCli'].invalid">Mot de passe invalide</mat-error>
+                    <mat-error *ngIf="controls.passCli.errors?.required">Champs vide</mat-error>
+                    <mat-error *ngIf="controls.passCli.errors?.serverError">{{controls.passCli.errors?.serverError}}
+                    </mat-error>
+                  </mat-form-field>
+                  <mat-form-field *ngIf="controls['passCli'].valid" class="formulaire">
+                    <input required matInput [type]="hide ? 'password' : 'text'"
+                      placeholder="Confirmer votre mot de passe" formControlName="confirmPassword">
+                    <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'"
+                      [attr.aria-pressed]="hide">
+                      <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+                    </button>
+                    <mat-error
+                      *ngIf="controls['confirmPassword'].pristine || controls['confirmPassword'].errors?.MatchPassword">
+                      Mot de passe non identique</mat-error>
+                  </mat-form-field>
+                  <div class="row">
+                    <div class="col-xs-6 col-sm-6 col-lx-6 col-md-6 col-lg-6">
+                      <a routerLink="/login" class="">
+                        <p>Se connecter</p>
+                      </a>
+                    </div>
+                    <div class="col-xs-6 col-sm-6 col-lx-6 col-md-6 col-lg-6">
+                      <div class="btnnext" align="right">
+                        <button mat-button>S'inscrire</button>
+                      </div>
+                    </div>
+                  </div>
+                </form>
+              </div>
+              <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 order-first order-md-last">
+                <div align="center">
+                  <img src="/assets/images/signup.svg" class="signup" alt="">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

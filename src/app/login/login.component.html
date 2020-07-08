@@ -1,0 +1,36 @@
+<div class="container">
+  <div class="content">
+    <form class="form-signin" [formGroup]="signinForm" (ngSubmit)="loginUser()">
+      <div class="col-xs-sm-md-lg-12">
+        <div class="d-flex justify-content-center mt-5">
+          <img src="/assets/images/logs.png" class="logo" alt="">
+        </div>
+      </div>
+      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 mt-3">
+        <div class="d-flex justify-content-center mt-5">
+          <mat-form-field class="formulaire">
+            <mat-label>Enter votre adresse mail</mat-label>
+            <input matInput placeholder="pseudo@exemple.com" id="email" formControlName="username">
+            <mat-error *ngIf="signinForm.controls.username.errors?.required">Champs vide</mat-error>
+            <mat-error *ngIf="signinForm.controls.username.errors?.email">Email incorrecte</mat-error>
+          </mat-form-field>
+        </div>
+        <div class="d-flex justify-content-center mt-2">
+          <mat-form-field class="formulaire">
+            <input matInput [type]="hide ? 'password' : 'text'" id="passwd" placeholder="Mot de passe"
+              formControlName="password">
+            <mat-error *ngIf="signinForm.controls.password.errors?.required"> Champs vide </mat-error>
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 mt-4 text-center">
+          <button class="btn btn-danger rounded-0" type="submit" name="signin" [disabled]="signinForm.invalid">Se connecter</button> <br>
+          <small *ngIf="errorMessage" class="text-danger">{{errorMessage}}<br></small>
+          <a [routerLink]="['/signup']" routerLinkActive="router-link-active"><small>S'inscrire</small></a>
+        </div>
+      </div>
+
+    </form>
+  </div>
+</div>
