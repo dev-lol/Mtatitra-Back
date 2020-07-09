@@ -15,6 +15,7 @@ export default class LivraisonController extends Controller {
     async addGet(router: Router): Promise<void> {
         await this.getLivraison(router)
         await this.livStatByDate(router)
+        await this.searchLiv(router)
     }
 
     async livStatByDate(router: Router): Promise<void> {
@@ -38,6 +39,29 @@ export default class LivraisonController extends Controller {
                     this.sendResponse(res, 404, { message: "404 not found" })
                 }
             })
+    }
+
+
+    async searchLiv(router: Router): Promise<void> {
+        router.get("/:idLiv", async (req: Request, res: Response, next: NextFunction) => {
+            try {
+                const idLiv = Number(req.params.idLiv)
+                let livraison: Livraison[] = await getRepository(Livraison)
+                    .createQueryBuilder("livraison")
+                    .leftJoinAndSelect("livraison.idCliClient", "client")
+                    .leftJoinAndSelect("livraison.produits", "produits")
+                    .leftJoinAndSelect("produits.idTypeProTypeProduit", "typeProduit")
+                    .leftJoinAndSelect("livraison.idCouCoursier", "coursier")
+                    .leftJoinAndSelect("livraison.idTypeCouTypeCoursier", "typeCoursier")
+                    .leftJoinAndSelect("typeCoursier.coursiers", "coursierPossible")
+                    .where("livraison.idLiv = :id", { id: idLiv })
+                    .getMany()
+
+                this.sendResponse(res, 200, livraison)
+            } catch (err) {
+
+            }
+        })
     }
 
     async getLivraison(router: Router): Promise<void> {
