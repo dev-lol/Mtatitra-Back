@@ -15,7 +15,7 @@ import { Produit } from "./Produit";
 import { DateLimite } from './DateLimite';
 import { TypeCoursier } from './TypeCoursier';
 import { Lieu } from './Lieu';
-import { Resultat } from './Resutat';
+import { Resultat } from './Resultat';
 
 @Index("Livraison_pk", ["idLiv"], { unique: true })
 @Entity("Livraison", { schema: "public" })
