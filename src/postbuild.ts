@@ -55,11 +55,11 @@ import { Lieu } from './entities/Lieu';
         let coursier = coursierRepository.create({
             nomCou: "Moto",
             prenomCou: "man",
-            numTelUrgentCou: "0344444444",
+            numTelUrgentCou: "344444444",
             adresseCou: "Any eeee",
             referenceVehiculeCou: "velo 1",
             usernameCou: "coursier_test@coursier.com",
-            numTelCou: "0344822017",
+            numTelCou: "344822017",
             passCou: "$2b$12$NkZMgOfQDiTueABJ8.BCrujsjNlbEDZ2WL8ns1PTtWMX49l3u802G"
         })
         coursier.idAdmAdmin = adminSaved
@@ -69,11 +69,11 @@ import { Lieu } from './entities/Lieu';
         coursier = coursierRepository.create({
             nomCou: "Velo",
             prenomCou: "man",
-            numTelUrgentCou: "0344444444",
+            numTelUrgentCou: "344444444",
             adresseCou: "Any eeee",
             referenceVehiculeCou: "velo 1",
             usernameCou: "coursier_test2@coursier.com",
-            numTelCou: "0344822017",
+            numTelCou: "344822017",
             passCou: "$2b$12$NkZMgOfQDiTueABJ8.BCrujsjNlbEDZ2WL8ns1PTtWMX49l3u802G"
         })
         coursier.idAdmAdmin = adminSaved
@@ -83,11 +83,11 @@ import { Lieu } from './entities/Lieu';
         coursier = coursierRepository.create({
             nomCou: "Voiture",
             prenomCou: "man",
-            numTelUrgentCou: "0344444444",
+            numTelUrgentCou: "344444444",
             adresseCou: "Any eeee",
             referenceVehiculeCou: "velo 1",
             usernameCou: "coursier_test3@coursier.com",
-            numTelCou: "0344822017",
+            numTelCou: "344822017",
             passCou: "$2b$12$NkZMgOfQDiTueABJ8.BCrujsjNlbEDZ2WL8ns1PTtWMX49l3u802G"
         })
         coursier.idAdmAdmin = adminSaved
@@ -103,7 +103,7 @@ import { Lieu } from './entities/Lieu';
             confirmationCli: "",
             emailCli: "client_test@client.com",
             passCli: "$2b$12$NkZMgOfQDiTueABJ8.BCrujsjNlbEDZ2WL8ns1PTtWMX49l3u802G",
-            numTelCli: "0344822017"
+            numTelCli: "344822017"
         })
         await clientRepository.save(client)
     }
@@ -230,7 +230,7 @@ import { Lieu } from './entities/Lieu';
         liv.idLimiteDat = await limiteDatRepository.findOne()
         liv.idLieArrivee = await lieuRepository.createQueryBuilder("lieu").where(`Random() > 0.5`).getOne()
         liv.idLieDepart = await lieuRepository.createQueryBuilder("lieu").where(`Random() < 0.5`).getOne()
-        liv.numRecepLiv = "0333333333"
+        liv.numRecepLiv = "343333333"
         liv.sommeRecepLiv = 30000
         liv.produits = await produitRepository.find({ where: { idPro: Between(0, 5) } })
         liv.idTypeCouTypeCoursier = await typeCoursierRepository.findOne(1)
@@ -248,7 +248,7 @@ import { Lieu } from './entities/Lieu';
         liv.idLimiteDat = await limiteDatRepository.findOne()
         liv.idLieArrivee = await lieuRepository.createQueryBuilder("lieu").where(`Random() > 0.5`).getOne()
         liv.idLieDepart = await lieuRepository.createQueryBuilder("lieu").where(`Random() < 0.5`).getOne()
-        liv.numRecepLiv = "0333333333"
+        liv.numRecepLiv = "343333333"
         liv.sommeRecepLiv = 30000
         liv.produits = await produitRepository.find({ where: { idPro: Between(6, 10) } })
         liv.idTypeCouTypeCoursier = await typeCoursierRepository.findOne(2)
@@ -265,7 +265,7 @@ import { Lieu } from './entities/Lieu';
         liv.idLimiteDat = await limiteDatRepository.findOne()
         liv.idLieArrivee = await lieuRepository.createQueryBuilder("lieu").where(`Random() > 0.5`).getOne()
         liv.idLieDepart = await lieuRepository.createQueryBuilder("lieu").where(`Random() < 0.5`).getOne()
-        liv.numRecepLiv = "0333333333"
+        liv.numRecepLiv = "343333333"
         liv.sommeRecepLiv = 30000
         liv.produits = await produitRepository.find({ where: { idPro: Between(11, 15) } })
         liv.idTypeCouTypeCoursier = await typeCoursierRepository.findOne(3)
@@ -286,7 +286,7 @@ import { Lieu } from './entities/Lieu';
         liv.idLimiteDat = await limiteDatRepository.findOne()
         liv.idLieArrivee = await lieuRepository.createQueryBuilder("lieu").where(`Random() > 0.5`).getOne()
         liv.idLieDepart = await lieuRepository.createQueryBuilder("lieu").where(`Random() < 0.5`).getOne()
-        liv.numRecepLiv = "0333333333"
+        liv.numRecepLiv = "343333333"
         liv.sommeRecepLiv = 30000
         liv.produits = await produitRepository.find({ where: { idPro: Between(16, 20) } })
         liv.idTypeCouTypeCoursier = await typeCoursierRepository.findOne(1)
@@ -304,7 +304,7 @@ import { Lieu } from './entities/Lieu';
         liv.idLimiteDat = await limiteDatRepository.findOne()
         liv.idLieArrivee = await lieuRepository.createQueryBuilder("lieu").where(`Random() > 0.5`).getOne()
         liv.idLieDepart = await lieuRepository.createQueryBuilder("lieu").where(`Random() < 0.5`).getOne()
-        liv.numRecepLiv = "0333333333"
+        liv.numRecepLiv = "343333333"
         liv.sommeRecepLiv = 30000
         liv.produits = await produitRepository.find({ where: { idPro: Between(21, 25) } })
         liv.idTypeCouTypeCoursier = await typeCoursierRepository.findOne(2)
@@ -321,7 +321,7 @@ import { Lieu } from './entities/Lieu';
         liv.idLimiteDat = await limiteDatRepository.findOne()
         liv.idLieArrivee = await lieuRepository.createQueryBuilder("lieu").where(`Random() > 0.5`).getOne()
         liv.idLieDepart = await lieuRepository.createQueryBuilder("lieu").where(`Random() < 0.5`).getOne()
-        liv.numRecepLiv = "0333333333"
+        liv.numRecepLiv = "343333333"
         liv.sommeRecepLiv = 30000
         liv.produits = await produitRepository.find({ where: { idPro: Between(26, 30) } })
         liv.idTypeCouTypeCoursier = await typeCoursierRepository.findOne(3)
