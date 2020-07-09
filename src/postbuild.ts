@@ -34,18 +34,21 @@ import { Lieu } from './entities/Lieu';
         })
         let adminSaved = await adminRepository.save(admin)
         let typeCoursier = typeCoursierRepository.create({
+            poidsMaxTypeCou: 20,
             estSupprime: false,
-            typeCou: "Voiture"
+            typeCou: "Voiture",
         })
         let typeCoursierSaved = await typeCoursierRepository.save(typeCoursier)
         typeCoursier = typeCoursierRepository.create({
             estSupprime: false,
-            typeCou: "Velo"
+            typeCou: "Velo",
+            poidsMaxTypeCou: 20,
         })
         typeCoursierSaved = await typeCoursierRepository.save(typeCoursier)
         typeCoursier = typeCoursierRepository.create({
             estSupprime: false,
-            typeCou: "Moto"
+            typeCou: "Moto",
+            poidsMaxTypeCou: 20,
         })
         typeCoursierSaved = await typeCoursierRepository.save(typeCoursier)
 
@@ -145,7 +148,7 @@ import { Lieu } from './entities/Lieu';
         for (let i = 0; i < 50; i++) {
             let l = new Lieu()
             l.nomLie = "Lieu " + i
-            l.idZonZone = await zoneRepository.createQueryBuilder("zone").where(`Random() > 0.5`).getOne()
+            l.idZonZone = { ... new Zone(), idZon: Math.floor(Math.random() * (6 - 1) + 1) }
             lieu.push(l)
         }
         await lieuRepository.save(lieu)

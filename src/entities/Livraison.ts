@@ -15,6 +15,7 @@ import { Produit } from "./Produit";
 import { DateLimite } from './DateLimite';
 import { TypeCoursier } from './TypeCoursier';
 import { Lieu } from './Lieu';
+import { Resultat } from './Resutat';
 
 @Index("Livraison_pk", ["idLiv"], { unique: true })
 @Entity("Livraison", { schema: "public" })
@@ -40,6 +41,9 @@ export class Livraison {
     @Column("character varying", { name: "description_liv", nullable: true })
     descriptionLiv: string | null;
 
+    @Column("character varying", { name: "rapport_liv", nullable: true })
+    rapportLiv: string | null;
+
     @ManyToOne(() => Client, (client) => client.livraisons, {
         onDelete: "SET NULL",
         onUpdate: "CASCADE",
@@ -54,6 +58,14 @@ export class Livraison {
     })
     @JoinColumn([{ name: "id_cou_Coursier", referencedColumnName: "idCou" }])
     idCouCoursier: Coursier;
+
+    @ManyToOne(() => Resultat, (resultat) => resultat.livraisons, {
+        onDelete: "SET NULL",
+        onUpdate: "CASCADE",
+        nullable: true
+    })
+    @JoinColumn([{ name: "id_res_Resultat", referencedColumnName: "idRes" }])
+    idResResultat: Resultat;
 
     @ManyToOne(() => DateLimite, (coursier) => coursier.livraisons, {
         onDelete: "SET NULL",

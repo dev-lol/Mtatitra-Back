@@ -8,42 +8,42 @@ export class Produit {
     @PrimaryGeneratedColumn({ type: "integer", name: "id_cli" })
     idPro: number;
 
-    @Column("boolean", { name: "fragile_pro", nullable: true })
-    fragilePro: boolean | null;
+    @Column("boolean", { name: "fragile_pro", nullable: false })
+    fragilePro: boolean;
 
     @Column("double precision", {
         name: "longueur_pro",
-        nullable: true,
+        nullable: false,
     })
-    longueurPro: number | null;
+    longueurPro: number;
 
     @Column("double precision", {
         name: "largeur_pro",
-        nullable: true,
+        nullable: false,
     })
-    largeurPro: number | null;
+    largeurPro: number;
 
     @Column("double precision", {
         name: "hauteur_pro",
-        nullable: true,
+        nullable: false,
     })
-    hauteurPro: number | null;
+    hauteurPro: number;
 
     @Column("double precision", {
         name: "poids_pro",
-        nullable: true,
+        nullable: false,
     })
-    poidsPro: number | null;
+    poidsPro: number;
 
     @Column("character varying", {
         name: "consigne_pro",
-        nullable: true,
+        nullable: false,
         length: 250,
     })
     consignePro: string | null;
 
-    @Column("smallint", { name: "prix_pro", nullable: true })
-    prixPro: number | null;
+    @Column("double precision", { name: "prix_pro", nullable: false })
+    prixPro: number;
 
     @ManyToOne(() => Livraison, (livraison) => livraison.produits, {
         onDelete: "SET NULL",
