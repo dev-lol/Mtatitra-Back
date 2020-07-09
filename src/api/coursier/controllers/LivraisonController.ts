@@ -25,8 +25,10 @@ export default class LivraisonController extends Controller {
                     .leftJoinAndSelect("livraison.idCliClient", "client")
                     .leftJoinAndSelect("livraison.idLimiteDat", "limiteDat")
                     .leftJoinAndSelect("livraison.idEtaEtats", "etat")
-                    .leftJoinAndSelect("livraison.idZonDepart", "zoneDepart")
-                    .leftJoinAndSelect("livraison.idZonArrivee", "zoneArrivee")
+                    .leftJoinAndSelect("livraison.idLieDepart", "lieuA")
+                    .leftJoinAndSelect("livraison.idLieArrivee", "lieuB")
+                    .leftJoinAndSelect("lieuA.idZonZone", "zoneDepart")
+                    .leftJoinAndSelect("lieuB.idZonZone", "zoneArrivee")
                     .leftJoinAndSelect("livraison.produits", "produits")
                     .leftJoinAndSelect("produits.idTypeProTypeProduit", "typeProduits")
                     .where("livraison.idCouCoursier = :id", { id: res.locals.id })
@@ -48,8 +50,10 @@ export default class LivraisonController extends Controller {
                     .leftJoinAndSelect("livraison.idCliClient", "client")
                     .leftJoinAndSelect("livraison.idLimiteDat", "limiteDat")
                     .leftJoinAndSelect("livraison.idEtaEtats", "etat")
-                    .leftJoinAndSelect("livraison.idZonDepart", "zoneDepart")
-                    .leftJoinAndSelect("livraison.idZonArrivee", "zoneArrivee")
+                    .leftJoinAndSelect("livraison.idLieDepart", "lieuA")
+                    .leftJoinAndSelect("livraison.idLieArrivee", "lieuB")
+                    .leftJoinAndSelect("lieuA.idZonZone", "zoneDepart")
+                    .leftJoinAndSelect("lieuB.idZonZone", "zoneArrivee")
                     .leftJoinAndSelect("livraison.produits", "produits")
                     .leftJoinAndSelect("produits.idTypeProTypeProduit", "typeProduits")
                     .where("livraison.idCouCoursier = :id", { id: res.locals.id })
@@ -86,8 +90,8 @@ export default class LivraisonController extends Controller {
                     })
                     const liv: Livraison = await getRepository(Livraison).createQueryBuilder("livraison").leftJoinAndSelect("livraison.idCliClient", "client").where("livraison.idLiv = :id", { id: livraison.idLiv }).getOne()
                     CustomServer.io.to(liv.idCliClient.idCli).emit("etats", livraisonToUpdate)
-                }else{
-                    this.sendResponse(res,400, {message: "Requette manquante"})
+                } else {
+                    this.sendResponse(res, 400, { message: "Requette manquante" })
                 }
             } catch (e) {
                 console.log(e)
