@@ -34,19 +34,39 @@ this.addAllRoutes(this.mainRouter)
 
     private async planning(router) : Promise<void>{
         router.get("/planning",async(req:Request,res:Response,next:NextFunction)=>{
-            const date : Date = new Date(req.query.date as string)
-            const id : number = Number(req.params.idTypeCou)
+           
+          
             try{
-                let plan  = await getRepository(TypeCoursier)
-                .createQueryBuilder("type")
-                .leftJoinAndSelect("type.livraisons","livraison")
-                .leftJoinAndSelect("livraison.idCouCoursier","coursier")
-                .leftJoinAndSelect("livraison.idLimiteDat","limiteDat")
-                .leftJoinAndSelect("livraison.idZonArrivee","zone")
-                .andWhere("livraison.dateLiv = :date",{date : date})
-                .getMany()
-
-           this.sendResponse(res,200,plan)
+                if(req.query.coursier && req.query.date){
+                    const date = new Date(req.query.data as string)
+                    let plan = []
+                    switch(req.query.coursier){
+                        case "true" : 
+                        plan  = await getRepository(TypeCoursier)
+                        .createQueryBuilder("type")
+                        .leftJoinAndSelect("type.livraisons","livraison")
+                        .leftJoinAndSelect("livraison.idCouCoursier","coursier")
+                        .leftJoinAndSelect("livraison.idLimiteDat","limiteDat")
+                        .where("livraison.dateLiv = :date",{date : date})
+                        .andWhere("livraison.idCouCoursier is not null")
+                        .getMany()
+                            break
+                        
+                        case "false" : 
+                        plan  = await getRepository(TypeCoursier)
+                        .createQueryBuilder("type")
+                        .leftJoinAndSelect("type.livraisons","livraison")
+                        .leftJoinAndSelect("livraison.idCouCoursier","coursier")
+                        .leftJoinAndSelect("livraison.idLimiteDat","limiteDat")
+                        .where("livraison.dateLiv = :date",{date : date})
+                        .andWhere("livraison.idCouCoursier is null")
+                        .getMany()
+                            break
+                    }
+                    this.sendResponse(res,200, plan)
+                    
+                }
+                
             }catch(err){
                 next(err)
             }
@@ -57,6 +77,7 @@ this.addAllRoutes(this.mainRouter)
     private async statByCouriser(router : Router) : Promise<void>{
         router.get("stat",async(req:Request,res:Response,next :NextFunction)=>{
             try{
+                
                 const startDate: Date = new Date(req.query.start as string)
                 const endDate: Date = new Date(req.query.end as string)
                 const limit: number = Number(req.query.limit)
