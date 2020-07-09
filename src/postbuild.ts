@@ -12,8 +12,9 @@ import { Produit } from './entities/Produit';
 import { TypeProduit } from './entities/TypeProduit';
 import { Tarif } from './entities/Tarif';
 import { Lieu } from './entities/Lieu';
+import { Resultat } from './entities/Resultat';
 (async () => {
-    let connection = await createConnection(ormconfig)
+    let connection = await createConnection({ ...ormconfig })
     let adminRepository = connection.getRepository(Admin)
     let coursierRepository = connection.getRepository(Coursier)
     let typeCoursierRepository = connection.getRepository(TypeCoursier)
@@ -25,6 +26,7 @@ import { Lieu } from './entities/Lieu';
     let produitRepository = connection.getRepository(Produit)
     let typeProduitRepository = connection.getRepository(TypeProduit)
     let tarifRepository = connection.getRepository(Tarif)
+    let resultatRepository = connection.getRepository(Resultat)
 
     if ((await adminRepository.count()) < 1) {
         let admin = adminRepository.create({
@@ -179,6 +181,19 @@ import { Lieu } from './entities/Lieu';
             pros[i].idTypeProTypeProduit = await typeProduitRepository.findOne(Math.floor(Math.random() * 2 + 1))
         }
         await produitRepository.save(pros)
+    }
+    if (await resultatRepository.count() < 1) {
+        resultatRepository.save([
+            {
+                resultatRes: "Course annulé"
+            },
+            {
+                resultatRes: "Course retour"
+            },
+            {
+                resultatRes: "Course effectué"
+            },
+        ])
     }
 
     if (await tarifRepository.count() < 1) {
