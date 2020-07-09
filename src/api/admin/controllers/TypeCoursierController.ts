@@ -99,7 +99,8 @@ export default class TypeCoursierController extends Controller {
 
     async postTypeCoursier(router: Router) {
         router.post("/", [
-            body(['typeCou']).notEmpty().withMessage("Bad request")
+            body(['typeCou']).notEmpty().withMessage("Bad request"),
+            body(['poidsMaxTypeCou']).notEmpty().toFloat().isNumeric().withMessage("Bad request")
         ], ErrorValidator,
             async (req: Request, res: Response, next: NextFunction) => {
                 let typeCoursierToSave: TypeCoursier = await this.createTypeCoursierFromRequest(req)

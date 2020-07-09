@@ -50,6 +50,7 @@ export default class TarifController extends Controller {
                         .leftJoinAndSelect("tarif.idTypeCouTypeCoursier", "typeCoursier")
                         .where("lieuArrivee.idLie = :idDepart", { idDepart: dep })
                         .andWhere("lieuDepart.idLie = :idArrivee", { idArrivee: arr })
+                        .orderBy("tarif.tarifTar", "ASC")
                         .getMany()
                 }
                 if (!tarifs)
