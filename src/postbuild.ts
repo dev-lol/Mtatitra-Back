@@ -14,7 +14,8 @@ import { Tarif } from './entities/Tarif';
 import { Lieu } from './entities/Lieu';
 import { Resultat } from './entities/Resultat';
 (async () => {
-    let connection = await createConnection({ ...ormconfig })
+    const config = (process.argv.includes('drop')) ? { ...ormconfig, dropSchema: true } : ormconfig
+    let connection = await createConnection(config)
     let adminRepository = connection.getRepository(Admin)
     let coursierRepository = connection.getRepository(Coursier)
     let typeCoursierRepository = connection.getRepository(TypeCoursier)
@@ -169,7 +170,7 @@ import { Resultat } from './entities/Resultat';
 
     if (await produitRepository.count() < 3) {
         const pros: Produit[] = []
-        for (let i = 0; i < 30; i++) {
+        for (let i = 0; i < 45; i++) {
             pros.push(new Produit())
             pros[i].consignePro = "Consigne " + i
             pros[i].fragilePro = (i % 2) ? true : false
@@ -178,7 +179,7 @@ import { Resultat } from './entities/Resultat';
             pros[i].longueurPro = Math.floor(Math.random() * (10 - 3) + 3)
             pros[i].poidsPro = Math.floor(Math.random() * (10 - 3) + 3) * 1000
             pros[i].prixPro = Math.floor(Math.random() * (10 - 3) + 3) * 1000
-            pros[i].idTypeProTypeProduit = await typeProduitRepository.findOne(Math.floor(Math.random() * 2 + 1))
+            pros[i].idTypeProTypeProduit = { ... new TypeProduit(), idTypePro: Math.floor(Math.random() * 2 + 1) }
         }
         await produitRepository.save(pros)
     }
@@ -327,7 +328,6 @@ import { Resultat } from './entities/Resultat';
 
         liv = new Livraison()
         liv.dateLiv = dem
-
         liv.descriptionLiv = "Entana kely"
 
         liv.expressLiv = false
@@ -340,6 +340,66 @@ import { Resultat } from './entities/Resultat';
         liv.sommeRecepLiv = 30000
         liv.produits = await produitRepository.find({ where: { idPro: Between(26, 30) } })
         liv.idTypeCouTypeCoursier = await typeCoursierRepository.findOne(3)
+        await livraisonRepository.save(liv)
+
+        dem.setDate(dem.getDate() - 10);
+
+        liv = new Livraison()
+        liv.dateLiv = dem
+
+        liv.descriptionLiv = "Entana kely"
+
+        liv.expressLiv = false
+        liv.idCliClient = await clientRepository.findOne()
+        liv.idCouCoursier = await coursierRepository.findOne()
+        liv.idEtaEtats = await etatRepository.findOne({ where: { ordreEta: 2 } })
+        liv.idLimiteDat = await limiteDatRepository.findOne()
+        liv.idLieArrivee = await lieuRepository.createQueryBuilder("lieu").where(`Random() > 0.5`).getOne()
+        liv.idLieDepart = await lieuRepository.createQueryBuilder("lieu").where(`Random() < 0.5`).getOne()
+        liv.numRecepLiv = "343333333"
+        liv.sommeRecepLiv = 30000
+        liv.produits = await produitRepository.find({ where: { idPro: Between(31, 35) } })
+        liv.idTypeCouTypeCoursier = await typeCoursierRepository.findOne(1)
+        liv.idResResultat = { ...new Resultat(), idRes: Math.floor(Math.random() * 3 + 1) }
+        liv.rapportLiv = " Lorem ipsum dolor sit amet consectetur adipisicing elit.Exercitationem pariatur eum consequatur laboriosam blanditiis, in praesentium dolor atque quod dolores veniam a quos, cum esse et libero perferendis nam repudiandae!"
+        await livraisonRepository.save(liv)
+
+        liv = new Livraison()
+        liv.dateLiv = dem
+
+        liv.descriptionLiv = "Entana kely"
+
+        liv.expressLiv = true
+        liv.idCliClient = await clientRepository.findOne()
+        liv.idCouCoursier = await coursierRepository.findOne()
+        liv.idEtaEtats = await etatRepository.findOne({ where: { ordreEta: 1 } })
+        liv.idLimiteDat = await limiteDatRepository.findOne()
+        liv.idLieArrivee = await lieuRepository.createQueryBuilder("lieu").where(`Random() > 0.5`).getOne()
+        liv.idLieDepart = await lieuRepository.createQueryBuilder("lieu").where(`Random() < 0.5`).getOne()
+        liv.numRecepLiv = "343333333"
+        liv.sommeRecepLiv = 30000
+        liv.produits = await produitRepository.find({ where: { idPro: Between(36, 40) } })
+        liv.idTypeCouTypeCoursier = await typeCoursierRepository.findOne(2)
+        liv.idResResultat = { ...new Resultat(), idRes: Math.floor(Math.random() * 3 + 1) }
+        liv.rapportLiv = " Lorem ipsum dolor sit amet consectetur adipisicing elit.Exercitationem pariatur eum consequatur laboriosam blanditiis, in praesentium dolor atque quod dolores veniam a quos, cum esse et libero perferendis nam repudiandae!"
+        await livraisonRepository.save(liv)
+
+        liv = new Livraison()
+        liv.dateLiv = dem
+        liv.descriptionLiv = "Entana kely"
+
+        liv.expressLiv = false
+        liv.idCliClient = await clientRepository.findOne()
+        liv.idCouCoursier = await coursierRepository.findOne()
+        liv.idLimiteDat = await limiteDatRepository.findOne()
+        liv.idLieArrivee = await lieuRepository.createQueryBuilder("lieu").where(`Random() > 0.5`).getOne()
+        liv.idLieDepart = await lieuRepository.createQueryBuilder("lieu").where(`Random() < 0.5`).getOne()
+        liv.numRecepLiv = "343333333"
+        liv.sommeRecepLiv = 30000
+        liv.produits = await produitRepository.find({ where: { idPro: Between(41, 45) } })
+        liv.idTypeCouTypeCoursier = await typeCoursierRepository.findOne(3)
+        liv.idResResultat = { ...new Resultat(), idRes: Math.floor(Math.random() * 3 + 1) }
+        liv.rapportLiv = " Lorem ipsum dolor sit amet consectetur adipisicing elit.Exercitationem pariatur eum consequatur laboriosam blanditiis, in praesentium dolor atque quod dolores veniam a quos, cum esse et libero perferendis nam repudiandae!"
         await livraisonRepository.save(liv)
     }
 })().catch(error => console.log(error))
