@@ -99,11 +99,11 @@ export default class LivraisonController extends Controller {
             body(['produits.*.largeurPro', 'produits.*.longueurPro', 'produits.*.hauteurPro', 'produits.*.consignePro', 'produits.*.poidsPro', 'produits.*.fragilePro'])
                 .notEmpty()
                 .withMessage("Champs vide"),
+            body('livraison.dateLiv').toDate(),
             body('produits.*.fragilePro').isBoolean().withMessage("non boolean"),
             body('livraison').notEmpty().withMessage("pas de details"),
             body(['livraison.idLieArrivee', 'livraison.idLieDepart', 'livraison.idLimiteDat',
                 'livraison.typeCoursier']).isInt().withMessage("donne invalide"),
-            // body('livraison.dateLiv').toDate().isBefore(new Date().toISOString()).withMessage("date invalide"),
             body(['livraison.numRecepLiv', 'livraison.dateLiv', 'livraison.idLieArrivee', 'livraison.idLieDepart', 'livraison.idLimiteDat',
                 'livraison.typeCoursier']).notEmpty().withMessage("Champs vide"),
             body(['numRecepLiv']).not().matches(/^3[2-49]\d{7}$/).withMessage("Numero telephone incorrecte"),

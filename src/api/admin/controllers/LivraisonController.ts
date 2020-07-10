@@ -102,16 +102,17 @@ export default class LivraisonController extends Controller {
             param(['idLivraison', 'idCoursier']).notEmpty().toInt().isNumeric().withMessage("Bad request")
         ], ErrorValidator, async (req: Request, res: Response, next: NextFunction) => {
             try {
-                let livraisonToAsign: Livraison = await getRepository(Livraison).findOneOrFail(req.params.idLivraison, { relations: ["idTypeCouTypeCoursier"] })
+                let livraisonToAsign: Livraison = await getRepository(Livraison).findOneOrFail(req.params.idLivraison, { relations: ["idTypeCouTypeCoursier", "idCouCoursier"] })
                 let coursier: Coursier = await getRepository(Coursier).findOneOrFail(req.params.idCoursier, { relations: ["idTypeCouTypeCoursier"] })
                 if (livraisonToAsign.idTypeCouTypeCoursier.idTypeCou != coursier.idTypeCouTypeCoursier.idTypeCou) {
                     return this.sendResponse(res, 400, { errors: [{ params: "idCoursier", msg: "Type Coursier mismatch" }] })
                 }
-                if (livraisonToAsign.idCouCoursier.idCou != Number(req.params.idCoursier))
+                if (!livraisonToAsign.idCouCoursier || livraisonToAsign.idCouCoursier.idCou != Number(req.params.idCoursier))
                     await this.asignCouriserToLivraison(coursier, livraisonToAsign)
                 this.sendResponse(res, 200, { message: "Coursier Assigned to Livraison" })
             }
             catch (err) {
+                console.log(err)
                 this.sendResponse(res, 400, { message: "Erreur" })
             }
         })
