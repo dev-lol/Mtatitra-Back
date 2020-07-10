@@ -127,8 +127,8 @@ export default class CoursierController extends Controller {
                     if (req.body.passCou) {
                         coursier.passCou = await Password.hash(coursier.passCou)
                     }
-                    if (req.body.idTypeCou != coursierOriginal.idTypeCouTypeCoursier.idTypeCou) {
-                        coursier.idTypeCouTypeCoursier = await getRepository(TypeCoursier).findOneOrFail(req.body.idTypeCou)
+                    if (req.body.idTypeCouTypeCoursier != coursierOriginal.idTypeCouTypeCoursier.idTypeCou) {
+                        coursier.idTypeCouTypeCoursier = await getRepository(TypeCoursier).findOneOrFail(req.body.idTypeCouTypeCoursier)
                     }
                     await getRepository(Coursier).save(coursier)
                     this.sendResponse(res, 200, { message: "Coursier changed" })

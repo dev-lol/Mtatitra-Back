@@ -6,7 +6,9 @@ import { ormconfig } from "../../../config";
 import { Livraison } from "../../../entities/Livraison";
 import { Coursier } from "../../../entities/Coursier";
 import ErrorValidator from "../../ErrorValidator";
-import { query, param } from 'express-validator';
+import { query, param, body } from 'express-validator';
+import router from '../../routerApi';
+import { Resultat } from '../../../entities/Resultat';
 export default class LivraisonController extends Controller {
     constructor() {
         super()
@@ -15,7 +17,6 @@ export default class LivraisonController extends Controller {
     async addGet(router: Router): Promise<void> {
         await this.getLivraison(router)
         await this.livStatByDate(router)
-        await this.searchLiv(router)
     }
 
     async livStatByDate(router: Router): Promise<void> {
@@ -42,85 +43,53 @@ export default class LivraisonController extends Controller {
     }
 
 
-    async searchLiv(router: Router): Promise<void> {
-        router.get("/:idLiv", async (req: Request, res: Response, next: NextFunction) => {
-            try {
-                const idLiv = Number(req.params.idLiv)
-                let livraison: Livraison[] = await getRepository(Livraison)
-                    .createQueryBuilder("livraison")
-                    .leftJoinAndSelect("livraison.idCliClient", "client")
-                    .leftJoinAndSelect("livraison.produits", "produits")
-                    .leftJoinAndSelect("produits.idTypeProTypeProduit", "typeProduit")
-                    .leftJoinAndSelect("livraison.idCouCoursier", "coursier")
-                    .leftJoinAndSelect("livraison.idTypeCouTypeCoursier", "typeCoursier")
-                    .leftJoinAndSelect("typeCoursier.coursiers", "coursierPossible")
-                    .where("livraison.idLiv = :id", { id: idLiv })
-                    .getMany()
-
-                this.sendResponse(res, 200, livraison)
-            } catch (err) {
-
-            }
-        })
-    }
-
     async getLivraison(router: Router): Promise<void> {
         router.get("/", [
-            query(['coursier', 'date']).notEmpty().withMessage("Bad request")
+            query(['date']).notEmpty().withMessage("Bad request")
         ], ErrorValidator, async (req: Request, res: Response, next: NextFunction) => {
             let liv = []
             const date = new Date(req.query.date as string)
-            switch (req.query.coursier) {
-                case 'all':
-                    liv = await getRepository(Livraison)
-                        .createQueryBuilder("livraison")
-                        .leftJoinAndSelect("livraison.idCliClient", "client")
-                        .leftJoinAndSelect("livraison.produits", "produits")
-                        .leftJoinAndSelect("produits.idTypeProTypeProduit", "typeProduit")
-                        .leftJoinAndSelect("livraison.idCouCoursier", "coursier")
-                        .leftJoinAndSelect("livraison.idTypeCouTypeCoursier", "typeCoursier")
-                        .leftJoinAndSelect("typeCoursier.coursiers", "coursierPossible")
-                        .where("livraison.dateLiv = :date", { date: date })
-                        .getMany()
-                    break;
-
-                case 'true':
-                    liv = await getRepository(Livraison)
-                        .createQueryBuilder("livraison")
-                        .leftJoinAndSelect("livraison.idCliClient", "client")
-                        .leftJoinAndSelect("livraison.produits", "produits")
-                        .leftJoinAndSelect("produits.idTypeProTypeProduit", "typeProduit")
-                        .leftJoinAndSelect("livraison.idCouCoursier", "coursier")
-                        .leftJoinAndSelect("livraison.idTypeCouTypeCoursier", "typeCoursier")
-                        .leftJoinAndSelect("typeCoursier.coursiers", "coursierPossible")
-                        .where("livraison.dateLiv = :date", { date: date })
-                        .andWhere("livraison.idCouCoursier is not null")
-                        .getMany()
-                    break;
-                case 'false':
-                    liv = await getRepository(Livraison)
-                        .createQueryBuilder("livraison")
-                        .leftJoinAndSelect("livraison.idCliClient", "client")
-                        .leftJoinAndSelect("livraison.produits", "produits")
-                        .leftJoinAndSelect("produits.idTypeProTypeProduit", "typeProduit")
-                        .leftJoinAndSelect("livraison.idTypeCouTypeCoursier", "typeCoursier")
-                        .leftJoinAndSelect("livraison.idCouCoursier", "coursier")
-                        .leftJoinAndSelect("typeCoursier.coursiers", "coursierPossible")
-                        .where("livraison.dateLiv = :date", { date: date })
-                        .andWhere("livraison.idCouCoursier is null")
-                        .getMany()
-                    break;
-                default:
-                    break;
-            }
+            liv = await getRepository(Livraison)
+                .createQueryBuilder("livraison")
+                .leftJoinAndSelect("livraison.idCliClient", "client")
+                .leftJoinAndSelect("livraison.produits", "produits")
+                .leftJoinAndSelect("produits.idTypeProTypeProduit", "typeProduit")
+                .leftJoinAndSelect("livraison.idCouCoursier", "coursier")
+                .leftJoinAndSelect("livraison.idTypeCouTypeCoursier", "typeCoursier")
+                .leftJoinAndSelect("livraison.idLieDepart", "dep")
+                .leftJoinAndSelect("livraison.idLieArrivee", "arr")
+                .leftJoinAndSelect("dep.idZonZone", "zonDep")
+                .leftJoinAndSelect("arr.idZonZone", "zonArr")
+                .leftJoinAndSelect("livraison.idResResultat", "resultat")
+                .leftJoinAndSelect("typeCoursier.coursiers", "coursierPossible")
+                .where("livraison.dateLiv = :date", { date: date })
+                .getMany()
             this.sendResponse(res, 200, liv)
         })
     }
     async addPost(router: Router): Promise<void> {
-
-
+        this.postRapport(router)
     }
 
+
+    async postRapport(router: Router): Promise<void> {
+        router.post("/:idLivraison/rapport", [
+            param(['idLivraison']).notEmpty().toInt().isNumeric().withMessage("Bad request"),
+            body(['idResResultat']).toInt().isNumeric().withMessage("Resultat incorrecte"),
+            body(['rapportLiv', 'idResResultat']).notEmpty().withMessage("Champs vide")
+        ], ErrorValidator, async (req: Request, res: Response, next: NextFunction) => {
+            try {
+                let liv = await getRepository(Livraison).findOneOrFail(req.params.idLivraison)
+                liv.rapportLiv = req.body.rapportLiv
+                liv.idResResultat = await getRepository(Resultat).findOneOrFail(req.body.idResResultat)
+                await getRepository(Livraison).save(liv)
+                this.sendResponse(res, 200, { message: "Rapport saved" })
+            }
+            catch (err) {
+                this.sendResponse(res, 400, { message: "Not found" })
+            }
+        })
+    }
 
 
 

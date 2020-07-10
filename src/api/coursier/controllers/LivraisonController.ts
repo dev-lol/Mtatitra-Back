@@ -7,6 +7,9 @@ import { Livraison } from "../../../entities/Livraison";
 import { Etats } from "../../../entities/Etats";
 import { CustomServer } from '../../Server';
 import jwt from 'jsonwebtoken';
+import { param, body } from 'express-validator';
+import ErrorValidator from "../../ErrorValidator";
+import { Resultat } from '../../../entities/Resultat';
 export default class LivraisonController extends Controller {
     constructor() {
         super()
@@ -68,7 +71,26 @@ export default class LivraisonController extends Controller {
         })
     }
     async addPost(router: Router): Promise<void> {
-
+        this.postRapport(router)
+    }
+    async postRapport(router: Router): Promise<void> {
+        router.post("/:idLivraison/rapport", [
+            param(['idLivraison']).notEmpty().toInt().isNumeric().withMessage("Bad request"),
+            body(['idResResultat']).toInt().isNumeric().withMessage("Resultat incorrecte"),
+            body(['rapportLiv', 'idResResultat']).notEmpty().withMessage("Champs vide")
+        ], ErrorValidator, async (req: Request, res: Response, next: NextFunction) => {
+            try {
+                let liv = await getRepository(Livraison).findOneOrFail(req.params.idLivraison)
+                liv.rapportLiv = req.body.rapportLiv
+                liv.idResResultat = await getRepository(Resultat).findOneOrFail(req.body.idResResultat)
+                await getRepository(Livraison).save(liv)
+                CustomServer.io.to(liv.idCliClient.idCli).emit("rapport", liv)
+                this.sendResponse(res, 200, { message: "Rapport saved" })
+            }
+            catch (err) {
+                this.sendResponse(res, 400, { message: "Not found" })
+            }
+        })
     }
 
 

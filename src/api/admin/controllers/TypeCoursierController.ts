@@ -2,8 +2,6 @@ import { Router, Response, Request, NextFunction, ErrorRequestHandler } from "ex
 import { Controller } from "../../Controller"
 import { TypeCoursier } from "../../../entities/TypeCoursier"
 import { getRepository } from "typeorm";
-import { ormconfig } from "../../../config";
-import { runInThisContext } from "vm";
 import { Livraison } from "../../../entities/Livraison";
 import ErrorValidator from "../../ErrorValidator";
 import { query, sanitizeQuery, body, param } from "express-validator";
@@ -70,7 +68,7 @@ export default class TypeCoursierController extends Controller {
 
             try {
                 if (req.query.coursier && req.query.date) {
-                    const date = new Date(req.query.data as string)
+                    const date = new Date(req.query.date as string)
                     let plan = []
                     switch (req.query.coursier) {
                         case "true":
@@ -80,6 +78,13 @@ export default class TypeCoursierController extends Controller {
                                 .leftJoinAndSelect("type.livraisons", "livraison")
                                 .leftJoinAndSelect("livraison.idCouCoursier", "coursier")
                                 .leftJoinAndSelect("livraison.idLimiteDat", "limiteDat")
+                                .leftJoinAndSelect("livraison.idLieDepart", "dep")
+                                .leftJoinAndSelect("livraison.idLieArrivee", "arr")
+                                .leftJoinAndSelect("dep.idZonZone", "zonDep")
+                                .leftJoinAndSelect("arr.idZonZone", "zonArr")
+                                .leftJoinAndSelect("livraison.idCliClient", "client")
+                                .leftJoinAndSelect("livraison.idTypeCouTypeCoursier", "typeCoursier")
+                                .leftJoinAndSelect("typeCoursier.coursiers", "coursierPossible")
                                 .where("livraison.dateLiv = :date", { date: date })
                                 .andWhere("livraison.idCouCoursier is not null")
                                 .getMany()
@@ -92,16 +97,23 @@ export default class TypeCoursierController extends Controller {
                                 .leftJoinAndSelect("type.livraisons", "livraison")
                                 .leftJoinAndSelect("livraison.idCouCoursier", "coursier")
                                 .leftJoinAndSelect("livraison.idLimiteDat", "limiteDat")
+                                .leftJoinAndSelect("livraison.idLieDepart", "dep")
+                                .leftJoinAndSelect("livraison.idLieArrivee", "arr")
+                                .leftJoinAndSelect("dep.idZonZone", "zonDep")
+                                .leftJoinAndSelect("arr.idZonZone", "zonArr")
+                                .leftJoinAndSelect("livraison.idCliClient", "client")
+                                .leftJoinAndSelect("livraison.idTypeCouTypeCoursier", "typeCoursier")
+                                .leftJoinAndSelect("typeCoursier.coursiers", "coursierPossible")
                                 .where("livraison.dateLiv = :date", { date: date })
                                 .andWhere("livraison.idCouCoursier is null")
                                 .getMany()
                             break
                     }
                     this.sendResponse(res, 200, plan)
-
                 }
 
             } catch (err) {
+
                 next(err)
             }
 
