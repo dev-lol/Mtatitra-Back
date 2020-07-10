@@ -9,6 +9,7 @@ import ErrorValidator from "../../ErrorValidator";
 import { query, param, body } from 'express-validator';
 import router from '../../routerApi';
 import { Resultat } from '../../../entities/Resultat';
+import { CustomServer } from "../../Server";
 export default class LivraisonController extends Controller {
     constructor() {
         super()
@@ -79,10 +80,11 @@ export default class LivraisonController extends Controller {
             body(['rapportLiv', 'idResResultat']).notEmpty().withMessage("Champs vide")
         ], ErrorValidator, async (req: Request, res: Response, next: NextFunction) => {
             try {
-                let liv = await getRepository(Livraison).findOneOrFail(req.params.idLivraison)
+                let liv = await getRepository(Livraison).findOneOrFail(req.params.idLivraison, { relations: ["idCliClient", "idResResultat"] })
                 liv.rapportLiv = req.body.rapportLiv
                 liv.idResResultat = await getRepository(Resultat).findOneOrFail(req.body.idResResultat)
                 await getRepository(Livraison).save(liv)
+                CustomServer.ioClient.to(liv.idCliClient.idCli).emit("resultats", liv)
                 this.sendResponse(res, 200, { message: "Rapport saved" })
             }
             catch (err) {
