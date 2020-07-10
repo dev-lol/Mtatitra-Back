@@ -5,11 +5,12 @@ import router from './routerApi';
 import { createConnection } from 'typeorm';
 import { ormconfig } from '../config';
 import { createServer } from 'http';
-import { Client } from '../entities/Client';
 import jwt from 'jsonwebtoken';
 export class CustomServer {
     app = express()
-    static io
+    static ioAdmin
+    static ioClient
+    static ioCoursier
     constructor() {
         const path = require('path')
         createConnection(ormconfig)
@@ -35,19 +36,44 @@ export class CustomServer {
                 const http = createServer(this.app)
                 http.listen(process.env.PORT || 3000)
                 console.log("Mtatitra is ONLINE ")
-                CustomServer.io = require('socket.io')(http);
-                CustomServer.io.on('connection', (socket) => {
-                    socket.on("ajout room", (token) => {
-                        jwt.verify(token, process.env.CLIENT_PASS_PHRASE, (error, payload) => {
-                            if (error != null) {
-                                return
-                            } else {
-                                socket.join(payload.id)
-                                return
-                            }
-                        })
+                const io = require('socket.io')(http);
+                CustomServer.ioAdmin = io.of("/admin")
+                CustomServer.ioClient = io.of("/client")
+                CustomServer.ioCoursier = io.of("/coursier")
+                CustomServer.ioAdmin.use((socket, next) => {
+                    const token = socket.handshake.query.token
+                    jwt.verify(token, process.env.ADMIN_PASS_PHRASE, (error, payload) => {
+                        if (error != null) {
+                            return next(new Error('unauthorized'))
+                        } else {
+                            return next()
+                        }
                     })
-                });
+                })
+
+                CustomServer.ioClient.use((socket, next) => {
+                    const token = socket.handshake.query.token
+                    jwt.verify(token, process.env.CLIENT_PASS_PHRASE, (error, payload) => {
+                        if (error != null) {
+                            return next(new Error('unauthorized'))
+                        } else {
+                            socket.join(payload.id)
+                            return next()
+                        }
+                    })
+                })
+
+                CustomServer.ioCoursier.use((socket, next) => {
+                    const token = socket.handshake.query.token
+                    jwt.verify(token, process.env.COURSIER_PASS_PHRASE, (error, payload) => {
+                        if (error != null) {
+                            return next(new Error('unauthorized'))
+                        } else {
+                            socket.join(payload.id)
+                            return next()
+                        }
+                    })
+                })
             })
     }
 }
