@@ -2,9 +2,6 @@ import { Router, Response, Request, NextFunction, ErrorRequestHandler } from "ex
 import { Controller } from "../../Controller"
 import { TypeProduit } from "../../../entities/TypeProduit"
 import { getRepository, Connection, createConnection, getConnection } from "typeorm";
-import { ormconfig } from "../../../config";
-import { runInThisContext } from "vm";
-import { Livraison } from "../../../entities/Livraison";
 import { Produit } from "../../../entities/Produit";
 import { sanitizeQuery, query, param, body } from "express-validator";
 import ErrorValidator from "../../ErrorValidator";
@@ -104,10 +101,6 @@ export default class TypeProduitController extends Controller {
     private async saveTypeProduitToDatabase(typeProduit: TypeProduit): Promise<TypeProduit> {
         return await getRepository(TypeProduit).save(typeProduit)
     }
-
-
-
-
 
     async addPut(router: Router): Promise<void> {
         router.put("/:idType", [

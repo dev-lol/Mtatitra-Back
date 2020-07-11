@@ -7,6 +7,13 @@ import { Label, Color } from 'ng2-charts';
 import { DateAdapter, MAT_DATE_FORMATS } from '@angular/material/core';    // changer
 import { AppDateAdapter, APP_DATE_FORMATS } from './../format-datepicker';    // changer
 import { faEye } from '@fortawesome/free-solid-svg-icons'; // changer 2
+import { FormatterService } from '../services/formatter.service';
+import { Router, ParamMap } from '@angular/router';
+import { MatDialog } from '@angular/material';
+import { RapportComponent } from './rapport/rapport.component';
+import { Resultat } from '../etapes/etapes.component';
+import { FormRapportComponent } from './form-rapport/form-rapport.component';
+import { FormArray, FormBuilder, FormControl } from '@angular/forms';
 
 
 interface Produit {
@@ -19,13 +26,17 @@ interface Produit {
 
 interface Livraison {
     idLiv: number;
-    departLiv: string;
-    destinationLiv: string;
+    idLieDepart: any;
+    idLieArrivee: any;
     numRecepLiv: string;
     dateLiv: string;
     nomCou?: string;
     prenomCou?: string;
     produits: Produit[];
+
+    idCouCoursier: any | null;
+    idResResultat: any;
+    rapportLiv: string | null;
 }
 
 interface Coursier {
@@ -48,15 +59,16 @@ export class LivraisonComponent implements OnInit {
 
     faEye = faEye; // changer 2
     livraisons: Livraison[] = [];
+    livraisonsRaw: Livraison[] = []
 
-    coursiers: Coursier[] = [];
+    resultats: Resultat[] = []
 
-    currentIdCoursier = 0;
+    currentIdCoursier = {
+    };
     livraisonSub: Subscription;
-    coursiersSub: Subscription;
+    dateValue: Date = new Date();
 
-    selectedValue: any = 'all';
-    dateValue: any = new Date();
+    value
 
     // changer
     showGraph = false;
@@ -87,13 +99,31 @@ export class LivraisonComponent implements OnInit {
 
 
     // changer
-    today = new Date();
+    tmp = new Date();
+    today = new Date(this.tmp.getFullYear(), this.tmp.getMonth(), this.tmp.getDate())
     startDate: Date = new Date(this.today.getFullYear(), this.today.getMonth() - 1, 1);;
     endDate: Date = new Date(this.today.getFullYear(), this.today.getMonth(), 0);
 
-    constructor(public getSrv: GetService, public putSrv: PutService) { }
+
+
+    formArray: FormArray
+
+    constructor(private fb: FormBuilder, public getSrv: GetService, public putSrv: PutService, public formatter: FormatterService, private router: Router, public dialog: MatDialog) { }
+
 
     ngOnInit() {
+        let params: ParamMap = this.router.parseUrl(this.router.url).queryParamMap
+        if (params.has("date")) {
+            this.dateValue = new Date(params.get("date"))
+        }
+        if (params.has("id")) {
+            this.value = params.get("id")
+            this.filter()
+        }
+        this.changeSelection()
+
+        this.formArray = this.fb.array([])
+
         this.graphSub = this.getSrv.graphSubject.subscribe(
             (result: any) => {
                 this.graph = result;
@@ -104,30 +134,34 @@ export class LivraisonComponent implements OnInit {
         this.livraisonSub = this.getSrv.livSubject.subscribe(
             (result: any) => {
                 this.livraisons = result;
+                for (const liv of result) {
+                    this.currentIdCoursier[liv.idLiv] = liv.idCouCoursier ? liv.idCouCoursier.idCou : 0;
+                }
+                console.log(this.currentIdCoursier)
+                this.livraisonsRaw = result;
+                this.filter();
             }
         );
 
-        this.coursiersSub = this.getSrv.coursierSubject.subscribe(
-            (result: any) => {
-                this.coursiers = result;
-            }
-        );
-        this.getSrv.getCoursiers();
+        this.getSrv.resultatSubject.subscribe((res: any) => {
+            this.resultats = res
+        })
+
+        this.getSrv.getResultat()
         this.getDataGraph();
         this.getAllLivraisons();
     }
 
-    getAllLivraisons() {
-        this.getSrv.getAllLivraison();
+    addControl() {
+        this.formArray.push(new FormControl(''))
     }
 
-
-    changeIdCoursier(id: number) {
-        this.currentIdCoursier = id;
+    getAllLivraisons() {
+        this.getSrv.getAllLivraison(this.dateValue.toISOString());
     }
 
     assigne(idLiv: number) {
-        this.putSrv.assigneCoursierLivraison(idLiv, this.currentIdCoursier);
+        this.putSrv.assigneCoursierLivraison(idLiv, this.currentIdCoursier[idLiv]);
     }
 
     changeDate() {
@@ -139,7 +173,7 @@ export class LivraisonComponent implements OnInit {
         if (this.dateValue) {
             date = new Date(this.dateValue).toDateString()
         }
-        this.getSrv.getAllLivraison(this.selectedValue, date);
+        this.getSrv.getAllLivraison(date);
     }
 
     getDataGraph() {
@@ -150,7 +184,7 @@ export class LivraisonComponent implements OnInit {
         this.lineLabel = [];
         data.forEach(item => {
             this.lineData.push(item.count)
-            this.lineLabel.push(item.date_liv.substring(0,10))
+            this.lineLabel.push(item.date_liv.substring(0, 10))
         });
         this.updateLineGraph();
     }
@@ -173,4 +207,27 @@ export class LivraisonComponent implements OnInit {
         this.getSrv.getGraphByDate(dateStart, dateEnd);
     }
 
+    filter() {
+        if (this.value) {
+            this.livraisons = this.livraisonsRaw.filter((value) => value.idLiv == this.value)
+        } else {
+            this.livraisons = this.livraisonsRaw
+        }
+    }
+
+    voirRapport(liv) {
+        const dialogRef = this.dialog.open(RapportComponent, { data: { resultat: liv.idResResultat, rapport: liv.rapportLiv, resultats: this.resultats } });
+        dialogRef.afterClosed().subscribe(
+            result => {
+            }
+        );
+    }
+
+    annuler(liv) {
+        const dialogRef = this.dialog.open(FormRapportComponent, { data: { resultat: liv.idResResultat, rapport: liv.rapportLiv, resultats: this.resultats, idLiv: liv.idLiv } });
+        dialogRef.afterClosed().subscribe(
+            result => {
+            }
+        );
+    }
 }

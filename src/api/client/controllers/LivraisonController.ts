@@ -16,6 +16,7 @@ import { Etats } from '../../../entities/Etats';
 import ErrorValidator from "../../ErrorValidator";
 import { body } from 'express-validator';
 import { Lieu } from "../../../entities/Lieu";
+import { CustomServer } from "../../Server";
 export default class LivraisonController extends Controller {
     constructor() {
         super()
@@ -33,7 +34,7 @@ export default class LivraisonController extends Controller {
                 const planifie = await getRepository(Livraison)
                     .createQueryBuilder("livraison")
                     .leftJoinAndSelect("livraison.produits", "produits")
-                    .leftJoinAndSelect("livraison.idEtaEtats", "etats")
+                    .leftJoin("livraison.idEtaEtats", "etats")
                     .leftJoinAndSelect("livraison.idLimiteDat", "limiteDate")
                     .leftJoinAndSelect("livraison.idTypeCouTypeCoursier", "typeCoursier")
                     .leftJoinAndSelect("livraison.idLieArrivee", "lieArrivee")
@@ -68,6 +69,7 @@ export default class LivraisonController extends Controller {
                     .leftJoinAndSelect("livraison.idTypeCouTypeCoursier", "typeCoursier")
                     .leftJoinAndSelect("livraison.idLieArrivee", "lieArrivee")
                     .leftJoinAndSelect("livraison.idLieDepart", "lieDepart")
+                    .leftJoinAndSelect("livraison.idResResultat", "resultat")
                     .select()
                     .where("livraison.dateLiv < CURRENT_DATE")
                     .orWhere("livraison.idEtaEtats = :id", { id: last.idEta })
@@ -98,18 +100,17 @@ export default class LivraisonController extends Controller {
             body(['produits.*.largeurPro', 'produits.*.longueurPro', 'produits.*.hauteurPro', 'produits.*.consignePro', 'produits.*.poidsPro', 'produits.*.fragilePro'])
                 .notEmpty()
                 .withMessage("Champs vide"),
+            body('livraison.dateLiv').toDate(),
             body('produits.*.fragilePro').isBoolean().withMessage("non boolean"),
             body('livraison').notEmpty().withMessage("pas de details"),
             body(['livraison.idLieArrivee', 'livraison.idLieDepart', 'livraison.idLimiteDat',
                 'livraison.typeCoursier']).isInt().withMessage("donne invalide"),
-            // body('livraison.dateLiv').toDate().isBefore(new Date().toISOString()).withMessage("date invalide"),
             body(['livraison.numRecepLiv', 'livraison.dateLiv', 'livraison.idLieArrivee', 'livraison.idLieDepart', 'livraison.idLimiteDat',
                 'livraison.typeCoursier']).notEmpty().withMessage("Champs vide"),
             body(['numRecepLiv']).not().matches(/^3[2-49]\d{7}$/).withMessage("Numero telephone incorrecte"),
         ], ErrorValidator,
             async (req: Request, res: Response, next: NextFunction) => {
                 try {
-                    console.log(req.body.livraison)
                     let produits: Produit[] = []
                     for (const p of req.body.produits) {
                         const produit: Produit = getRepository(Produit).create(p as object)
@@ -122,9 +123,14 @@ export default class LivraisonController extends Controller {
                     livraison.idLieDepart = { ... new Lieu(), idLie: req.body.livraison.idLieDepart }
                     livraison.idCliClient = { ... new Client(), idCli: res.locals.id }
                     livraison.idLimiteDat = { ... new DateLimite(), idLimiteDat: req.body.livraison.idLimiteDat }
-                    livraison.expressLiv = new Date(req.body.dateLiv).toDateString() == new Date().toDateString()
+                    const date = new Date(req.body.livraison.dateLiv)
+                    const tmp = new Date()
+                    const today = new Date(tmp.getFullYear(), tmp.getMonth(), tmp.getDate())
+                    livraison.expressLiv = date.getTime() == today.getTime()
+                    console.log(livraison.expressLiv)
                     livraison.idTypeCouTypeCoursier = { ... new TypeCoursier(), idTypeCou: req.body.livraison.typeCoursier }
                     await getRepository(Livraison).save(livraison)
+                    CustomServer.ioAdmin.emit("plan", livraison.dateLiv)
                     this.sendResponse(res, 200, { message: "livraison inseré" })
                 } catch (err) {
                     console.log(err)

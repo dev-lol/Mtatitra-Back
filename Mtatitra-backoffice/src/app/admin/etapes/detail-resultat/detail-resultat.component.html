@@ -1,0 +1,45 @@
+<div class="content">
+  <div mat-dialog-title>
+    <h5 class="titre">
+      Resultat
+      <span class="btn btn-xs" id="btn_close" style="float: right;" mat-dialog-close mat-dialog-close="true">
+        <fa-icon [icon]="faTimesCircle"></fa-icon>
+      </span>
+    </h5>
+  </div>
+
+  <mat-dialog-content>
+    <div class="container">
+      <form class="form">
+        <div class="row">
+          <div class="col">
+            <label class="label">id</label>
+          </div>
+          <div class="col">
+            <label class="note">{{id}}</label>
+          </div>
+        </div>
+        <br>
+        <div class="row">
+          <div class="col">
+            <label class="label">Resultat</label>
+          </div>
+          <div class="col">
+            <input class="data form-control" name="designation" id="designation" [(ngModel)]="designation">
+          </div>
+        </div>
+        <br>
+        <br>
+        <div class="row">
+          <div class="col-12">
+            <div style="text-align: center;">
+              <button class="btn btn-primary" (click)="modifier()">
+                Modifier
+              </button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </mat-dialog-content>
+</div>

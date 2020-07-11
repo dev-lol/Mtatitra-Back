@@ -30,7 +30,7 @@ export default class ClientController extends Controller {
 
     statByDate = async (router: Router): Promise<void> => {
         router.get("/stat", [
-            query(['start', 'end']).notEmpty().toDate().isISO8601().withMessage("Bad request"),
+            query(['start', 'end']).trim().notEmpty().toDate().isISO8601().withMessage("Bad request"),
             query('limit').optional(true).toInt().isNumeric().withMessage("bad value")
         ], ErrorValidator, async (req: Request, res: Response, next: NextFunction) => {
             try {

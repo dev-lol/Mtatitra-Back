@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
+import { SocketService } from './socket/socket.service';
 
 @Component({
     selector: 'app-root',
@@ -8,7 +9,8 @@ import { Router } from '@angular/router';
 })
 export class AppComponent {
     title = 'Mtatitra';
-    constructor(private router: Router) {
+    constructor(private router: Router, socket: SocketService) {
+        socket.setupSocketConnection()
     }
 
     acceuilList = ['acceuil']

@@ -2,8 +2,6 @@ import { Router, Response, Request, NextFunction, ErrorRequestHandler } from "ex
 import { Controller } from "../../Controller"
 import { TypeCoursier } from "../../../entities/TypeCoursier"
 import { getRepository } from "typeorm";
-import { ormconfig } from "../../../config";
-import { runInThisContext } from "vm";
 import { Livraison } from "../../../entities/Livraison";
 import ErrorValidator from "../../ErrorValidator";
 import { query, sanitizeQuery, body, param } from "express-validator";
@@ -66,24 +64,60 @@ export default class TypeCoursierController extends Controller {
     }
     private async planning(router): Promise<void> {
         router.get("/planning", async (req: Request, res: Response, next: NextFunction) => {
-            const date: Date = new Date(req.query.date as string)
-            const id: number = Number(req.params.idTypeCou)
-            try {
-                let plan = await getRepository(TypeCoursier)
-                    .createQueryBuilder("type")
-                    .leftJoinAndSelect("type.livraisons", "livraison")
-                    .innerJoinAndSelect("livraison.idCliClient", "client")
-                    .innerJoinAndSelect("livraison.idCouCoursier", "coursier")
-                    .leftJoinAndSelect("livraison.idLimiteDat", "limiteDat")
-                    .leftJoinAndSelect("livraison.idLieDepart", "lieuDepart")
-                    .leftJoinAndSelect("lieuDepart.idZonZone", "zoneDepart")
-                    .leftJoinAndSelect("livraison.idLieArrivee", "lieuArrivee")
-                    .leftJoinAndSelect("lieuArrivee.idZonZone", "zoneArrivee")
-                    .andWhere("livraison.dateLiv = :date", { date: date })
-                    .getMany()
 
-                this.sendResponse(res, 200, plan)
+
+            try {
+                if (req.query.coursier && req.query.date) {
+                    const date = new Date(req.query.date as string)
+                    let plan = []
+                    switch (req.query.coursier) {
+                        case "true":
+                            plan = await getRepository(TypeCoursier)
+                                .createQueryBuilder("type")
+                                .leftJoinAndSelect("type.coursiers", "coursiers")
+                                .leftJoinAndSelect("type.livraisons", "livraison")
+                                .leftJoinAndSelect("livraison.idCouCoursier", "coursier")
+                                .leftJoinAndSelect("livraison.idLimiteDat", "limiteDat")
+                                .leftJoinAndSelect("livraison.idLieDepart", "dep")
+                                .leftJoinAndSelect("livraison.idLieArrivee", "arr")
+                                .leftJoinAndSelect("dep.idZonZone", "zonDep")
+                                .leftJoinAndSelect("arr.idZonZone", "zonArr")
+                                .leftJoinAndSelect("livraison.idCliClient", "client")
+                                .leftJoinAndSelect("livraison.idTypeCouTypeCoursier", "typeCoursier")
+                                .leftJoinAndSelect("typeCoursier.coursiers", "coursierPossible")
+                                .leftJoinAndSelect("livraison.idEtaEtats", "etat")
+                                .leftJoinAndSelect("livraison.idResResultat", "res")
+                                .where("livraison.dateLiv = :date", { date: date })
+                                .andWhere("livraison.idCouCoursier is not null")
+                                .getMany()
+                            break
+
+                        case "false":
+                            plan = await getRepository(TypeCoursier)
+                                .createQueryBuilder("type")
+                                .leftJoinAndSelect("type.coursiers", "coursiers")
+                                .leftJoinAndSelect("type.livraisons", "livraison")
+                                .leftJoinAndSelect("livraison.idCouCoursier", "coursier")
+                                .leftJoinAndSelect("livraison.idLimiteDat", "limiteDat")
+                                .leftJoinAndSelect("livraison.idLieDepart", "dep")
+                                .leftJoinAndSelect("livraison.idLieArrivee", "arr")
+                                .leftJoinAndSelect("dep.idZonZone", "zonDep")
+                                .leftJoinAndSelect("arr.idZonZone", "zonArr")
+                                .leftJoinAndSelect("livraison.idCliClient", "client")
+                                .leftJoinAndSelect("livraison.idTypeCouTypeCoursier", "typeCoursier")
+                                .leftJoinAndSelect("typeCoursier.coursiers", "coursierPossible")
+                                .leftJoinAndSelect("livraison.idEtaEtats", "etat")
+                                .leftJoinAndSelect("livraison.idResResultat", "res")
+                                .where("livraison.dateLiv = :date", { date: date })
+                                .andWhere("livraison.idCouCoursier is null")
+                                .getMany()
+                            break
+                    }
+                    this.sendResponse(res, 200, plan)
+                }
+
             } catch (err) {
+
                 next(err)
             }
 
@@ -99,7 +133,8 @@ export default class TypeCoursierController extends Controller {
 
     async postTypeCoursier(router: Router) {
         router.post("/", [
-            body(['typeCou']).notEmpty().withMessage("Bad request")
+            body(['typeCou']).notEmpty().withMessage("Bad request"),
+            body(['poidsMaxTypeCou']).notEmpty().toFloat().isNumeric().withMessage("Bad request")
         ], ErrorValidator,
             async (req: Request, res: Response, next: NextFunction) => {
                 let typeCoursierToSave: TypeCoursier = await this.createTypeCoursierFromRequest(req)

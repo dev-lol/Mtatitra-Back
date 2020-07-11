@@ -12,8 +12,10 @@ import { Produit } from './entities/Produit';
 import { TypeProduit } from './entities/TypeProduit';
 import { Tarif } from './entities/Tarif';
 import { Lieu } from './entities/Lieu';
+import { Resultat } from './entities/Resultat';
 (async () => {
-    let connection = await createConnection(ormconfig)
+    const config = (process.argv.includes('drop')) ? { ...ormconfig, dropSchema: true } : ormconfig
+    let connection = await createConnection(config)
     let adminRepository = connection.getRepository(Admin)
     let coursierRepository = connection.getRepository(Coursier)
     let typeCoursierRepository = connection.getRepository(TypeCoursier)
@@ -25,6 +27,7 @@ import { Lieu } from './entities/Lieu';
     let produitRepository = connection.getRepository(Produit)
     let typeProduitRepository = connection.getRepository(TypeProduit)
     let tarifRepository = connection.getRepository(Tarif)
+    let resultatRepository = connection.getRepository(Resultat)
 
     if ((await adminRepository.count()) < 1) {
         let admin = adminRepository.create({
@@ -34,29 +37,32 @@ import { Lieu } from './entities/Lieu';
         })
         let adminSaved = await adminRepository.save(admin)
         let typeCoursier = typeCoursierRepository.create({
+            poidsMaxTypeCou: 20,
             estSupprime: false,
-            typeCou: "Voiture"
+            typeCou: "Voiture",
         })
         let typeCoursierSaved = await typeCoursierRepository.save(typeCoursier)
         typeCoursier = typeCoursierRepository.create({
             estSupprime: false,
-            typeCou: "Velo"
+            typeCou: "Velo",
+            poidsMaxTypeCou: 20,
         })
         typeCoursierSaved = await typeCoursierRepository.save(typeCoursier)
         typeCoursier = typeCoursierRepository.create({
             estSupprime: false,
-            typeCou: "Moto"
+            typeCou: "Moto",
+            poidsMaxTypeCou: 20,
         })
         typeCoursierSaved = await typeCoursierRepository.save(typeCoursier)
 
         let coursier = coursierRepository.create({
             nomCou: "Moto",
             prenomCou: "man",
-            numTelUrgentCou: "0344444444",
+            numTelUrgentCou: "344444444",
             adresseCou: "Any eeee",
             referenceVehiculeCou: "velo 1",
             usernameCou: "coursier_test@coursier.com",
-            numTelCou: "0344822017",
+            numTelCou: "344822017",
             passCou: "$2b$12$NkZMgOfQDiTueABJ8.BCrujsjNlbEDZ2WL8ns1PTtWMX49l3u802G"
         })
         coursier.idAdmAdmin = adminSaved
@@ -66,11 +72,11 @@ import { Lieu } from './entities/Lieu';
         coursier = coursierRepository.create({
             nomCou: "Velo",
             prenomCou: "man",
-            numTelUrgentCou: "0344444444",
+            numTelUrgentCou: "344444444",
             adresseCou: "Any eeee",
             referenceVehiculeCou: "velo 1",
             usernameCou: "coursier_test2@coursier.com",
-            numTelCou: "0344822017",
+            numTelCou: "344822017",
             passCou: "$2b$12$NkZMgOfQDiTueABJ8.BCrujsjNlbEDZ2WL8ns1PTtWMX49l3u802G"
         })
         coursier.idAdmAdmin = adminSaved
@@ -80,11 +86,11 @@ import { Lieu } from './entities/Lieu';
         coursier = coursierRepository.create({
             nomCou: "Voiture",
             prenomCou: "man",
-            numTelUrgentCou: "0344444444",
+            numTelUrgentCou: "344444444",
             adresseCou: "Any eeee",
             referenceVehiculeCou: "velo 1",
             usernameCou: "coursier_test3@coursier.com",
-            numTelCou: "0344822017",
+            numTelCou: "344822017",
             passCou: "$2b$12$NkZMgOfQDiTueABJ8.BCrujsjNlbEDZ2WL8ns1PTtWMX49l3u802G"
         })
         coursier.idAdmAdmin = adminSaved
@@ -100,7 +106,7 @@ import { Lieu } from './entities/Lieu';
             confirmationCli: "",
             emailCli: "client_test@client.com",
             passCli: "$2b$12$NkZMgOfQDiTueABJ8.BCrujsjNlbEDZ2WL8ns1PTtWMX49l3u802G",
-            numTelCli: "0344822017"
+            numTelCli: "344822017"
         })
         await clientRepository.save(client)
     }
@@ -145,7 +151,7 @@ import { Lieu } from './entities/Lieu';
         for (let i = 0; i < 50; i++) {
             let l = new Lieu()
             l.nomLie = "Lieu " + i
-            l.idZonZone = await zoneRepository.createQueryBuilder("zone").where(`Random() > 0.5`).getOne()
+            l.idZonZone = { ... new Zone(), idZon: Math.floor(Math.random() * (6 - 1) + 1) }
             lieu.push(l)
         }
         await lieuRepository.save(lieu)
@@ -164,7 +170,7 @@ import { Lieu } from './entities/Lieu';
 
     if (await produitRepository.count() < 3) {
         const pros: Produit[] = []
-        for (let i = 0; i < 30; i++) {
+        for (let i = 0; i < 45; i++) {
             pros.push(new Produit())
             pros[i].consignePro = "Consigne " + i
             pros[i].fragilePro = (i % 2) ? true : false
@@ -173,9 +179,22 @@ import { Lieu } from './entities/Lieu';
             pros[i].longueurPro = Math.floor(Math.random() * (10 - 3) + 3)
             pros[i].poidsPro = Math.floor(Math.random() * (10 - 3) + 3) * 1000
             pros[i].prixPro = Math.floor(Math.random() * (10 - 3) + 3) * 1000
-            pros[i].idTypeProTypeProduit = await typeProduitRepository.findOne(Math.floor(Math.random() * 2 + 1))
+            pros[i].idTypeProTypeProduit = { ... new TypeProduit(), idTypePro: Math.floor(Math.random() * 2 + 1) }
         }
         await produitRepository.save(pros)
+    }
+    if (await resultatRepository.count() < 1) {
+        resultatRepository.save([
+            {
+                resultatRes: "Course annulé"
+            },
+            {
+                resultatRes: "Course retour"
+            },
+            {
+                resultatRes: "Course effectué"
+            },
+        ])
     }
 
     if (await tarifRepository.count() < 1) {
@@ -225,9 +244,9 @@ import { Lieu } from './entities/Lieu';
         liv.idCouCoursier = await coursierRepository.findOne()
         liv.idEtaEtats = await etatRepository.findOne({ where: { ordreEta: 2 } })
         liv.idLimiteDat = await limiteDatRepository.findOne()
-        liv.idLieArrivee = await lieuRepository.createQueryBuilder("lieu").where(`Random() > 0.5`).getOne()
-        liv.idLieDepart = await lieuRepository.createQueryBuilder("lieu").where(`Random() < 0.5`).getOne()
-        liv.numRecepLiv = "0333333333"
+        liv.idLieArrivee = { ... new Lieu(), idLie: Math.floor(Math.random() * (45 - 5) + 5) }
+        liv.idLieDepart = { ... new Lieu(), idLie: Math.floor(Math.random() * (45 - 5) + 5) }
+        liv.numRecepLiv = "343333333"
         liv.sommeRecepLiv = 30000
         liv.produits = await produitRepository.find({ where: { idPro: Between(0, 5) } })
         liv.idTypeCouTypeCoursier = await typeCoursierRepository.findOne(1)
@@ -243,9 +262,9 @@ import { Lieu } from './entities/Lieu';
         liv.idCouCoursier = await coursierRepository.findOne()
         liv.idEtaEtats = await etatRepository.findOne({ where: { ordreEta: 1 } })
         liv.idLimiteDat = await limiteDatRepository.findOne()
-        liv.idLieArrivee = await lieuRepository.createQueryBuilder("lieu").where(`Random() > 0.5`).getOne()
-        liv.idLieDepart = await lieuRepository.createQueryBuilder("lieu").where(`Random() < 0.5`).getOne()
-        liv.numRecepLiv = "0333333333"
+        liv.idLieArrivee = { ... new Lieu(), idLie: Math.floor(Math.random() * (45 - 5) + 5) }
+        liv.idLieDepart = { ... new Lieu(), idLie: Math.floor(Math.random() * (45 - 5) + 5) }
+        liv.numRecepLiv = "343333333"
         liv.sommeRecepLiv = 30000
         liv.produits = await produitRepository.find({ where: { idPro: Between(6, 10) } })
         liv.idTypeCouTypeCoursier = await typeCoursierRepository.findOne(2)
@@ -260,9 +279,9 @@ import { Lieu } from './entities/Lieu';
         liv.idCliClient = await clientRepository.findOne()
         liv.idCouCoursier = await coursierRepository.findOne()
         liv.idLimiteDat = await limiteDatRepository.findOne()
-        liv.idLieArrivee = await lieuRepository.createQueryBuilder("lieu").where(`Random() > 0.5`).getOne()
-        liv.idLieDepart = await lieuRepository.createQueryBuilder("lieu").where(`Random() < 0.5`).getOne()
-        liv.numRecepLiv = "0333333333"
+        liv.idLieArrivee = { ... new Lieu(), idLie: Math.floor(Math.random() * (45 - 5) + 5) }
+        liv.idLieDepart = { ... new Lieu(), idLie: Math.floor(Math.random() * (45 - 5) + 5) }
+        liv.numRecepLiv = "343333333"
         liv.sommeRecepLiv = 30000
         liv.produits = await produitRepository.find({ where: { idPro: Between(11, 15) } })
         liv.idTypeCouTypeCoursier = await typeCoursierRepository.findOne(3)
@@ -281,9 +300,9 @@ import { Lieu } from './entities/Lieu';
         liv.idCouCoursier = await coursierRepository.findOne()
         liv.idEtaEtats = await etatRepository.findOne({ where: { ordreEta: 2 } })
         liv.idLimiteDat = await limiteDatRepository.findOne()
-        liv.idLieArrivee = await lieuRepository.createQueryBuilder("lieu").where(`Random() > 0.5`).getOne()
-        liv.idLieDepart = await lieuRepository.createQueryBuilder("lieu").where(`Random() < 0.5`).getOne()
-        liv.numRecepLiv = "0333333333"
+        liv.idLieArrivee = { ... new Lieu(), idLie: Math.floor(Math.random() * (45 - 5) + 5) }
+        liv.idLieDepart = { ... new Lieu(), idLie: Math.floor(Math.random() * (45 - 5) + 5) }
+        liv.numRecepLiv = "343333333"
         liv.sommeRecepLiv = 30000
         liv.produits = await produitRepository.find({ where: { idPro: Between(16, 20) } })
         liv.idTypeCouTypeCoursier = await typeCoursierRepository.findOne(1)
@@ -299,13 +318,31 @@ import { Lieu } from './entities/Lieu';
         liv.idCouCoursier = await coursierRepository.findOne()
         liv.idEtaEtats = await etatRepository.findOne({ where: { ordreEta: 1 } })
         liv.idLimiteDat = await limiteDatRepository.findOne()
-        liv.idLieArrivee = await lieuRepository.createQueryBuilder("lieu").where(`Random() > 0.5`).getOne()
-        liv.idLieDepart = await lieuRepository.createQueryBuilder("lieu").where(`Random() < 0.5`).getOne()
-        liv.numRecepLiv = "0333333333"
+        liv.idLieArrivee = { ... new Lieu(), idLie: Math.floor(Math.random() * (45 - 5) + 5) }
+        liv.idLieDepart = { ... new Lieu(), idLie: Math.floor(Math.random() * (45 - 5) + 5) }
+        liv.numRecepLiv = "343333333"
         liv.sommeRecepLiv = 30000
         liv.produits = await produitRepository.find({ where: { idPro: Between(21, 25) } })
         liv.idTypeCouTypeCoursier = await typeCoursierRepository.findOne(2)
         await livraisonRepository.save(liv)
+
+        liv = new Livraison()
+        liv.dateLiv = dem
+        liv.descriptionLiv = "Entana kely"
+
+        liv.expressLiv = false
+        liv.idCliClient = await clientRepository.findOne()
+        liv.idCouCoursier = await coursierRepository.findOne()
+        liv.idLimiteDat = await limiteDatRepository.findOne()
+        liv.idLieArrivee = { ... new Lieu(), idLie: Math.floor(Math.random() * (45 - 5) + 5) }
+        liv.idLieDepart = { ... new Lieu(), idLie: Math.floor(Math.random() * (45 - 5) + 5) }
+        liv.numRecepLiv = "343333333"
+        liv.sommeRecepLiv = 30000
+        liv.produits = await produitRepository.find({ where: { idPro: Between(26, 30) } })
+        liv.idTypeCouTypeCoursier = await typeCoursierRepository.findOne(3)
+        await livraisonRepository.save(liv)
+
+        dem.setDate(dem.getDate() - 10);
 
         liv = new Livraison()
         liv.dateLiv = dem
@@ -315,13 +352,54 @@ import { Lieu } from './entities/Lieu';
         liv.expressLiv = false
         liv.idCliClient = await clientRepository.findOne()
         liv.idCouCoursier = await coursierRepository.findOne()
+        liv.idEtaEtats = await etatRepository.findOne({ where: { ordreEta: 2 } })
         liv.idLimiteDat = await limiteDatRepository.findOne()
-        liv.idLieArrivee = await lieuRepository.createQueryBuilder("lieu").where(`Random() > 0.5`).getOne()
-        liv.idLieDepart = await lieuRepository.createQueryBuilder("lieu").where(`Random() < 0.5`).getOne()
-        liv.numRecepLiv = "0333333333"
+        liv.idLieArrivee = { ... new Lieu(), idLie: Math.floor(Math.random() * (45 - 5) + 5) }
+        liv.idLieDepart = { ... new Lieu(), idLie: Math.floor(Math.random() * (45 - 5) + 5) }
+        liv.numRecepLiv = "343333333"
         liv.sommeRecepLiv = 30000
-        liv.produits = await produitRepository.find({ where: { idPro: Between(26, 30) } })
+        liv.produits = await produitRepository.find({ where: { idPro: Between(31, 35) } })
+        liv.idTypeCouTypeCoursier = await typeCoursierRepository.findOne(1)
+        liv.idResResultat = { ...new Resultat(), idRes: Math.floor(Math.random() * 3 + 1) }
+        liv.rapportLiv = " Lorem ipsum dolor sit amet consectetur adipisicing elit.Exercitationem pariatur eum consequatur laboriosam blanditiis, in praesentium dolor atque quod dolores veniam a quos, cum esse et libero perferendis nam repudiandae!"
+        await livraisonRepository.save(liv)
+
+        liv = new Livraison()
+        liv.dateLiv = dem
+
+        liv.descriptionLiv = "Entana kely"
+
+        liv.expressLiv = true
+        liv.idCliClient = await clientRepository.findOne()
+        liv.idCouCoursier = await coursierRepository.findOne()
+        liv.idEtaEtats = await etatRepository.findOne({ where: { ordreEta: 1 } })
+        liv.idLimiteDat = await limiteDatRepository.findOne()
+        liv.idLieArrivee = { ... new Lieu(), idLie: Math.floor(Math.random() * (45 - 5) + 5) }
+        liv.idLieDepart = { ... new Lieu(), idLie: Math.floor(Math.random() * (45 - 5) + 5) }
+        liv.numRecepLiv = "343333333"
+        liv.sommeRecepLiv = 30000
+        liv.produits = await produitRepository.find({ where: { idPro: Between(36, 40) } })
+        liv.idTypeCouTypeCoursier = await typeCoursierRepository.findOne(2)
+        liv.idResResultat = { ...new Resultat(), idRes: Math.floor(Math.random() * 3 + 1) }
+        liv.rapportLiv = " Lorem ipsum dolor sit amet consectetur adipisicing elit.Exercitationem pariatur eum consequatur laboriosam blanditiis, in praesentium dolor atque quod dolores veniam a quos, cum esse et libero perferendis nam repudiandae!"
+        await livraisonRepository.save(liv)
+
+        liv = new Livraison()
+        liv.dateLiv = dem
+        liv.descriptionLiv = "Entana kely"
+
+        liv.expressLiv = false
+        liv.idCliClient = await clientRepository.findOne()
+        liv.idCouCoursier = await coursierRepository.findOne()
+        liv.idLimiteDat = await limiteDatRepository.findOne()
+        liv.idLieArrivee = { ... new Lieu(), idLie: Math.floor(Math.random() * (45 - 5) + 5) }
+        liv.idLieDepart = { ... new Lieu(), idLie: Math.floor(Math.random() * (45 - 5) + 5) }
+        liv.numRecepLiv = "343333333"
+        liv.sommeRecepLiv = 30000
+        liv.produits = await produitRepository.find({ where: { idPro: Between(41, 45) } })
         liv.idTypeCouTypeCoursier = await typeCoursierRepository.findOne(3)
+        liv.idResResultat = { ...new Resultat(), idRes: Math.floor(Math.random() * 3 + 1) }
+        liv.rapportLiv = " Lorem ipsum dolor sit amet consectetur adipisicing elit.Exercitationem pariatur eum consequatur laboriosam blanditiis, in praesentium dolor atque quod dolores veniam a quos, cum esse et libero perferendis nam repudiandae!"
         await livraisonRepository.save(liv)
     }
 })().catch(error => console.log(error))

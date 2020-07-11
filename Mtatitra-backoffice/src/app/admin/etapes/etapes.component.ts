@@ -1,27 +1,64 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChildren, ViewChild } from '@angular/core';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { GetService } from '../services/get.service';
-import { faEdit, faCheck, faWindowClose } from '@fortawesome/free-solid-svg-icons';
+import { faEdit, faCheck, faWindowClose, faPlusCircle, faMinusCircle } from '@fortawesome/free-solid-svg-icons';
 import { PutService } from '../services/put.service';
+import { MatTableDataSource, MatDialog, MatPaginator } from '@angular/material';
+import { PostService } from '../services/post.service';
+import { DetailResultatComponent } from './detail-resultat/detail-resultat.component';
+import { DeleteService } from '../services/delete.service';
+
+
+function open() {
+    document.getElementById('btn_open').click();
+}
+
+function close() {
+    document.getElementById('close').click();
+}
 
 @Component({
     selector: 'app-etapes',
     templateUrl: './etapes.component.html',
     styleUrls: ['./etapes.component.css']
 })
+
 export class EtapesComponent implements OnInit {
+
+
 
     faEdit = faEdit
     faCheck = faCheck
     faClose = faWindowClose
-    constructor(private getSrv: GetService, private putSrv: PutService) { }
+
+    faPlusCircle = faPlusCircle;
+    faMinusCircle = faMinusCircle;
+
+    columnResultat: string[] = ['idRes', 'resultatRes', 'edit', 'suppr'];
+    resultatAdded = ""
+    currentRes: Resultat = null
+    resultats: Resultat[] = []
+    resultatDataSource: MatTableDataSource<Resultat> = new MatTableDataSource(this.resultats);
+
+    @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator
+    constructor(private getSrv: GetService, private putSrv: PutService, private deleteSrv: DeleteService, private postSrv: PostService, public dialog: MatDialog) { }
     ngOnInit() {
         this.getSrv.etapesSubject.subscribe((res) => {
             console.log(res)
             this.etapes = res;
             this.oldEtapes = res.map(a => ({ ...a }));
         })
+        this.getSrv.resultatSubject.subscribe((res) => {
+            console.log(res)
+            this.resultats = res
+            this.resultatDataSource.data = res
+        })
         this.getSrv.getEtapes()
+        this.getSrv.getResultat()
+    }
+
+    ngAfterViewInit() {
+        this.resultatDataSource.paginator = this.paginator
     }
     oldEtapes: Etape[] = []
     etapes: Etape[] = [];
@@ -74,10 +111,42 @@ export class EtapesComponent implements OnInit {
             etape.ordreEta = Number(index)
         }
     }
+
+    addResultat() {
+        this.postSrv.addResultat({ resultatRes: this.resultatAdded }).subscribe(res => {
+            this.getSrv.getResultat()
+        }, error => console.log(error))
+    }
+
+    deleteResultat(res: Resultat) {
+        this.currentRes = res;
+        open();
+    }
+    editResultat(res: Resultat) {
+        const id = res.idRes;
+        const designation = res.resultatRes;
+        const dialogRef = this.dialog.open(DetailResultatComponent, { data: { type: 'coursier', id, designation } });
+        dialogRef.afterClosed().subscribe(
+            result => {
+                // this.getSrv.getAllTypeCoursier();
+            }
+        );
+    }
+
+    confirmDelete() {
+        this.deleteSrv.deleteResultat(this.currentRes.idRes);
+        this.currentRes = null;
+        close();
+    }
 }
 
 export interface Etape {
     idEta: number | null
     etatEta: string;
     ordreEta: number
+}
+
+export interface Resultat {
+    idRes: number;
+    resultatRes: string;
 }

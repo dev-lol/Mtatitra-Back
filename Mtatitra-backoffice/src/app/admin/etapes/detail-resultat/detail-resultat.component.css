@@ -1,0 +1,15 @@
+.oui {
+  background-color: red;
+  color: white;
+}
+
+.non {
+  background-color: green;
+  color: white;
+}
+
+.titre {
+  color: black;
+  text-align: center;
+  font-weight: bold;
+}

@@ -12,7 +12,10 @@ export class TypeCoursier {
     @Column("character varying", { name: "type_cou", length: 30 })
     typeCou: string;
 
-    @Column("boolean", {name: "est_supprime"})
+    @Column("double precision", { name: "poids_max_type_cou" })
+    poidsMaxTypeCou: number;
+
+    @Column("boolean", { name: "est_supprime" })
     estSupprime: boolean
 
     @OneToMany(() => Coursier, (coursier) => coursier.idTypeCouTypeCoursier)
@@ -23,5 +26,5 @@ export class TypeCoursier {
 
     @OneToMany(() => Livraison, (liv) => liv.idTypeCouTypeCoursier)
     livraisons: Livraison[];
-    
+
 }
