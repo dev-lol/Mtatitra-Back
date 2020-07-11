@@ -31,20 +31,9 @@ export class PostService {
         )
     }
 
-    addTypeCoursier(str: string) {
-        console.log(str)
-        // tslint:disable-next-line: object-literal-key-quotes
-        const options: any = { 'typeCou': str };
+    addTypeCoursier(data: any) {
         const headers: any = new HttpHeaders({ 'Content-Type': 'application/json' });
-        this.http.post(`${this.endpoint}/typecoursier`, options, headers).subscribe(
-            (data: any) => {
-                console.log(data);
-                // Get service
-                this.getSrv.getAllTypeCoursier();
-
-            }, (error) => {
-                console.log(error);
-            });
+        return this.http.post(`${this.endpoint}/typecoursier`, data, headers)
     }
     addTypeProduit(str: string) {
         // tslint:disable-next-line: object-literal-key-quotes
@@ -67,6 +56,12 @@ export class PostService {
         return this.http.post(`${this.endpoint}/zone`, data, headers)
     }
 
+    addResultat(data: any) {
+        // tslint:disable-next-line: object-literal-key-quotes
+        const headers: any = new HttpHeaders({ 'Content-Type': 'application/json' });
+        return this.http.post(`${this.endpoint}/resultat`, data, headers)
+    }
+
     addLieu(data: string) {
         // tslint:disable-next-line: object-literal-key-quotes
         const headers: any = new HttpHeaders({ 'Content-Type': 'application/json' });
@@ -78,16 +73,9 @@ export class PostService {
         return this.http.post(`${this.endpoint}/coursier`, model, headers)
     }
 
-    addLivraison(livraison: object) {
-        console.log(livraison);
+
+    postRapport(idLiv: number, data: Object) {
         const headers: any = new HttpHeaders({ 'Content-Type': 'application/json' });
-        this.http.post(`/`, livraison, headers).subscribe(
-            (data: any) => {
-                console.log(data);
-            }, (error) => {
-                console.log(error);
-            });
+        return this.http.post(`${this.endpoint}/livraison/${idLiv}/rapport`, data, headers)
     }
-
-
 }

@@ -20,6 +20,8 @@ function close() {
 export interface TypeCoursier {
     idTypeCou: number;
     typeCou: string;
+
+    poidsMaxTypeCou: number;
 }
 
 export interface TypeProduit {
@@ -42,13 +44,14 @@ export class TypeComponent implements OnInit {
     produitsSub: Subscription;
 
     typeCoursierAdded = '';
+    poidsMaxAdded = '';
     typeProduitAdded = '';
 
     faPlusCircle = faPlusCircle;
     faEdit = faEdit;
     faMinusCircle = faMinusCircle;
 
-    columnCoursier: string[] = ['idCou', 'typeCou', 'edit', 'suppr'];
+    columnCoursier: string[] = ['idCou', 'typeCou', 'poidsMaxTypeCou', 'edit', 'suppr'];
     columnProduit: string[] = ['idProd', 'typeProd', 'edit', 'suppr'];
 
     coursiers: TypeCoursier[] = [];
@@ -98,8 +101,13 @@ export class TypeComponent implements OnInit {
     }
 
     addTypeCoursier() {
-        this.postSrv.addTypeCoursier(this.typeCoursierAdded);
-        this.typeCoursierAdded = '';
+        this.postSrv.addTypeCoursier({ typeCou: this.typeCoursierAdded, poidsMaxTypeCou: this.poidsMaxAdded }).subscribe(res => {
+            this.getSrv.getAllTypeCoursier()
+            this.typeCoursierAdded = '';
+            this.poidsMaxAdded = ''
+        }, error => {
+            console.log(error)
+        })
     }
 
     addTypeProduit() {
@@ -134,7 +142,8 @@ export class TypeComponent implements OnInit {
     editTypeCoursier(typeCoursier: TypeCoursier) {
         const id = typeCoursier.idTypeCou;
         const designation = typeCoursier.typeCou;
-        const dialogRef = this.dialog.open(DetailTypeComponent, { data: { type: 'coursier', id, designation } });
+        const poidsMax = typeCoursier.poidsMaxTypeCou
+        const dialogRef = this.dialog.open(DetailTypeComponent, { data: { type: 'coursier', id, designation, poidsMax } });
         dialogRef.afterClosed().subscribe(
             result => {
                 // this.getSrv.getAllTypeCoursier();

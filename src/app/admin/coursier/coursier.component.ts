@@ -165,7 +165,7 @@ export class CoursierComponent implements OnInit {
         const prenom = coursier.prenomCou;
         const tel = coursier.numTelCou;
         const telUrg = coursier.numTelUrgentCou;
-        const ref = coursier.numTelUrgentCou;
+        const ref = coursier.referenceVehiculeCou;
         const adresse = coursier.adresseCou;
         const username = coursier.usernameCou;
         const pass = coursier.passCou;

@@ -63,6 +63,18 @@ export class DeleteService {
             });
     }
 
+    deleteResultat(id: number) {
+        // tslint:disable-next-line: object-literal-key-quotes
+        this.http.delete(`${this.endpoint}/resultat/${id}`).subscribe(
+            (data: any) => {
+                console.log(data);
+                this.getSrv.getResultat();
+
+            }, (error) => {
+                console.log(error);
+            });
+    }
+
     deleteLieu(id: number) {
         // tslint:disable-next-line: object-literal-key-quotes
         this.http.delete(`${this.endpoint}/lieu/${id}`).subscribe(

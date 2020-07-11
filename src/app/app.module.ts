@@ -15,7 +15,7 @@ import {
     MatCheckboxModule, MatButtonModule, MatButtonToggleModule, MatRadioModule, MatOptionModule,
     MatSelectModule, MatTooltipModule, MatDatepickerModule, MatProgressSpinnerModule, MatDividerModule,
     MatProgressBarModule, MatExpansionModule, MatCardModule, DateAdapter, MatNativeDateModule,
-    MatDatepicker, MatListModule, MatGridListModule, MatToolbarModule
+    MatDatepicker, MatListModule, MatGridListModule, MatToolbarModule, MatBadgeModule
 } from '@angular/material';
 
 
@@ -55,6 +55,9 @@ import { DetailLieuComponent } from './admin/zone/detail-lieu/detail-lieu.compon
 import { PlanningComponent } from './admin/planning/planning.component';
 import { EtapesComponent } from './admin/etapes/etapes.component';
 import { DragDropModule } from '@angular/cdk/drag-drop';
+import { DetailResultatComponent } from './admin/etapes/detail-resultat/detail-resultat.component';
+import { RapportComponent } from './admin/livraison/rapport/rapport.component';
+import { FormRapportComponent } from './admin/livraison/form-rapport/form-rapport.component';
 
 @NgModule({
     entryComponents: [
@@ -64,7 +67,10 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
         DetailCoursierComponent,
         DetailDateComponent,
         DetailTarifComponent,
-        DetailLieuComponent
+        DetailLieuComponent,
+        DetailResultatComponent,
+        RapportComponent,
+        FormRapportComponent
     ],
     declarations: [
         AppComponent,
@@ -88,7 +94,10 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
         DetailDateComponent,
         DetailLieuComponent,
         PlanningComponent,
-        EtapesComponent
+        EtapesComponent,
+        DetailResultatComponent,
+        RapportComponent,
+        FormRapportComponent
     ],
     imports: [
         BrowserModule,
@@ -133,7 +142,8 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
         MatToolbarModule,
         NgxSpinnerModule,
         ChartsModule,
-        DragDropModule
+        DragDropModule,
+        MatBadgeModule
     ],
     providers: [
         FormBuilder,
@@ -145,7 +155,7 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
             provide: HTTP_INTERCEPTORS,
             useClass: AuthInterceptor,
             multi: true
-        }
+        },
     ],
     bootstrap: [AppComponent]
 })
