@@ -10,7 +10,6 @@ import jwt from 'jsonwebtoken';
 import { param, body } from 'express-validator';
 import ErrorValidator from "../../ErrorValidator";
 import { Resultat } from '../../../entities/Resultat';
-import { param } from 'express-validator';
 export default class LivraisonController extends Controller {
     constructor() {
         super()
