@@ -1,11 +1,11 @@
-<div class="container">
+<div class="container w-100">
   <ngx-spinner [zIndex]=1 name="liv" bdColor="white" size="medium" color="rgb(239, 18, 51,0.8)"
     type="ball-triangle-path">
   </ngx-spinner>
   <div class="row">
     <div class="col">
-
       <mat-horizontal-stepper [linear]="isLinear" #stepper>
+
         <mat-step [stepControl]="detailsForm">
           <form [formGroup]="detailsForm" (ngSubmit)="onSubmit()" #detailsFormDirective="ngForm">
             <ng-template matStepLabel>DETAILS</ng-template>
@@ -13,9 +13,9 @@
               <div class="col-xs-12 col-sm-12 col-lx-12 col-md-12 col-lg-12">
                 <mat-form-field class="produit">
                   <mat-label>Type vehicule</mat-label>
-                  <mat-select (selectionChange)="handleChange($event)" [(value)]="selectedTypeCouriser"
-                    formControlName="typeCoursier">
-                    <mat-option *ngFor="let type of typecoursier" [value]="type['idTypeCou']"> {{type["typeCou"]}}
+                  <mat-select (selectionChange)="handleChange($event)" formControlName="typeCoursier">
+
+                    <mat-option *ngFor="let type of typecoursier" [value]="type"> {{type["typeCou"]}}
                     </mat-option>
                   </mat-select>
                   <mat-error *ngIf="f.typeCoursier.errors?.required">Type véhicule non mentionné</mat-error>
@@ -23,7 +23,7 @@
                   </mat-error>
                 </mat-form-field>
                 <mat-form-field class="produit">
-                  <mat-label>Telephone</mat-label>
+                  <mat-label>Telephone du recepteur</mat-label>
                   <span matPrefix>+261 &nbsp;</span>
                   <input type="tel" matInput placeholder="xxxxxxx" formControlName="numRecepLiv">
                   <mat-icon matSuffix>mode_edit</mat-icon>
@@ -35,9 +35,15 @@
                 </mat-form-field>
                 <mat-form-field class="produit">
                   <mat-label>Lieu de départ</mat-label>
-                  <mat-select [(value)]="selectedLieuDepart" (selectionChange)="handleChange($event)"
-                    formControlName="idLieDepart">
-                    <mat-option *ngFor="let lieu of lieux" [value]="lieu['idLie']"> {{lieu["nomLie"]}} </mat-option>
+
+                  <mat-select (selectionChange)="handleChange($event)" formControlName="idLieDepart">
+                    <mat-option>
+                      <ngx-mat-select-search placeholderLabel="Rechercher..." noEntriesFoundLabel="Aucun lieu trouvé"
+                        [formControl]="idLieDepartFilter"></ngx-mat-select-search>
+                    </mat-option>
+                    <mat-option *ngFor="let lieu of filteredLieuDepart | async" id="idLieDepart" [value]="lieu">
+                      {{lieu["nomLie"]}}
+                    </mat-option>
                   </mat-select>
                   <mat-error *ngIf="f.idLieDepart.errors?.required">Lieu de depart non mentionné</mat-error>
                   <mat-error *ngIf="f.idLieDepart.errors?.serverError">{{f.idLieDepart.errors?.serverError}}
@@ -45,9 +51,14 @@
                 </mat-form-field>
                 <mat-form-field class="produit">
                   <mat-label>Lieu de destination</mat-label>
-                  <mat-select [(value)]="selectedLieuDestination" (selectionChange)="handleChange($event)"
-                    formControlName="idLieArrivee">
-                    <mat-option *ngFor="let lieu of lieux" [value]="lieu['idLie']"> {{lieu["nomLie"]}} </mat-option>
+                  <mat-select (selectionChange)="handleChange($event)" formControlName="idLieArrivee">
+                    <mat-option>
+                      <ngx-mat-select-search placeholderLabel="Rechercher..." noEntriesFoundLabel="Aucun lieu trouvé"
+                        [formControl]="idLieArriveeFilter"></ngx-mat-select-search>
+                    </mat-option>
+                    <mat-option *ngFor="let lieu of filteredLieuArrivee | async" id="idLieArrivee" [value]="lieu">
+                      {{lieu["nomLie"]}}
+                    </mat-option>
                   </mat-select>
 
 
@@ -57,8 +68,8 @@
                   </mat-error>
                 </mat-form-field>
                 <mat-form-field class="produit">
-                  <input matInput [matDatepicker]="picker2" [min]="today" placeholder="Choisir la date de la livraison"
-                    formControlName="dateLiv">
+                  <input matInput [matDatepicker]="picker2" placeholder="Choisir la date de la livraison"
+                    formControlName="dateLiv" readonly [min]="today">
                   <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
                   <mat-datepicker #picker2></mat-datepicker>
 
@@ -69,7 +80,7 @@
                 <mat-form-field class="produit">
                   <mat-label>Heure limite de la livraison</mat-label>
                   <mat-select formControlName="idLimiteDat" required>
-                    <mat-option *ngFor="let lim of limite; let i = index" [value]="lim.idLimiteDat">
+                    <mat-option *ngFor="let lim of limite; let i = index" [value]="lim">
                       {{lim.limiteDat}}
                     </mat-option>
                   </mat-select>
@@ -103,11 +114,18 @@
                 </mat-form-field>
               </div>
             </div>
+
             <div class="btnnext" align="right">
-              <button mat-button matStepperNext [disabled]="detailsForm.invalid">Suivant</button>
+              <button mat-button matStepperNext type="submit">Suivant</button>
             </div>
           </form>
+
         </mat-step>
+
+
+
+
+
         <mat-step [stepControl]="produitForm">
           <ng-template matStepLabel>PRODUITS À LIVRER</ng-template>
           <form [formGroup]='produitForm' (ngSubmit)="onNext()" #produitsFormDirective="ngForm">
@@ -213,19 +231,150 @@
                 <mat-icon class="addproduct" (click)="addItem()">add</mat-icon>
               </div>
             </div>
-          </form>
-          <div class="row" align="center">
-            <div class="col-xs-12 col-sm-12 col-lx-12 col-md-12 col-lg-12 btnnextprev">
-              <button mat-button matStepperPrevious>Precedent</button>
-              <button mat-button matStepperNext class="next">Suivant</button>
+            <div class="row" align="center">
+              <div class="col-xs-12 col-sm-12 col-lx-12 col-md-12 col-lg-12 btnnextprev">
+                <button mat-button matStepperPrevious>Precedent</button>
+                <button mat-button matStepperNext type="submit" class="next">Suivant</button>
+              </div>
             </div>
-          </div>
+          </form>
+
         </mat-step>
+
+
+
+
         <mat-step>
           <ng-template matStepLabel>LIVRER</ng-template>
-          <div class="row" align="center">
+          <div *ngIf="this.detailsForm.valid && this.produitForm.valid" class="row" align="center">
             <div class="col-xs-12 col-sm-12 col-lx-12 col-md-12 col-lg-12">
-              <h3>Veuillez vérifier votre livraison avant de l'envoyer</h3>
+              <div class="d-flex justify-content-center">
+                <div class="card headcard w-100">
+                  <div class="card-header">
+                    <div class="d-flex justify-content-between">
+                      <div class="">
+                        <ng-template [ngIf]="detailsForm.controls.idLieDepart.value===''" [ngIfElse]="idLieDepartelse">
+                          <span class="notice"> DEPART </span></ng-template>
+                        <ng-template #idLieDepartelse>
+                          <span class="toEdit"><strong>
+                              {{detailsForm.controls.idLieDepart.value.nomLie}}</strong></span>
+                        </ng-template>
+                      </div>
+                      <div>
+                        <ng-template [ngIf]="detailsForm.controls.dateLiv.value===''" [ngIfElse]="dateLivelse">
+                          <span class="notice">DATE</span></ng-template>
+                        <ng-template #dateLivelse>
+                          <span class="toEdit">
+                            <strong>{{detailsForm.controls.dateLiv.value| date: 'dd/MM/yyyy'}}</strong></span>
+                        </ng-template>
+                      </div>
+                      <div class="m">
+                        <ng-template [ngIf]="detailsForm.controls.idLieArrivee.value===''"
+                          [ngIfElse]="idLieArriveeelse">
+                          <span class="notice"> DESTINATIONS</span></ng-template>
+                        <ng-template #idLieArriveeelse>
+                          <span class="toEdit"> <strong>
+                              {{detailsForm.controls.idLieArrivee.value.nomLie}}</strong></span>
+                        </ng-template>
+                      </div>
+                    </div><br>
+                    <div class="d-flex justify-content-between">
+                      <div>
+                      </div>
+                      <div class="mr-5">
+                        <ng-template [ngIf]="detailsForm.controls.idLimiteDat.value===''" [ngIfElse]="idLimiteDatelse">
+                          <span class="notice">Heure</span></ng-template>
+                        <ng-template #idLimiteDatelse>
+                          <span class="toEdit">{{detailsForm.controls.idLimiteDat.value.limiteDat}}</span>
+                        </ng-template>
+
+                      </div>
+                      <div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="card-body">
+                    <table class="table my-3">
+                      <thead>
+                        <tr>
+                          <th scope="col">N°</th>
+                          <th scope="col">Longeur</th>
+                          <th scope="col">Largeur</th>
+                          <th scope="col">Hauteur</th>
+                          <th scope="col">Poids</th>
+                          <th scope="col">Prix</th>
+                          <th scope="col">Type</th>
+
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let item of formData.controls; let i = index; let c = count">
+                          <th scope="row">{{i+1}}</th>
+                          <td>
+                            <ng-template [ngIf]="formData.at(i).get('longueurPro').value===''"
+                              [ngIfElse]="longueurProelse">
+                              <span class="notice">L</span></ng-template>
+                            <ng-template #longueurProelse>
+                              <span class="toEdit"> {{formData.at(i).get('longueurPro').value}}</span>
+                            </ng-template>
+                          </td>
+                          <td>
+                            <ng-template [ngIf]="formData.at(i).get('largeurPro').value===''"
+                              [ngIfElse]="largeurProelse">
+                              <span class="notice">L</span></ng-template>
+                            <ng-template #largeurProelse>
+                              <span class="toEdit"> {{formData.at(i).get('largeurPro').value}}</span>
+                            </ng-template>
+                          </td>
+                          <td>
+                            <ng-template [ngIf]="formData.at(i).get('hauteurPro').value===''"
+                              [ngIfElse]="hauteurProelse">
+                              <span class="notice">H</span></ng-template>
+                            <ng-template #hauteurProelse>
+                              <span class="toEdit"> {{formData.at(i).get('hauteurPro').value}}</span>
+                            </ng-template>
+                          </td>
+                          <td>
+                            <ng-template [ngIf]="formData.at(i).get('poidsPro').value===''" [ngIfElse]="poidsProelse">
+                              <span class="notice">P</span></ng-template>
+                            <ng-template #poidsProelse>
+                              <span class="toEdit"> {{formData.at(i).get('poidsPro').value}}</span>
+                            </ng-template>
+                          </td>
+                          <td>
+                            <ng-template [ngIf]="formData.at(i).get('poidsPro').value===''" [ngIfElse]="poidsProelse">
+                              <span class="notice">H</span></ng-template>
+                            <ng-template #poidsProelse>
+                              <span class="toEdit"> {{formData.at(i).get('poidsPro').value}}</span>
+                            </ng-template>
+                          </td>
+                          <td>
+                            <ng-template [ngIf]="formData.at(i).get('typePro').value===''" [ngIfElse]="typeProelse">
+                              <span class="notice">H</span></ng-template>
+                            <ng-template #typeProelse>
+                              <span class="toEdit">
+                                {{getTypeProduit(formData.at(i).get('typePro').value)['typePro']}}</span>
+                            </ng-template>
+                          </td>
+                        </tr>
+
+                      </tbody>
+                    </table>
+
+                  </div>
+                  <!--
+                         <div class="card-footer d-flex justify-content-between">
+                          <div class="">
+                              TOTAL
+                          </div>
+                          <div class="">
+                              <p><span>000</span></p>
+                          </div>
+                      </div>
+                       -->
+
+                </div>
+              </div>
             </div>
           </div>
           <br>

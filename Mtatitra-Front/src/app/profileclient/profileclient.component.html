@@ -2,7 +2,7 @@
     <ngx-spinner [zIndex]=2 name="profile" bdColor="white" size="medium" color="rgb(239, 18, 51,0.8)" type="ball-triangle-path"></ngx-spinner>
     <div class="row h-100">
         <div class="col">
-            <mat-tab-group class="h-100" mat-align-tabs="center" dynamicHeight>
+            <mat-tab-group [(selectedIndex)]="selectedIndex" class="h-100" mat-align-tabs="center" dynamicHeight>
                 <mat-tab label="Profile">
                     <div class="container h-100">
                         <div class="row justify-content-center head">

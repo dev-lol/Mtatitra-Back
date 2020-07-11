@@ -6,8 +6,15 @@
     <div class="col-md-4 col-10">
       <mat-form-field class="produit w-100">
         <mat-label>Lieu de départ</mat-label>
-        <mat-select [(value)]="selectedLieuDepart" (selectionChange)="handleChange($event)" formControlName="lieuA">
-          <mat-option *ngFor="let lieu of lieux" [value]="lieu"> {{lieu["nomLie"]}} </mat-option>
+        <mat-select disableOptionCentering (selectionChange)="handleChange($event)" [(value)]="selectedLieuDepart"
+          formControlName="lieuA">
+          <mat-option>
+            <ngx-mat-select-search placeholderLabel="Rechercher..." noEntriesFoundLabel="Aucun lieu trouvé"
+              [formControl]="idLieArriveeFilter"></ngx-mat-select-search>
+          </mat-option>
+          <mat-option *ngFor="let lieu of filteredLieuArrivee | async" id="idLieArrivee" [value]="lieu">
+            {{lieu["nomLie"]}}
+          </mat-option>
         </mat-select>
         <mat-error *ngIf="searchForm.controls.lieuA.errors?.lieu">Lieu identique</mat-error>
       </mat-form-field>
@@ -15,9 +22,15 @@
     <div class="col-md-4 col-10">
       <mat-form-field class="produit w-100">
         <mat-label>Lieu de destination</mat-label>
-        <mat-select [(value)]="selectedLieuDestination" (selectionChange)="handleChange($event)"
+        <mat-select disableOptionCentering [(value)]="selectedLieuDestination" (selectionChange)="handleChange($event)"
           formControlName="lieuB">
-          <mat-option *ngFor="let lieu of lieux" [value]="lieu"> {{lieu["nomLie"]}} </mat-option>
+          <mat-option>
+            <ngx-mat-select-search placeholderLabel="Rechercher..." noEntriesFoundLabel="Aucun lieu trouvé"
+              [formControl]="idLieArriveeFilter"></ngx-mat-select-search>
+          </mat-option>
+          <mat-option *ngFor="let lieu of filteredLieuArrivee | async" id="idLieArrivee" [value]="lieu">
+            {{lieu["nomLie"]}}
+          </mat-option>
         </mat-select>
         <mat-error *ngIf="searchForm.controls.lieuB.errors?.lieu">Lieu identique</mat-error>
       </mat-form-field>
@@ -36,9 +49,14 @@
         <div class="card-body pt-0 pb-0">
           <p class="details-zone"> {{selectedLieuDepart.nomLie}} -> {{selectedLieuDestination.nomLie}}
           </p>
+          <p class="details-zone"> <span class="font-weight-bold">Poids max: </span> &nbsp;
+            {{tarif.idTypeCouTypeCoursier["poidsMaxTypeCou"]}} &nbsp; kg
+          </p>
         </div>
         <div class="card-footer bg-white border-0">
-          <a routerLink="/livrer" class="btn btn-danger mb-3">Livrer</a>
+          <a routerLink='/livrer'
+            [queryParams]="{lieuA: selectedLieuDepart.idLie, lieuB: selectedLieuDestination.idLie, typeCoursier: tarif.idTypeCouTypeCoursier.idTypeCou}"
+            class="btn btn-danger mb-3">Livrer</a>
         </div>
       </div>
     </div>
