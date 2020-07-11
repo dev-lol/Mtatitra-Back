@@ -16,6 +16,7 @@ import { Etats } from '../../../entities/Etats';
 import ErrorValidator from "../../ErrorValidator";
 import { body } from 'express-validator';
 import { Lieu } from "../../../entities/Lieu";
+import { CustomServer } from "../../Server";
 export default class LivraisonController extends Controller {
     constructor() {
         super()
@@ -110,7 +111,6 @@ export default class LivraisonController extends Controller {
         ], ErrorValidator,
             async (req: Request, res: Response, next: NextFunction) => {
                 try {
-                    console.log(req.body.livraison)
                     let produits: Produit[] = []
                     for (const p of req.body.produits) {
                         const produit: Produit = getRepository(Produit).create(p as object)
@@ -123,9 +123,14 @@ export default class LivraisonController extends Controller {
                     livraison.idLieDepart = { ... new Lieu(), idLie: req.body.livraison.idLieDepart }
                     livraison.idCliClient = { ... new Client(), idCli: res.locals.id }
                     livraison.idLimiteDat = { ... new DateLimite(), idLimiteDat: req.body.livraison.idLimiteDat }
-                    livraison.expressLiv = new Date(req.body.dateLiv).toDateString() == new Date().toDateString()
+                    const date = new Date(req.body.livraison.dateLiv)
+                    const tmp = new Date()
+                    const today = new Date(tmp.getFullYear(), tmp.getMonth(), tmp.getDate())
+                    livraison.expressLiv = date.getTime() == today.getTime()
+                    console.log(livraison.expressLiv)
                     livraison.idTypeCouTypeCoursier = { ... new TypeCoursier(), idTypeCou: req.body.livraison.typeCoursier }
                     await getRepository(Livraison).save(livraison)
+                    CustomServer.ioAdmin.emit("plan", livraison.dateLiv)
                     this.sendResponse(res, 200, { message: "livraison inseré" })
                 } catch (err) {
                     console.log(err)
