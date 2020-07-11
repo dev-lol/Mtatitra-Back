@@ -4,6 +4,9 @@ import { ListService } from './list.service';
 import { catchError } from 'rxjs/operators';
 import { DetailsComponent } from './details/details.component';
 import { ProduitComponent } from './produit/produit.component';
+import { Router, ParamMap } from '@angular/router';
+import { isNumber } from 'util';
+import { RapportComponent } from './rapport/rapport.component';
 
 @Component({
     selector: 'app-list',
@@ -14,7 +17,9 @@ export class ListComponent implements OnInit {
 
     liv: Livraison[] = []
 
-    displayedColumns = ['idLiv', 'departLiv', 'destinationLiv', 'dateLiv', 'expressLiv', 'etats', 'produits', 'details'];
+    colonnePlanifie = ['idLiv', 'departLiv', 'destinationLiv', 'dateLiv', 'expressLiv', 'produits', 'details'];
+    colonneEnCours = ['idLiv', 'departLiv', 'destinationLiv', 'dateLiv', 'expressLiv', 'etats', 'produits', 'details'];
+    colonneHistorique = ['idLiv', 'departLiv', 'destinationLiv', 'dateLiv', 'expressLiv', 'resultats', 'rapport', 'produits', 'details'];
 
     tab = ["planifie", "enCours", "historique"]
     selectedIndex = 0
@@ -33,7 +38,7 @@ export class ListComponent implements OnInit {
     dataSourceEnCours = new MatTableDataSource(this.livraison["enCours"])
     dataSourceHistorique = new MatTableDataSource(this.livraison["historique"])
 
-    constructor(private listService: ListService, public dialog: MatDialog, private cdr: ChangeDetectorRef) {
+    constructor(private listService: ListService, public dialog: MatDialog, private router: Router) {
     }
 
 
@@ -44,6 +49,11 @@ export class ListComponent implements OnInit {
             this.dataSourceEnCours.data = this.livraison["enCours"]
             this.dataSourceHistorique.data = this.livraison["historique"]
         })
+        let params: ParamMap = this.router.parseUrl(this.router.url).queryParamMap
+        if (params.has("subtab")) {
+            if (Number(params.get("subtab")) < 3 && Number(params.get("subtab")) >= 0)
+                this.selectedIndex = Number(params.get("subtab")) || 0
+        }
     }
 
     ngAfterViewInit() {
@@ -92,6 +102,18 @@ export class ListComponent implements OnInit {
             }
         );
         console.log(produits)
+    }
+    rapport(livraison) {
+        this.openModalRapport(livraison)
+    }
+    openModalRapport(liv) {
+        const livraison = liv
+        const dialogRef = this.dialog.open(RapportComponent, { data: { livraison } });
+        dialogRef.afterClosed().subscribe(
+            result => {
+                // this.getSrv.getAllTypeProduit();
+            }
+        );
     }
 }
 

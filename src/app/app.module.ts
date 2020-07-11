@@ -31,6 +31,9 @@ import { MailconfirmationService } from './mailconfirmation/mailconfirmation.ser
 import { RouterModule } from '@angular/router';
 import { TarifService } from './tarif/tarif.service';
 import { FooterComponent } from './footer/footer.component';
+import { RapportComponent } from './list/rapport/rapport.component';
+import { NgwWowModule } from 'ngx-wow'
+import { NgxMatSelectSearchModule } from "ngx-mat-select-search";
 
 
 
@@ -47,9 +50,10 @@ import { FooterComponent } from './footer/footer.component';
         ListComponent,
         DetailsComponent,
         ProduitComponent,
-        FooterComponent
+        FooterComponent,
+        RapportComponent
     ],
-    entryComponents: [DetailsComponent, ProduitComponent],
+    entryComponents: [DetailsComponent, ProduitComponent, RapportComponent],
     imports: [
         BrowserModule,
         AppRoutingModule,
@@ -88,7 +92,9 @@ import { FooterComponent } from './footer/footer.component';
         MatNativeDateModule,
         MatTabsModule,
         NgxSpinnerModule,
-        RouterModule
+        RouterModule,
+        NgwWowModule,
+        NgxMatSelectSearchModule
     ],
     providers: [
         FormBuilder,

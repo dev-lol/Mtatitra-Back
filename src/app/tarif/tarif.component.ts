@@ -4,8 +4,8 @@ import { MatSelectChange } from '@angular/material';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
-import { forkJoin } from 'rxjs';
-import { FormGroup, FormBuilder } from '@angular/forms';
+import { forkJoin, ReplaySubject } from 'rxjs';
+import { FormGroup, FormBuilder, FormControl } from '@angular/forms';
 
 @Component({
     selector: 'app-tarif',
@@ -15,10 +15,15 @@ import { FormGroup, FormBuilder } from '@angular/forms';
 export class TarifComponent implements OnInit {
 
     tarifs: Tarif[] = []
-    lieux: Array<object> = [];
+    lieux: Lieu[] = [];
 
     selectedLieuDepart: Lieu
     selectedLieuDestination: Lieu
+
+    idLieDepartFilter = new FormControl('')
+    idLieArriveeFilter = new FormControl('')
+    public filteredLieuDepart: ReplaySubject<Lieu[]> = new ReplaySubject<Lieu[]>(1);
+    public filteredLieuArrivee: ReplaySubject<Lieu[]> = new ReplaySubject<Lieu[]>(1);
 
     searchForm: FormGroup
 
@@ -38,6 +43,8 @@ export class TarifComponent implements OnInit {
             ]
         ).subscribe((resultats: any) => {
             this.lieux = resultats[0]
+            this.filteredLieuDepart.next([...this.lieux]);
+            this.filteredLieuArrivee.next([...this.lieux]);
             this.spinner.hide('tarif')
         })
         this.searchForm = this.fb.group({
@@ -54,11 +61,29 @@ export class TarifComponent implements OnInit {
                 }
             }
         })
+
+        this.idLieDepartFilter.valueChanges
+            .subscribe(() => {
+                this.filterIdLieuDepart();
+            });
+        this.idLieArriveeFilter.valueChanges
+            .subscribe(() => {
+                this.filterIdLieuArrivee();
+            });
+    }
+    filterIdLieuDepart() {
+        const l = [...this.lieux]
+        this.filteredLieuDepart.next(l.filter((v) => v.nomLie.toLowerCase().includes(this.idLieDepartFilter.value.toLowerCase())))
+    }
+
+    filterIdLieuArrivee() {
+        const l = [...this.lieux]
+        this.filteredLieuArrivee.next(l.filter((v) => v.nomLie.toLowerCase().includes(this.idLieArriveeFilter.value.toLowerCase())))
     }
 
     handleChange(event) {
 
-       this.searchForm.updateValueAndValidity()
+        this.searchForm.updateValueAndValidity()
         this.tarifs = [];
         if (this.selectedLieuDepart && this.selectedLieuDestination) {
             if (this.selectedLieuDepart.idLie == this.selectedLieuDestination.idLie)
