@@ -1,18 +1,148 @@
 <div class="container">
-  <div class="row">
-    <div class="col-md-5 col-offset-1 offset-xs-1 col-xs-10">
+  <div class="row justify-content-center justify-content-md-start">
+    <div class="col-md-3 col-10">
       <mat-form-field class="datePicker">
-        <input matInput placeholder="Date du planning" [matDatepicker]="dateStart" name="startDate" required readonly
-          [(ngModel)]="startDate" (dateChange)="changeDateGraph()">
+        <input matInput placeholder="Date du planning" [matDatepicker]="dateStart" name="dateValue" required readonly
+          [(ngModel)]="dateValue" [min]="today" (dateChange)="getPlans()">
         <mat-datepicker-toggle [for]="dateStart" matSuffix></mat-datepicker-toggle>
         <mat-datepicker #dateStart [startAt]="today">
         </mat-datepicker>
       </mat-form-field>
     </div>
+    <div class="col-md-3 col-10">
+      <mat-form-field class="w-100">
+        <mat-label>Etats : </mat-label>
+        <mat-select [(value)]="currentFiltre" (selectionChange)="filtre()">
+          <mat-option value="tout"> Tout
+          </mat-option>
+          <mat-option value="enCours"> En cours
+          </mat-option>
+          <mat-option value="termine">
+            Terminé
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
   </div>
 </div>
+<mat-tab-group *ngIf="!isReadOnly" mat-align-tabs="center">
+  <mat-tab label="Avec coursier">
+    <mat-tab-group>
+      <mat-tab *ngFor="let typeCou of datas" label={{typeCou.typeCou}}>
+        <mat-card *ngFor="let liv of typeCou.livraisons">
+          <mat-expansion-panel>
+            <mat-expansion-panel-header>
+              <mat-panel-title>
+                {{liv.idCouCoursier.nomCou}} {{liv.idCouCoursier.prenomCou}}
+              </mat-panel-title>
+              <mat-panel-description>
 
-<mat-tab-group>
+                <div class="d-flex w-100">
+                  <div class="flex-grow-1">
+                    {{liv.idLieDepart.nomLie}} ({{liv.idLieDepart.idZonZone.nomZon}}) &nbsp;&nbsp; <span
+                      class="font-weight-bold">
+
+                      vers
+                    </span> &nbsp;&nbsp;
+                    {{liv.idLieArrivee.nomLie}}
+                    ({{liv.idLieArrivee.idZonZone.nomZon}}) &nbsp;&nbsp; <span class="font-weight-bold"> Heure :
+                    </span>
+                    &nbsp;
+                    {{liv.idLimiteDat.limiteDat}}
+                  </div>
+                  <div>
+                    <span class="font-weight-bold"> Etats :</span> <span *ngIf="liv.idEtaEtats">
+                      {{liv.idEtaEtats.etatEta}}
+                    </span>
+                    <span *ngIf="!liv.idEtaEtats">
+                      {{
+                          !liv.idResResultat? "En attente" : "Terminé"
+                      }}
+                    </span>
+                  </div>
+                </div>
+
+
+
+              </mat-panel-description>
+
+            </mat-expansion-panel-header>
+            <p> <span class="font-weight-bold"> Client :</span> {{liv.idCliClient.nomCli}} &nbsp;
+              {{liv.idCliClient.prenomCli}}</p>
+            <p> <span class="font-weight-bold"> Numéro client :</span> {{formatter.numTel(liv.idCliClient.numTelCli)}}
+            </p>
+            <p> <span class="font-weight-bold"> Numéro recepteur :</span> {{formatter.numTel(liv.numRecepLiv)}}</p>
+            <p> <span class="font-weight-bold">Description : </span> {{liv.descriptionLiv}}</p>
+
+            <div *ngIf="!liv.idResResultat" class="text-right">
+              <button class="" mat-raised-button color="accent" routerLink="/livraison"
+                [queryParams]="{date: liv.dateLiv, id: liv.idLiv}">
+                Détails ou Reassignation
+              </button>
+            </div>
+            <div class="text-right" *ngIf="liv.idResResultat">
+              <button class="" mat-raised-button color="accent" routerLink="/livraison"
+                [queryParams]="{date: liv.dateLiv, id: liv.idLiv}">
+                Détails et rapport
+              </button>
+            </div>
+          </mat-expansion-panel>
+        </mat-card>
+
+      </mat-tab>
+
+    </mat-tab-group>
+  </mat-tab>
+
+  <mat-tab>
+    <ng-template matTabLabel>
+      <span [matBadge]="countSans" matBadgeOverlap="false">Sans Coursier</span>
+    </ng-template>
+    <mat-tab-group>
+      <mat-tab *ngFor="let typeCou of datasSans" label={{typeCou.typeCou}}>
+        <mat-card *ngFor="let liv of typeCou.livraisons">
+          <mat-expansion-panel>
+            <mat-expansion-panel-header>
+              <mat-panel-title>
+                Non assigné
+              </mat-panel-title>
+              <mat-panel-description>
+                <div class="d-flex w-100">
+                  <div class="flex-grow-1">
+                    {{liv.idLieDepart.nomLie}} ({{liv.idLieDepart.idZonZone.nomZon}}) &nbsp;&nbsp; <span
+                      class="font-weight-bold">
+
+                      vers
+                    </span> &nbsp;&nbsp;
+                    {{liv.idLieArrivee.nomLie}}
+                    ({{liv.idLieArrivee.idZonZone.nomZon}}) &nbsp;&nbsp; <span class="font-weight-bold"> Heure :
+                    </span>
+                    &nbsp;
+                    {{liv.idLimiteDat.limiteDat}}
+                  </div>
+                  <div>
+                    <button class="text-right" mat-raised-button color="accent" routerLink="/livraison"
+                      [queryParams]="{date: liv.dateLiv, id: liv.idLiv}">
+                      Détails ou Assignation
+                    </button>
+                  </div>
+                </div>
+              </mat-panel-description>
+            </mat-expansion-panel-header>
+            <p> <span class="font-weight-bold"> Client :</span> {{liv.idCliClient.nomCli}} &nbsp;
+              {{liv.idCliClient.prenomCli}}</p>
+            <p> <span class="font-weight-bold"> Numéro client :</span> {{formatter.numTel(liv.idCliClient.numTelCli)}}
+            </p>
+            <p> <span class="font-weight-bold"> Numéro recepteur :</span> {{formatter.numTel(liv.numRecepLiv)}}</p>
+            <p> <span class="font-weight-bold">Description : </span> {{liv.descriptionLiv}}</p>
+          </mat-expansion-panel>
+        </mat-card>
+      </mat-tab>
+    </mat-tab-group>
+
+  </mat-tab>
+</mat-tab-group>
+<mat-tab-group *ngIf="isReadOnly">
   <mat-tab *ngFor="let typeCou of datas" label={{typeCou.typeCou}}>
     <mat-card *ngFor="let liv of typeCou.livraisons">
       <mat-expansion-panel>
@@ -21,19 +151,33 @@
             {{liv.idCouCoursier.nomCou}} {{liv.idCouCoursier.prenomCou}}
           </mat-panel-title>
           <mat-panel-description>
-            {{liv.idLieDepart.nomLie}} ({{liv.idLieDepart.idZonZone.nomZon}}) &nbsp;&nbsp; <span
-              class="font-weight-bold">
 
-              vers
-            </span> &nbsp;&nbsp;
-            {{liv.idLieArrivee.nomLie}}
-            ({{liv.idLieArrivee.idZonZone.nomZon}}) &nbsp;&nbsp; <span class="font-weight-bold"> Heure : </span> &nbsp;
-            {{liv.idLimiteDat.limiteDat}}
+            <div class="d-flex w-100">
+              <div class="flex-grow-1">
+                {{liv.idLieDepart.nomLie}} ({{liv.idLieDepart.idZonZone.nomZon}}) &nbsp;&nbsp; <span
+                  class="font-weight-bold">
+
+                  vers
+                </span> &nbsp;&nbsp;
+                {{liv.idLieArrivee.nomLie}}
+                ({{liv.idLieArrivee.idZonZone.nomZon}}) &nbsp;&nbsp; <span class="font-weight-bold"> Heure : </span>
+                &nbsp;
+                {{liv.idLimiteDat.limiteDat}}
+              </div>
+              <div>
+                <button class="text-right" mat-raised-button color="accent" routerLink="/livraison"
+                  [queryParams]="{date: liv.dateLiv, id: liv.idLiv}">
+                  Détails
+                </button>
+              </div>
+            </div>
           </mat-panel-description>
+
         </mat-expansion-panel-header>
         <p> <span class="font-weight-bold"> Client :</span> {{liv.idCliClient.nomCli}} &nbsp;
           {{liv.idCliClient.prenomCli}}</p>
-        <p> <span class="font-weight-bold"> Numéro client :</span> {{formatter.numTel(liv.idCliClient.numTelCli)}}</p>
+        <p> <span class="font-weight-bold"> Numéro client :</span> {{formatter.numTel(liv.idCliClient.numTelCli)}}
+        </p>
         <p> <span class="font-weight-bold"> Numéro recepteur :</span> {{formatter.numTel(liv.numRecepLiv)}}</p>
         <p> <span class="font-weight-bold">Description : </span> {{liv.descriptionLiv}}</p>
       </mat-expansion-panel>

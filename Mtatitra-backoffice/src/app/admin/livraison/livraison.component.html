@@ -5,18 +5,11 @@
   <div class="row">
     <div class="col-5">
       <mat-form-field style="width: 100%;">
-        <mat-label>Filtrer</mat-label>
-        <mat-select [(value)]="selectedValue" (selectionChange)="changeSelection()">
-          <mat-option value="all">
-            Tout
-          </mat-option>
-          <mat-option value="false">
-            Pas de coursier
-          </mat-option>
-          <mat-option value="true">
-            Avec coursier
-          </mat-option>
-        </mat-select>
+        <mat-label>Livraison ID</mat-label>
+        <input matInput type="text" (keyup)="filter()" [(ngModel)]="value">
+        <button mat-button *ngIf="value" matSuffix mat-icon-button aria-label="Clear" (click)="value=''; filter()">
+          <mat-icon>close</mat-icon>
+        </button>
       </mat-form-field>
     </div>
     <div class="col-5">
@@ -36,7 +29,7 @@
 </div>
 
 <div class="scroll content" *ngIf="!showGraph">
-  <mat-card *ngFor="let liv of livraisons; let i=index">
+  <mat-card *ngFor="let liv of livraisons; let i=index;">
     <mat-card-content>
       <button mat-mini-fab style="float: left;">
         {{i+1}}
@@ -47,13 +40,13 @@
             <p>Depart</p>
           </div>
           <div class="col-md-3 col-xs-6">
-            {{liv.departLiv}}
+            {{liv.idLieDepart.nomLie}}
           </div>
           <div class="col-md-3 col-xs-6 font-weight-bold">
             Destination
           </div>
           <div class="col-md-3 col-xs-6">
-            {{liv.destinationLiv}}
+            {{liv.idLieArrivee.nomLie}}
           </div>
         </div>
         <div class="row">
@@ -61,7 +54,7 @@
             <p>Numero</p>
           </div>
           <div class="col-md-3 col-xs-6">
-            {{liv.numRecepLiv}}
+            {{formatter.numTel(liv.numRecepLiv)}}
           </div>
           <div class="col-md-3 col-xs-6 font-weight-bold">
             Date
@@ -77,9 +70,13 @@
           <div class="col-md-3 col-xs-6">
             {{liv['idTypeCouTypeCoursier'].typeCou}}
           </div>
-          <div class="col-md-3 col-xs-6">
+          <div class="col-md-3 col-xs-6 font-weight-bold">
+            <p *ngIf="!(dateValue >= today && !liv.idResResultat) && liv.idCouCoursier"> Coursier: </p>
           </div>
-          <div class="col-md-3 col-xs-6">
+          <div class="col-md-3 col-xs-6 ">
+            <span *ngIf="!(dateValue >= today && !liv.idResResultat) && liv.idCouCoursier"> {{liv.idCouCoursier.nomCou}}
+              &nbsp;
+              {{liv.idCouCoursier.prenomCou}} </span>
           </div>
         </div>
         <br>
@@ -115,22 +112,22 @@
     </mat-card-content>
     <mat-card-footer *ngIf="!liv.nomCou || !liv.prenomCou">
       <div class="container">
-        <div class="row">
+        <div class="row" *ngIf="dateValue >= today && !liv.idResResultat; else rapport">
           <div class="col-xs-12 col-md-5 offset-md-2">
             <mat-form-field *ngIf="!liv['idCouCoursier']" style="width: 100%;">
               <mat-label>Coursier</mat-label>
-              <mat-select>
+              <mat-select [(value)]="currentIdCoursier[liv.idLiv]">
                 <mat-option *ngFor="let coursier of liv['idTypeCouTypeCoursier'].coursiers; let i=index"
-                  [value]="coursier.idCou" (click)="changeIdCoursier(coursier.idCou)">
+                  [value]="coursier.idCou">
                   {{coursier.nomCou}}&nbsp;&nbsp;{{coursier.prenomCou}}
                 </mat-option>
               </mat-select>
             </mat-form-field>
             <mat-form-field *ngIf="liv['idCouCoursier']" style="width: 100%;">
               <mat-label>Coursier</mat-label>
-              <mat-select [value]="liv['idCouCoursier']['idCou']">
+              <mat-select [(value)]="currentIdCoursier[liv.idLiv]">
                 <mat-option *ngFor="let coursier of liv['idTypeCouTypeCoursier'].coursiers; let i=index"
-                  [value]="coursier.idCou" (click)="changeIdCoursier(coursier.idCou)">
+                  [value]="coursier.idCou">
                   {{coursier.nomCou}}&nbsp;&nbsp;{{coursier.prenomCou}}
                 </mat-option>
               </mat-select>
@@ -138,12 +135,32 @@
           </div>
           <div class="col-xs-12 col-md-3">
             <div class="btn_footer">
-              <button class="btn btn-primary" [disabled]="currentIdCoursier === 0" (click)="assigne(liv.idLiv)">
+              <button class="btn btn-primary"
+                [disabled]="!liv.idCouCoursier && currentIdCoursier[liv.idLiv] == 0 || liv.idCouCoursier && currentIdCoursier[liv.idLiv] == liv.idCouCoursier.idCou"
+                (click)="assigne(liv.idLiv)">
                 {{!liv['idCouCoursier'] ? "Assigner" : "Modifier"}}
               </button>
             </div>
           </div>
+          <div class="col-xs-12 col-md-3">
+            <div class="btn_footer">
+              <button class="btn btn-danger" (click)="annuler(liv)">
+                Terminer et rediger le rapport
+              </button>
+            </div>
+          </div>
         </div>
+        <ng-template #rapport>
+          <div class="row">
+            <div class="col-xs-12 col-md-3">
+              <div class="btn_footer text-center">
+                <button class="btn btn-primary" (click)="voirRapport(liv)">
+                  Voir le rapport
+                </button>
+              </div>
+            </div>
+          </div>
+        </ng-template>
       </div>
     </mat-card-footer>
   </mat-card>
@@ -154,8 +171,8 @@
     <div class="row">
       <div class="col-md-5 col-offset-1 offset-xs-1 col-xs-10">
         <mat-form-field class="datePicker">
-          <input matInput placeholder="date de debut" [matDatepicker]="dateStart"
-          name="startDate"  required readonly [(ngModel)]="startDate" (dateChange)="changeDateGraph()">
+          <input matInput placeholder="date de debut" [matDatepicker]="dateStart" name="startDate" required readonly
+            [(ngModel)]="startDate" (dateChange)="changeDateGraph()">
           <mat-datepicker-toggle [for]="dateStart" matSuffix></mat-datepicker-toggle>
           <mat-datepicker #dateStart [startAt]="today">
           </mat-datepicker>
@@ -164,8 +181,8 @@
 
       <div class="col-md-5 offset-xs-1 col-xs-10">
         <mat-form-field class="datePicker">
-          <input matInput placeholder="date de fin" [matDatepicker]="dateEnd"
-          name="dateEnd" required readonly [(ngModel)]="endDate" (dateChange)="changeDateGraph()" [min]="startDate">
+          <input matInput placeholder="date de fin" [matDatepicker]="dateEnd" name="dateEnd" required readonly
+            [(ngModel)]="endDate" (dateChange)="changeDateGraph()" [min]="startDate">
           <mat-datepicker-toggle [for]="dateEnd" matSuffix></mat-datepicker-toggle>
           <mat-datepicker #dateEnd>
           </mat-datepicker>

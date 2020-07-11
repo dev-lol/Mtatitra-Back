@@ -60,6 +60,19 @@ export class PutService {
             });
     }
 
+    editResultat(idRes: number, res: Object) {
+        // tslint:disable-next-line: object-literal-key-quotes
+        const headers: any = new HttpHeaders({ 'Content-Type': 'application/json' });
+        delete res["idRes"]
+        this.http.put(`${this.endpoint}/resultat/${idRes}`, res, headers).subscribe(
+            (data: any) => {
+                console.log(data);
+                this.getSrv.getResultat();
+            }, (error) => {
+                console.log(error);
+            });
+    }
+
     editLieu(idLieu: number, lieu: Object) {
         // tslint:disable-next-line: object-literal-key-quotes
         const headers: any = new HttpHeaders({ 'Content-Type': 'application/json' });

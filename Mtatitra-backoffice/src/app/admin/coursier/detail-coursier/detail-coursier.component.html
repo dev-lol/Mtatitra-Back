@@ -52,7 +52,8 @@
             <label class="label">Telephone d'urgence</label>
           </div>
           <div class="col">
-            <input type="text" autocomplete="off" class="data form-control" formControlName="numTelUrgentCou" id="telUrg">
+            <input type="text" autocomplete="off" class="data form-control" formControlName="numTelUrgentCou"
+              id="telUrg">
           </div>
         </div>
         <br>
@@ -68,10 +69,19 @@
         <br>
         <div class="row">
           <div class="col">
+            <label class="label">Adresse</label>
+          </div>
+          <div class="col">
+            <input type="text" autocomplete="off" class="data form-control" formControlName="adresseCou" id="adresse">
+          </div>
+        </div>
+        <br>
+        <div class="row">
+          <div class="col">
             <label class="label">Type Vehicule</label>
           </div>
           <div class="col">
-            <select class="form-control" formControlName="idTypeCou">
+            <select class="form-control" formControlName="idTypeCouTypeCoursier">
               <option *ngFor="let type of data.typeCoursier; let index = index" [value]="type.idTypeCou">
                 {{type.typeCou}}
               </option>

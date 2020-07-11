@@ -31,7 +31,7 @@ export class DetailCoursierComponent implements OnInit {
             prenomCou: [this.data.prenom, Validators.required],
             numTelCou: [this.data.tel, Validators.required],
             usernameCou: [this.data.username, Validators.required],
-            idTypeCou: [this.data.type, Validators.required],
+            idTypeCouTypeCoursier: [this.data.type, Validators.required],
             referenceVehiculeCou: [this.data.ref, Validators.required],
             numTelUrgentCou: [this.data.telUrg, Validators.required],
             adresseCou: [this.data.adresse, Validators.required],

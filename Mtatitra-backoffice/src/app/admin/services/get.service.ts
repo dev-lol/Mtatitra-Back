@@ -27,7 +27,9 @@ export class GetService {
 
     planningSubject = new Subject<any>();
     etapesSubject = new Subject<any>();
+    resultatSubject = new Subject<any>();
 
+    sansPlanningSubject = new Subject<any>();
 
 
     constructor(public http: HttpClient) { }
@@ -40,13 +42,26 @@ export class GetService {
         )
     }
     getTypeCouriserPlanning(date: string = this.lastDate) {
-        this.http.get(`${this.endpoint}/typecoursier/planning?date=${date}`).subscribe(
+        this.lastDate = date
+        this.http.get(`${this.endpoint}/typecoursier/planning?date=${date}&coursier=true`).subscribe(
             (result: any) => {
                 let plan: any[]
                 plan = result
                 this.planningSubject.next(plan.slice())
             })
     }
+
+    getTypeCoursierSansPlanning(date: string = this.lastDate) {
+        this.lastDate = date
+        this.http.get(`${this.endpoint}/typecoursier/planning?date=${date}&coursier=false`).subscribe(
+            (result: any) => {
+                let plan: any[]
+                plan = result
+                this.sansPlanningSubject.next(plan.slice())
+            }
+        )
+    }
+
     getAllType() {
         this.getAllTypeCoursier();
         this.getAllTypeProduit();
@@ -89,6 +104,13 @@ export class GetService {
             }
         );
     }
+    getResultat() {
+        this.http.get(`${this.endpoint}/resultat`).subscribe(
+            (result) => {
+                this.resultatSubject.next(result);
+            }
+        );
+    }
 
     getClient() {
         this.http.get(`${this.endpoint}/client`).subscribe(
@@ -102,10 +124,9 @@ export class GetService {
 
     lastWhat = 'all'
     lastDate = new Date().toDateString()
-    getAllLivraison(what: string = this.lastWhat, date: string = this.lastDate) {
+    getAllLivraison(date: string = this.lastDate) {
         this.lastDate = date
-        this.lastWhat = what
-        let url = `coursier=${what}&date=${date}`;
+        let url = `date=${date}`;
 
         this.http.get(`${this.endpoint}/livraison?${url}`).subscribe(
             (result) => {
