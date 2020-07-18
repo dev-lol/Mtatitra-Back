@@ -6,6 +6,7 @@ import { createConnection } from 'typeorm';
 import { ormconfig } from '../config';
 import { createServer } from 'http';
 import jwt from 'jsonwebtoken';
+import { join } from 'path';
 export class CustomServer {
     app = express()
     static ioAdmin
@@ -21,6 +22,7 @@ export class CustomServer {
                 this.app.use(bodyParser.json())
                 this.app.use("/api", compression())
                 this.app.use("/api", router)
+                this.app.use("/public", express.static(join(__dirname, "../../public")))
                 const client = express()
                 const admin = express()
                 admin.use('/', express.static(path.join(__dirname, '../../Mtatitra-backoffice/dist/Mtatitra')))
