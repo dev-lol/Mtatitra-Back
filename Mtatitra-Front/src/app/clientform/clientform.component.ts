@@ -42,6 +42,7 @@ export class ClientformComponent implements OnInit {
     public filteredLieuArrivee: ReplaySubject<Lieu[]> = new ReplaySubject<Lieu[]>(1);
 
     today = new Date()
+    maintenant: number = Date.now();
 
 
     constructor(
@@ -291,4 +292,8 @@ export class ClientformComponent implements OnInit {
         }
 
     }
+
+    getTotal(marks) {
+        return marks.reduce((acc, {prixPro}) => acc += +(prixPro || 0), 0);
+      }
 }
