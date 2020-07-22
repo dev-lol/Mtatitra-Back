@@ -6,10 +6,6 @@
     max-width: 100%;
 }
 
-.contenu {
-    min-height: 0;
-}
-
 nav {
     padding-top: 2%;
     padding-bottom: 1%;
@@ -58,8 +54,8 @@ ul li a {
 }
 
 .mobile {
-    max-height: 90%;
-    max-width: 90%;
+    max-height: 65%;
+    max-width: 65%;
 }
 
 .btn {
