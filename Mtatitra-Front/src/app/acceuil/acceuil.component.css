@@ -89,7 +89,7 @@ ul li a {
 }
 
 .head {
-    margin-top: 10%;
+    margin-top: 15%;
 }
 
 
@@ -122,7 +122,7 @@ ul li a {
 .how_it_works {
     list-style: none;
     width: 100%;
-    margin-top: 5%;
+    margin-top: 3%;
 }
 
 .how_it_works .instru {
@@ -152,6 +152,29 @@ i {
     font-size: 70px;
 }
 
+.lorem {
+    width: 50%;
+}
+
 h1 {
     font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+}
+
+@media (max-width: 576px) {
+    h1 {
+        font-size: 26px;
+    }
+    .how_it_works .instru {
+        text-align: center;
+        width: 100%;
+    }
+    .h1 {
+        margin-top: 20%;
+    }
+    .text {
+        margin-top: 35%;
+    }
+    .lorem {
+        width: 100%;
+    }
 }
