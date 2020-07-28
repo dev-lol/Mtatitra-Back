@@ -125,7 +125,8 @@ export default class LivraisonController extends Controller {
                     livraison.idCliClient = { ... new Client(), idCli: res.locals.id }
                     livraison.idLimiteDat = { ... new DateLimite(), idLimiteDat: req.body.livraison.idLimiteDat }
                     const date = new Date(req.body.livraison.dateLiv)
-                    livraison.dateLiv = new Date(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate() + 1)
+                    livraison.dateLiv = date.getUTCFullYear() +"-" + date.getUTCMonth()+"-"+ (date.getUTCDate() + 1);
+                    console.log(livraison.dateLiv)
                     const tmp = new Date();
                     const today = new Date(tmp.getUTCFullYear(), tmp.getUTCMonth(), tmp.getUTCDate() + 1)
                     livraison.expressLiv = date.getTime() == today.getTime()
