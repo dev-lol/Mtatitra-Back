@@ -64,8 +64,7 @@ export default class ClientController extends Controller {
     }
     async addPut(router: Router): Promise<void> {
         router.put("/profile", [
-            body('emailCli').isEmail().withMessage("email invalide"),
-            body(['nomCli', 'prenomCli', 'numTelCli', 'adresseCli', 'emailCli']).notEmpty().withMessage('donnee incomplete'),
+            body(['nomCli', 'prenomCli', 'numTelCli', 'adresseCli']).notEmpty().withMessage('donnee incomplete'),
             body('newPassword').optional(true).isLength({ min: 6 })
                 .withMessage('mot de passe trop court')
                 .matches(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/)
@@ -75,11 +74,6 @@ export default class ClientController extends Controller {
                 var clientToModify: Client = await getRepository(Client).findOneOrFail(res.locals.id)
                 var clientFromRequest: Client = getRepository(Client).create(req.body as Object)
                 delete clientFromRequest["passCli"]
-                if (req.body.emailCli != clientToModify.emailCli) {
-                    if ((await getRepository(Client).count({ where: { emailCli: req.body.emailCli } })) > 0) {
-                        return this.sendResponse(res, 400, { errors: [{ msg: "Email déjà utilisé par un autre comptre", param: "emailCli" }] })
-                    }
-                }
                 clientToModify = { ...clientToModify, ...clientFromRequest }
                 if (req.body.oldPassword) {
                     const isSame = await Password.compare(req.body.oldPassword, clientToModify.passCli)
