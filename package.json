@@ -9,8 +9,6 @@
     "install-all": "npm-run-all --parallel install-client install-backoffice",
     "install-client": "(cd ./Mtatitra-Front && npm install)",
     "install-backoffice": "(cd ./Mtatitra-backoffice && npm install)",
-    "heroku-postbuild": "npm-run-all --parallel build postbuild",
-    "postbuild": "npx ts-node ./src/postbuild.ts",
     "dev": "npx ts-node-dev --inspect=4321 --poll --clear ./src/index.ts",
     "build-client": "cd Mtatitra-Front && npx ng build --prod",
     "build-backoffice": "cd Mtatitra-backoffice && npx ng build --prod --base-href /admin/",
