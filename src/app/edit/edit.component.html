@@ -57,15 +57,6 @@
                     <mat-label>Site Web</mat-label>
                     <input matInput placeholder="Ex. www.mtatitra-transport.mg" formControlName="siteWebCli">
                   </mat-form-field>
-                  <h6>Utiliser votre addresse email valide</h6>
-                  <mat-form-field class="produittextarea">
-                    <mat-label>Enter votre adresse mail</mat-label>
-                    <input matInput placeholder="pat@example.com" formControlName="emailCli">
-                    <mat-error *ngIf="controls.emailCli.errors?.required">Champs vide</mat-error>
-                    <mat-error *ngIf="controls.emailCli.errors?.email">Email Incorrecte</mat-error>
-                    <mat-error *ngIf="controls.emailCli.errors?.serverError">{{controls.emailCli.errors?.serverError}}
-                    </mat-error>
-                  </mat-form-field>
 
                   <div class="w-100 d.flex justify-content-center mt-3">
                     <button type="button" class="btn btn-default" (click)="toggle()" mat-button>Changer mon mot de
