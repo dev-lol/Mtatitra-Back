@@ -17,6 +17,7 @@ import ErrorValidator from "../../ErrorValidator";
 import { body } from 'express-validator';
 import { Lieu } from "../../../entities/Lieu";
 import { CustomServer } from "../../Server";
+import { print } from "util";
 export default class LivraisonController extends Controller {
     constructor() {
         super()
@@ -100,7 +101,6 @@ export default class LivraisonController extends Controller {
             body(['produits.*.largeurPro', 'produits.*.longueurPro', 'produits.*.hauteurPro', 'produits.*.consignePro', 'produits.*.poidsPro', 'produits.*.fragilePro'])
                 .notEmpty()
                 .withMessage("Champs vide"),
-            body('livraison.dateLiv').toDate(),
             body('produits.*.fragilePro').isBoolean().withMessage("non boolean"),
             body('livraison').notEmpty().withMessage("pas de details"),
             body(['livraison.idLieArrivee', 'livraison.idLieDepart', 'livraison.idLimiteDat',
@@ -111,6 +111,7 @@ export default class LivraisonController extends Controller {
         ], ErrorValidator,
             async (req: Request, res: Response, next: NextFunction) => {
                 try {
+                    console.log(req.body.livraison.dateLiv)
                     let produits: Produit[] = []
                     for (const p of req.body.produits) {
                         const produit: Produit = getRepository(Produit).create(p as object)
@@ -124,8 +125,9 @@ export default class LivraisonController extends Controller {
                     livraison.idCliClient = { ... new Client(), idCli: res.locals.id }
                     livraison.idLimiteDat = { ... new DateLimite(), idLimiteDat: req.body.livraison.idLimiteDat }
                     const date = new Date(req.body.livraison.dateLiv)
-                    const tmp = new Date()
-                    const today = new Date(tmp.getFullYear(), tmp.getMonth(), tmp.getDate())
+                    livraison.dateLiv = new Date(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate() + 1)
+                    const tmp = new Date();
+                    const today = new Date(tmp.getUTCFullYear(), tmp.getUTCMonth(), tmp.getUTCDate() + 1)
                     livraison.expressLiv = date.getTime() == today.getTime()
                     console.log(livraison.expressLiv)
                     livraison.idTypeCouTypeCoursier = { ... new TypeCoursier(), idTypeCou: req.body.livraison.typeCoursier }
