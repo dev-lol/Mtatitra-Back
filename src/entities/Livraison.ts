@@ -27,7 +27,7 @@ export class Livraison {
     numRecepLiv: string;
 
     @Column("date", { name: "date_liv" })
-    dateLiv: Date;
+    dateLiv: Date | string;
 
     @Column("boolean", { name: "express_liv" })
     expressLiv: Boolean;
