@@ -34,7 +34,7 @@
     "hasha": "^5.1.0",
     "jsonwebtoken": "^8.5.1",
     "moment": "^2.24.0",
-    "mysql": "any",
+    "mysql": "^2.18.1",
     "nodemailer": "^6.4.3",
     "nodemailer-smtp-transport": "^2.7.4",
     "pg": "^7.15.1",
