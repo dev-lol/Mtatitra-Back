@@ -2,7 +2,7 @@ import { Router, Response, Request, NextFunction, ErrorRequestHandler } from "ex
 import { Controller } from "../../Controller"
 import { Admin } from "../../../entities/Admin"
 import { Connection, createConnection, getConnection, getRepository } from "typeorm";
-import { ormconfig } from "../../../config";
+
 import jwt from 'jsonwebtoken';
 import ErrorValidator from "../../ErrorValidator";
 import { body } from 'express-validator';

@@ -2,7 +2,7 @@ import { Router, Response, Request, NextFunction, ErrorRequestHandler } from "ex
 import { Controller } from "../../Controller"
 import { TypeProduit } from "../../../entities/TypeProduit"
 import { getRepository} from "typeorm";
-import { ormconfig } from "../../../config";
+
 import { runInThisContext } from "vm";
 export default class TypeProduitController extends Controller {
     constructor() {

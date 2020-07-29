@@ -2,7 +2,7 @@ import { Router, Response, Request, NextFunction, ErrorRequestHandler } from "ex
 import { Controller } from "../../Controller"
 import { Coursier } from "../../../entities/Coursier"
 import { getRepository, Connection, createConnection, getConnection } from "typeorm";
-import { ormconfig } from "../../../config";
+
 import jwt from 'jsonwebtoken';
 import { Livraison } from "../../../entities/Livraison";
 import { Etats } from "../../../entities/Etats";

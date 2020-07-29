@@ -2,7 +2,7 @@ import { Router, Response, Request, NextFunction, ErrorRequestHandler } from "ex
 import { Controller } from "../../Controller"
 import { Tarif } from "../../../entities/Tarif"
 import { getRepository } from "typeorm";
-import { ormconfig } from "../../../config";
+
 import { TypeCoursier } from '../../../entities/TypeCoursier';
 import { Zone } from "../../../entities/Zone";
 import ErrorValidator from "../../ErrorValidator";

@@ -2,9 +2,6 @@ import { Router, Response, Request, NextFunction, ErrorRequestHandler } from "ex
 
 import { Controller } from "../../Controller";
 import { getRepository } from 'typeorm';
-import { createConnection } from 'typeorm';
-import { ormconfig } from '../../../config';
-import { Repository } from 'typeorm';
 import { Client } from '../../../entities/Client';
 import Utils from '../../../utils/SendEmail';
 import { body, validationResult } from 'express-validator';

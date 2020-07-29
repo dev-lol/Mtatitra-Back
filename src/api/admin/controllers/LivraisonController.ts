@@ -2,7 +2,7 @@ import { Router, Response, Request, NextFunction, ErrorRequestHandler } from "ex
 import { Controller } from "../../Controller"
 import { Admin } from "../../../entities/Admin"
 import { getRepository, MoreThan } from "typeorm";
-import { ormconfig } from "../../../config";
+
 import { Livraison } from "../../../entities/Livraison";
 import { Coursier } from "../../../entities/Coursier";
 import ErrorValidator from "../../ErrorValidator";

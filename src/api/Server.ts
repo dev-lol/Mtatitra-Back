@@ -7,6 +7,7 @@ import { ormconfig } from '../config';
 import { createServer } from 'http';
 import jwt from 'jsonwebtoken';
 import { join } from 'path';
+
 export class CustomServer {
     app = express()
     static ioAdmin
@@ -14,6 +15,7 @@ export class CustomServer {
     static ioCoursier
     constructor() {
         const path = require('path')
+        console.log(ormconfig)
         createConnection(ormconfig)
             .then(async _ => {
                 var cors = require("cors")
