@@ -38,7 +38,6 @@ export class EditComponent implements OnInit {
             prenomCli: ['', Validators.required],
             numTelCli: ['', Validators.compose([Validators.required, Validators.pattern(/^3[2-49]\d{7}$/)])],
             adresseCli: ['', Validators.required],
-            emailCli: ['', Validators.compose([Validators.required, Validators.email])],
             pageFbCli: [''],
             compteFbCli: [''],
             siteWebCli: [''],
@@ -52,7 +51,6 @@ export class EditComponent implements OnInit {
             this.editForm.controls['prenomCli'].setValue(this.currentUser["prenomCli"])
             this.editForm.controls['numTelCli'].setValue(this.currentUser["numTelCli"])
             this.editForm.controls['adresseCli'].setValue(this.currentUser["adresseCli"])
-            this.editForm.controls['emailCli'].setValue(this.currentUser["emailCli"])
             this.editForm.controls['compteFbCli'].setValue(this.currentUser["compteFbCli"])
             this.editForm.controls['pageFbCli'].setValue(this.currentUser["pageFbCli"])
             this.editForm.controls['siteWebCli'].setValue(this.currentUser["siteWebCli"])

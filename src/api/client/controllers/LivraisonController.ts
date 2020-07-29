@@ -6,7 +6,7 @@ import { Client } from "../../../entities/Client";
 import { Router, Response, Request, NextFunction } from "express";
 import { Livraison } from "../../../entities/Livraison";
 import { Produit } from "../../../entities/Produit";
-import { ormconfig } from "../../../config";
+
 import { TypeProduit } from "../../../entities/TypeProduit";
 import { Coursier } from "../../../entities/Coursier";
 import { Zone } from "../../../entities/Zone";

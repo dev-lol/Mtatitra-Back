@@ -2,7 +2,7 @@ import { Router, Response, Request, NextFunction, ErrorRequestHandler } from "ex
 import { Controller } from "../../Controller"
 import { Etats } from "../../../entities/Etats"
 import { Repository, Connection, createConnection, getConnection, getRepository } from "typeorm";
-import { ormconfig } from "../../../config";
+
 import { runInThisContext } from "vm";
 import { json } from "body-parser";
 import ErrorValidator from "../../ErrorValidator";

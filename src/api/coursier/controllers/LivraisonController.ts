@@ -2,7 +2,7 @@ import { Router, Response, Request, NextFunction, ErrorRequestHandler } from "ex
 import { Controller } from "../../Controller"
 import { Coursier } from "../../../entities/Coursier"
 import { getRepository, Connection, createConnection, getConnection, MoreThan } from "typeorm";
-import { ormconfig } from "../../../config";
+
 import { Livraison } from "../../../entities/Livraison";
 import { Etats } from "../../../entities/Etats";
 import { CustomServer } from '../../Server';

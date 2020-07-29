@@ -2,7 +2,7 @@ import { Router, Response, Request, NextFunction, ErrorRequestHandler } from "ex
 import { Controller } from "../../Controller"
 import { TypeCoursier } from "../../../entities/TypeCoursier"
 import { getRepository, Connection, createConnection, getConnection } from "typeorm";
-import { ormconfig } from "../../../config";
+
 import { runInThisContext } from "vm";
 export default class TypeCoursierController extends Controller {
     constructor() {

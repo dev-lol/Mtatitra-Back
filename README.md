@@ -1,9 +1,36 @@
-# Mtatitra API
-## Steps to run this project:
+# Mtatitra
 
-1. Run `npm i` command
-2. Setup POSTGRESQL database settings inside `config.ts` file
-3. Run `npm run dev` command for Developing mode (Automatic reload when changes occur)
+1. Configuer le fichier **.env**
 
-    Run `npm start` command for Production mode
+> DB_DATABASE=< Nom de la base de donnee (Elle doit exister)>
+>
+> DB_PASSWORD=< Mot de passe de la base de donnee >
+>
+> DB_USER=< Username de la base de donnee >
+>
+> DB_HOST=< URL de la base de donnee >
+>
+> DB_PORT=< Port de la base de donnee >
+>
+> URL=< Nom de domaine >
+>
+> PORT=< Port du site web >
+>
+> SSL=< true ou false (http ou https)>
+>
+> ADMIN_PASS_PHRASE=< Alphanumeric 20 caracter minimum unique >
+>
+> CLIENT_PASS_PHRASE=< Alphanumeric 20 caracter minimum unique >
+>
+> COURSIER_PASS_PHRASE=< Alphanumeric 20 caracter minimum unique >
+>
+> MAIL_MTATITRA=< adresse gmail pour confirmation par email configuré prealablement [Gmail Less Secure](https://myaccount.google.com/lesssecureapps) >
+>
+> PASS_MTATITRA=< mot de passe du gmail >
+>
+> SALT=12
+>
 
+2. Lancer `npm install`
+3. Lancer `npm build`
+4. Lancer `npm start` pour demarrer le serveur

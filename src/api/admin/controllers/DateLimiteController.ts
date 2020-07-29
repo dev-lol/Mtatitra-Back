@@ -2,7 +2,7 @@ import { Router, Response, Request, NextFunction, ErrorRequestHandler } from "ex
 import { Controller } from "../../Controller"
 import { DateLimite } from "../../../entities/DateLimite"
 import { Repository, Connection, createConnection, getConnection, getRepository } from "typeorm";
-import { ormconfig } from "../../../config";
+
 import { runInThisContext } from "vm";
 import ErrorValidator from "../../ErrorValidator";
 import { body, param } from 'express-validator';

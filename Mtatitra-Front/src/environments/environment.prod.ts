@@ -1,5 +1,6 @@
 export const environment = {
-  production: true,
-  SOCKET_ENDPOINT: 'https://livraison-app.herokuapp.com',
-  API_ENDPOINT: 'https://livraison-app.herokuapp.com/api/client',
-};
+    production: true,
+    SOCKET_ENDPOINT: "http://localhost:3000/client",
+    API_ENDPOINT: "http://localhost:3000/api/client",
+  };
+ 

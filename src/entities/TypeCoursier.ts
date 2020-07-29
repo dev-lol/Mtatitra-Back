@@ -4,12 +4,12 @@ import { Tarif } from './Tarif';
 import { Livraison } from './Livraison';
 
 @Index("Type Coursier_pk", ["idTypeCou"], { unique: true })
-@Entity("Type_Coursier", { schema: "public" })
+@Entity("Type_Coursier")
 export class TypeCoursier {
     @PrimaryGeneratedColumn({ type: "integer", name: "id_type_cou" })
     idTypeCou: number;
 
-    @Column("character varying", { name: "type_cou", length: 30 })
+    @Column("varchar", { name: "type_cou", length: 30 })
     typeCou: string;
 
     @Column("double precision", { name: "poids_max_type_cou" })

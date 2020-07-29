@@ -3,7 +3,7 @@ import { Livraison } from "./Livraison";
 import { TypeProduit } from "./TypeProduit";
 
 @Index("Produits_pk", ["idPro"], { unique: true })
-@Entity("Produit", { schema: "public" })
+@Entity("Produit")
 export class Produit {
     @PrimaryGeneratedColumn({ type: "integer", name: "id_cli" })
     idPro: number;
@@ -35,7 +35,7 @@ export class Produit {
     })
     poidsPro: number;
 
-    @Column("character varying", {
+    @Column("varchar", {
         name: "consigne_pro",
         nullable: false,
         length: 250,
@@ -47,7 +47,7 @@ export class Produit {
 
     @ManyToOne(() => Livraison, (livraison) => livraison.produits, {
         onDelete: "SET NULL",
-        onUpdate: "CASCADE",
+        onUpdate: "CASCADE"
     })
     @JoinColumn([{ name: "id_liv_Livraison", referencedColumnName: "idLiv" }])
     idLivLivraison: Livraison;

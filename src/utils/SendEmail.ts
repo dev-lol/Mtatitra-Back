@@ -39,7 +39,7 @@ export default class Utils {
 
                 <h1 style="font-size: xx-large;margin-top: 70px;">MTATITRA</h1>
                 <p style="font-size: medium;margin-top: 55px;">Veuillez cliquer sur ce bouton pour confirmer votre compte</p>
-                <a style="text-decoration: none !important;" href="http://${nomDomaine}/mailconfirmation/${email}/${code}">
+                <a style="text-decoration: none !important;" href="http${process.env.SSL? "s": ""}://${nomDomaine}/mailconfirmation/${email}/${code}">
                     <button
                     style="background-color: #EF1233;font-size: 15px;border: none;border-radius: 0%; color: white; font-weight: 700; padding: 7px; display: inline-block; margin-top: 10px; border-radius: 1px;margin-top: px;">
                     Confirmer
@@ -96,7 +96,7 @@ export default class Utils {
 
                 <h1 style="font-size: xx-large;margin-top: 70px;">MTATITRA</h1>
                 <p style="font-size: medium;margin-top: 55px;">Veuillez cliquer sur ce bouton pour confirmer votre compte</p>
-                <a style="text-decoration: none !important;" href="http://${nomDomaine}/api/client/reset/${email}/${code}">
+                <a style="text-decoration: none !important;" href="http${process.env.SSL? "s": ""}://${nomDomaine}/api/client/reset/${email}/${code}">
                     <button
                     style="background-color: #EF1233;font-size: 15px;border: none;border-radius: 0%; color: white; font-weight: 700; padding: 7px; display: inline-block; margin-top: 10px; border-radius: 1px;margin-top: px;">
                     Confirmer

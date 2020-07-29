@@ -2,7 +2,7 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 export default function securityAdmin(req: Request, res: Response, next: NextFunction) {
-    if (req.path == "/login") return next()
+    if (req.path == "/login" || req.path == "/reset") return next()
     var jwtToken: string = req.headers["authorization"]
     if (jwtToken == undefined) {
         res.status(401).send({

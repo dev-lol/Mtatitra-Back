@@ -25,8 +25,8 @@ export class LoginAdminComponent implements OnInit {
 
     initSignIn() {
         this.signIn = this.formBuilder.group({
-            username: ['admin_test@admin.com', Validators.required],
-            password: ['1234', Validators.required]
+            username: ['', Validators.required],
+            password: ['', Validators.required]
         });
     }
 
@@ -36,6 +36,8 @@ export class LoginAdminComponent implements OnInit {
             newPass: ['', Validators.required],
             confPass: ['', Validators.required],
         });
+
+        
     }
 
     signInAdmin(event) {
@@ -45,7 +47,8 @@ export class LoginAdminComponent implements OnInit {
 
     newAdmin() {
 
-        this.route.navigate(['/dashboard']);
+        this.loginService.reset(this.signUp.value)
+        //this.route.navigate(['/dashboard']);
     }
 
     toggleReinit() {
