@@ -15,7 +15,7 @@
     "build-backoffice": "cd Mtatitra-backoffice && npm run config && npx ng build --prod --base-href /admin/",
     "client": "npm run install-client && npm run build-client",
     "backoffice": "npm run install-backoffice && npm run build-backoffice",
-    "build": "npm run copy && npm run client && npm run backoffice",
+    "build": "npm run copy && npm run client && npm run backoffice && npm run postbuild",
     "build:only": "npm run copy && npm run build-backoffice && npm run build-client"
   },
   "author": "",
