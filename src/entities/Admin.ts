@@ -2,18 +2,18 @@ import { Column, Entity, Index, OneToMany, PrimaryGeneratedColumn } from "typeor
 import { Coursier } from "./Coursier";
 
 @Index("Admin_pk", ["idAdm"], { unique: true })
-@Entity("Admin", { schema: "public" })
+@Entity("Admin")
 export class Admin {
     @PrimaryGeneratedColumn({ type: "integer", name: "id_adm" })
     idAdm: number;
 
-    @Column("character varying", { name: "username_adm", length: 30 })
+    @Column("varchar", { name: "username_adm", length: 30 })
     usernameAdm: string;
 
-    @Column("character varying", { name: "pass_adm", length: 100 })
+    @Column("varchar", { name: "pass_adm", length: 100 })
     passAdm: string;
 
-    @Column("character varying", { name: "email_adm", length: 50 })
+    @Column("varchar", { name: "email_adm", length: 50 })
     emailAdm: string;
 
     @OneToMany(() => Coursier, (coursier) => coursier.idAdmAdmin)

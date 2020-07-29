@@ -12,46 +12,45 @@ import { TypeCoursier } from "./TypeCoursier";
 import { Livraison } from "./Livraison";
 
 @Index("Coursier_pk", ["idCou"], { unique: true })
-@Entity("Coursier", { schema: "public" })
+@Entity("Coursier")
 export class Coursier {
     @PrimaryGeneratedColumn({ type: "integer", name: "id_cou" })
     idCou: number;
 
-    @Column("character varying", { name: "nom_cou", length: 50 })
+    @Column("varchar", { name: "nom_cou", length: 50 })
     nomCou: string;
 
-    @Column("character varying", { name: "prenom_cou", length: 30 })
+    @Column("varchar", { name: "prenom_cou", length: 30 })
     prenomCou: string;
 
-    @Column("character varying", { name: "num_tel_cou", length: 10 })
+    @Column("varchar", { name: "num_tel_cou", length: 10 })
     numTelCou: string;
 
-    @Column("character varying", { name: "num_tel_urgent_cou", length: 10 })
+    @Column("varchar", { name: "num_tel_urgent_cou", length: 10 })
     numTelUrgentCou: string;
 
-    @Column("character varying", { name: "adresse_cou", length: 100 })
+    @Column("varchar", { name: "adresse_cou", length: 100 })
     adresseCou: string;
 
-    @Column("character varying", { name: "reference_vehicule_cou", length: 50 })
+    @Column("varchar", { name: "reference_vehicule_cou", length: 50 })
     referenceVehiculeCou: string;
 
-    @Column("character varying", { name: "username_cou", length: 30 })
+    @Column("varchar", { name: "username_cou", length: 30 })
     usernameCou: string;
 
-    @Column("character varying", { name: "pass_cou", length: 100 })
+    @Column("varchar", { name: "pass_cou", length: 100 })
     passCou: string;
 
     @ManyToOne(() => Admin, (admin) => admin.coursiers, {
         onDelete: "SET NULL",
-        onUpdate: "CASCADE",
+        onUpdate: "CASCADE"
     })
     @JoinColumn([{ name: "id_adm_Admin", referencedColumnName: "idAdm" }])
     idAdmAdmin: Admin;
 
     @ManyToOne(() => TypeCoursier, (typeCoursier) => typeCoursier.coursiers, {
         onDelete: "SET NULL",
-        onUpdate: "CASCADE",
-        nullable: false
+        onUpdate: "CASCADE"
     })
     @JoinColumn([
         { name: "id_type_cou_Type_Coursier", referencedColumnName: "idTypeCou" },

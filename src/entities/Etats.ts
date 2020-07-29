@@ -2,12 +2,12 @@ import { Column, Entity, Index, OneToMany, PrimaryGeneratedColumn } from "typeor
 import { Livraison } from "./Livraison";
 
 @Index("Etats_pk", ["idEta"], { unique: true })
-@Entity("Etats", { schema: "public" })
+@Entity("Etats")
 export class Etats {
     @PrimaryGeneratedColumn({ type: "integer", name: "id_eta" })
     idEta: number;
 
-    @Column("character varying", { name: "etat_eta", length: 30 })
+    @Column("varchar", { name: "etat_eta", length: 30 })
     etatEta: string;
 
     @Column("integer",{name: "ordre_eta",nullable:false})

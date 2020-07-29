@@ -18,12 +18,12 @@ import { Lieu } from './Lieu';
 import { Resultat } from './Resultat';
 
 @Index("Livraison_pk", ["idLiv"], { unique: true })
-@Entity("Livraison", { schema: "public" })
+@Entity("Livraison")
 export class Livraison {
     @PrimaryGeneratedColumn({ type: "integer", name: "id_liv" })
     idLiv: number;
 
-    @Column("character varying", { name: "num_recep_liv", length: 10 })
+    @Column("varchar", { name: "num_recep_liv", length: 10 })
     numRecepLiv: string;
 
     @Column("date", { name: "date_liv" })
@@ -38,62 +38,60 @@ export class Livraison {
     })
     sommeRecepLiv: number;
 
-    @Column("character varying", { name: "description_liv", nullable: true })
+    @Column("varchar", { name: "description_liv", nullable: true })
     descriptionLiv: string | null;
 
-    @Column("character varying", { name: "rapport_liv", nullable: true })
+    @Column("varchar", { name: "rapport_liv", nullable: true })
     rapportLiv: string | null;
+
+
+    
 
     @ManyToOne(() => Client, (client) => client.livraisons, {
         onDelete: "SET NULL",
-        onUpdate: "CASCADE",
-        nullable: false
+        onUpdate: "CASCADE"
     })
     @JoinColumn([{ name: "id_cli_Client", referencedColumnName: "idCli" }])
     idCliClient: Client;
 
     @ManyToOne(() => Coursier, (coursier) => coursier.livraisons, {
         onDelete: "SET NULL",
-        onUpdate: "CASCADE",
+        onUpdate: "CASCADE"
     })
     @JoinColumn([{ name: "id_cou_Coursier", referencedColumnName: "idCou" }])
     idCouCoursier: Coursier;
 
     @ManyToOne(() => Resultat, (resultat) => resultat.livraisons, {
         onDelete: "SET NULL",
-        onUpdate: "CASCADE",
-        nullable: true
+        onUpdate: "CASCADE"
     })
     @JoinColumn([{ name: "id_res_Resultat", referencedColumnName: "idRes" }])
     idResResultat: Resultat;
 
     @ManyToOne(() => DateLimite, (coursier) => coursier.livraisons, {
         onDelete: "SET NULL",
-        onUpdate: "CASCADE",
-        nullable: false
+        onUpdate: "CASCADE"
     })
     @JoinColumn([{ name: "id_limite_dat", referencedColumnName: "idLimiteDat" }])
     idLimiteDat: DateLimite;
 
     @ManyToOne(() => Etats, (etats) => etats.livraisons, {
         onDelete: "SET NULL",
-        onUpdate: "CASCADE",
-        nullable: true
+        onUpdate: "CASCADE"
     })
     @JoinColumn([{ name: "id_eta_Etats", referencedColumnName: "idEta" }])
     idEtaEtats: Etats;
 
     @ManyToOne(() => Lieu, (lieu) => lieu.livraisons, {
         onDelete: "SET NULL",
-        onUpdate: "CASCADE",
+        onUpdate: "CASCADE"
     })
     @JoinColumn([{ name: "id_lie_depart", referencedColumnName: "idLie" }])
     idLieDepart: Lieu;
 
     @ManyToOne(() => Lieu, (lieu) => lieu.livraisons2, {
         onDelete: "SET NULL",
-        onUpdate: "CASCADE",
-        nullable: false
+        onUpdate: "CASCADE"
     })
     @JoinColumn([{ name: "id_lie_arrivee", referencedColumnName: "idLie" }])
     idLieArrivee: Lieu;
@@ -103,8 +101,7 @@ export class Livraison {
 
     @ManyToOne(() => TypeCoursier, (type) => type.livraisons, {
         onDelete: "SET NULL",
-        onUpdate: "CASCADE",
-        nullable: false
+        onUpdate: "CASCADE"
     })
     @JoinColumn([{ name: "id_type_cou_Type Coursier", referencedColumnName: "idTypeCou" }])
     idTypeCouTypeCoursier: TypeCoursier;

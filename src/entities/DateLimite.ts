@@ -10,12 +10,12 @@ import {
   import { Livraison } from "./Livraison";
   
   @Index("DateLimite_pk", ["idLimiteDat"], { unique: true })
-  @Entity("DateLimite", { schema: "public" })
+  @Entity("DateLimite")
   export class DateLimite {
       @PrimaryGeneratedColumn({ type: "integer", name: "id_limite_dat" })
     idLimiteDat: number;
   
-    @Column("character varying", { name: "limite_dat", length: 50 })
+    @Column("varchar", { name: "limite_dat", length: 50 })
     limiteDat: string;
 
     @Column("boolean", {name: "est_supprime"})
