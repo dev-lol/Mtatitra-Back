@@ -13,8 +13,8 @@ import { DateLimite } from './entities/DateLimite';
     if ((await adminRepository.count()) < 1) {
         let admin = adminRepository.create({
             usernameAdm: "admin",
-            passAdm: process.env.ADMIN_PASS || "$2b$12$JuhQ83ctpS4CPp9bJ5/MO.i.vy7sTnSxVegTfFP4nnSjUy7Egs4x2",
-            emailAdm: process.env.ADMIN_MAIL || "admin_2020@mtatitra.com"
+            passAdm: "$2b$12$JuhQ83ctpS4CPp9bJ5/MO.i.vy7sTnSxVegTfFP4nnSjUy7Egs4x2",
+            emailAdm: "admin_2020@mtatitra.mg"
         })
         let adminSaved = await adminRepository.save(admin)
         let typeCoursier = typeCoursierRepository.create({
