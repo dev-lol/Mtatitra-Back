@@ -41,8 +41,27 @@ export default class AdminController extends Controller {
 
         })
     }
-    async addPut(router: Router): Promise<void> {
 
+
+    async addPut(router: Router): Promise<void> {
+        router.put("/reset",[
+            body(['oldPass','newPass']).notEmpty()
+        ],ErrorValidator, async(req:Request,res:Response,next : NextFunction)=>{
+            let admin = await getRepository(Admin).findOne()
+            
+            if(req.body.oldPass===req.body.newPass){
+                this.sendResponse(res,401,{message : "Merci de trouver un autre mot de passe que l'actuel"})
+            }else{
+                let bcrypt = require("bcrypt")
+                    await bcrypt.hash(req.body.newPass, Number(process.env.SALT), async (err, hash) => {
+                        if (err)
+                            throw err
+                        admin.passAdm = hash
+                        await getRepository(Admin).save(admin)
+                        this.sendResponse(res, 200, { message: "Votre mot de passe a été changé" })
+                    });
+            }
+        })
     }
 
 
