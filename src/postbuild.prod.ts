@@ -4,8 +4,7 @@ import { Admin } from './entities/Admin';
 import { TypeCoursier } from './entities/TypeCoursier';
 import { DateLimite } from './entities/DateLimite';
 (async () => {
-    const config = (process.argv.includes('drop')) ? { ...ormconfig, dropSchema: true } : ormconfig
-    let connection = await createConnection(config)
+    let connection = await createConnection({ ...ormconfig, synchronize: true })
     let adminRepository = connection.getRepository(Admin)
     let typeCoursierRepository = connection.getRepository(TypeCoursier)
     let limiteDatRepository = connection.getRepository(DateLimite)
@@ -50,5 +49,5 @@ import { DateLimite } from './entities/DateLimite';
         limites.push(limite1)
         await limiteDatRepository.save(limites)
     }
+    process.exit()
 })().catch(error => console.log(error))
-

@@ -15,7 +15,6 @@ export class CustomServer {
     static ioCoursier
     constructor() {
         const path = require('path')
-        console.log(ormconfig)
         createConnection(ormconfig)
             .then(async _ => {
                 var cors = require("cors")
