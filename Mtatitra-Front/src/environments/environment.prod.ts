@@ -1,5 +1,6 @@
+require('dotenv').config()
 export const environment = {
   production: true,
-  SOCKET_ENDPOINT: 'https://livraison-app.herokuapp.com',
-  API_ENDPOINT: 'https://livraison-app.herokuapp.com/api/client',
+  SOCKET_ENDPOINT: `http://${process.env.URL}/client`,
+  API_ENDPOINT: `http://${process.env.URL}/api/client`,
 };
