@@ -3,10 +3,10 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: false,
-  SOCKET_ENDPOINT: 'https://livraison-app.herokuapp.com',
-  API_ENDPOINT: 'https://livraison-app.herokuapp.com/api/admin',
-  sitemap: "login",
+    production: false,
+    SOCKET_ENDPOINT: `http://${process.env.URL}/admin`,
+    API_ENDPOINT: `http://${process.env.URL}/api/admin`,
+    sitemap: "login",
 };
 
 /*

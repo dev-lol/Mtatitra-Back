@@ -28,6 +28,13 @@ export class LoginService {
             })
     }
 
+    reset(admin : any){
+        return this.http.put<any>(`${this.endpoint}/reset`,admin)
+            .subscribe((res: any)=>{
+                this.router.navigate(['/login'])
+            })
+    }
+
     getToken() {
         return localStorage.getItem('token');
     }
