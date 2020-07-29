@@ -38,7 +38,7 @@ export class CustomServer {
                 this.app.use("/", client)
                 const http = createServer(this.app)
                 http.listen(process.env.PORT || 3000)
-                console.log("Mtatitra is ONLINE ")
+                console.log(`Mtatitra is ONLINE at ${process.pid} `)
                 const io = require('socket.io')(http);
                 CustomServer.ioAdmin = io.of("/admin")
                 CustomServer.ioClient = io.of("/client")
