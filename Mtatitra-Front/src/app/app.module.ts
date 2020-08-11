@@ -30,7 +30,6 @@ import { ProfileclientService } from './profileclient/profileclient.service';
 import { MailconfirmationService } from './mailconfirmation/mailconfirmation.service';
 import { RouterModule } from '@angular/router';
 import { TarifService } from './tarif/tarif.service';
-import { FooterComponent } from './footer/footer.component';
 import { RapportComponent } from './list/rapport/rapport.component';
 import { NgwWowModule } from 'ngx-wow'
 import { NgxMatSelectSearchModule } from "ngx-mat-select-search";
@@ -50,7 +49,6 @@ import { NgxMatSelectSearchModule } from "ngx-mat-select-search";
         ListComponent,
         DetailsComponent,
         ProduitComponent,
-        FooterComponent,
         RapportComponent
     ],
     entryComponents: [DetailsComponent, ProduitComponent, RapportComponent],
