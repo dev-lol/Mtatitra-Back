@@ -24,7 +24,7 @@
 >
 > COURSIER_PASS_PHRASE=< Alphanumeric 20 caracter minimum unique >
 >
-> MAIL_MTATITRA=< adresse gmail pour confirmation par email configuré prealablement [Gmail Less Secure](https://myaccount.google.com/lesssecureapps) >
+> MAIL_MTATITRA=< adresse gmail pour confirmation par email configuré prealablement [Gmail Less Secure](https://myaccount.google.com/lesssecureapps) > Voir le fichier `src/utils/SendEmail.ts`
 >
 > PASS_MTATITRA=< mot de passe du gmail >
 >
