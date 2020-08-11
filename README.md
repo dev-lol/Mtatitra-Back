@@ -12,11 +12,7 @@
 >
 > DB_PORT=< Port de la base de donnee >
 >
-> URL=< Nom de domaine >
->
 > PORT=< Port du site web >
->
-> SSL=< true ou false (http ou https)>
 >
 > ADMIN_PASS_PHRASE=< Alphanumeric 20 caracter minimum unique >
 >
@@ -27,8 +23,6 @@
 > MAIL_MTATITRA=< adresse gmail pour confirmation par email configuré prealablement [Gmail Less Secure](https://myaccount.google.com/lesssecureapps) > Voir le fichier `src/utils/SendEmail.ts`
 >
 > PASS_MTATITRA=< mot de passe du gmail >
->
-> SALT=12
 >
 
 2. Lancer `npm install`
