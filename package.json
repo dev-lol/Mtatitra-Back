@@ -9,7 +9,6 @@
     "install-all": "npm run install-client install-backoffice",
     "install-client": "(cd ./Mtatitra-Front && npm install)",
     "install-backoffice": "(cd ./Mtatitra-backoffice && npm install)",
-    "postbuild": "npx ts-node ./src/postbuild.prod.ts",
     "dev": "npx ts-node-dev --inspect=4321 --poll --clear ./src/index.ts",
     "build-client": "cd Mtatitra-Front && npm run config && npx ng build --prod",
     "build-backoffice": "cd Mtatitra-backoffice && npm run config && npx ng build --prod --base-href /admin/",
