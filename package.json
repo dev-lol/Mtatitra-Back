@@ -39,7 +39,7 @@
     "nodemailer-smtp-transport": "^2.7.4",
     "pg": "^7.15.1",
     "reflect-metadata": "^0.1.10",
-    "socket.io": "^2.3.0",
+    "socket.io": "^2.4.0",
     "ts-node": "^8.6.2",
     "ts-node-dev": "^1.0.0-pre.44",
     "typeorm": "0.2.21",
